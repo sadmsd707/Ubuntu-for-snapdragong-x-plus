@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSK | Chennai Super Kings - IPL Auction 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        .team-gradient {
+            background: linear-gradient(135deg, #FDB913 0%, #003366 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header with Team Colors -->
+        <div class="team-gradient text-white py-8 px-6 shadow-lg">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h1 class="text-5xl font-black flex items-center gap-3">
+                            <i class="fas fa-crown text-yellow-300"></i>
+                            Chennai Super Kings
+                        </h1>
+                        <p class="text-yellow-100 mt-2">🦁 Whistle Podu! #Yellove</p>
+                    </div>
+                    <div class="text-right bg-white/10 backdrop-blur rounded-xl px-6 py-3">
+                        <div class="text-3xl font-bold" id="budgetDisplay">₹12.0 Cr</div>
+                        <p class="text-yellow-100 text-sm">Remaining Purse</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- Auction Status -->
+            <div class="bg-white rounded-xl p-6 mb-8 shadow-lg border-l-4 border-yellow-500">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Current Auction Status</h2>
+                        <p class="text-gray-500 mt-1">Live updates from auctioneer</p>
+                    </div>
+                    <div class="text-right bg-yellow-50 rounded-lg px-6 py-3">
+                        <div class="text-3xl font-mono font-bold text-yellow-600" id="timerDisplay">00:00</div>
+                        <p class="text-gray-500 text-sm">Time Remaining</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-gray-700"><span class="text-yellow-600 font-bold text-lg">Current Player:</span> <span id="currentPlayer" class="text-gray-900 text-xl font-bold ml-2">—</span></p>
+                    <p class="text-gray-500 text-sm mt-2"><i class="fas fa-gavel text-yellow-600"></i> Auction is <span id="auctionStatus" class="text-yellow-600 font-bold">Inactive</span></p>
+                </div>
+            </div>
+
+            <!-- Squad Section -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-users text-yellow-600"></i>
+                    CSK Squad 2026
+                </h2>
+                <div id="squadList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="animate-pulse">Loading squad...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        let database;
+        const teamId = "csk";
+
+        function updateBudget(budget) {
+            const budgetCr = (budget / 10000000).toFixed(1);
+            document.getElementById('budgetDisplay').innerHTML = `₹${budgetCr} Cr`;
+        }
+
+        function updateAuctionStatus(data) {
+            if (data) {
+                document.getElementById('currentPlayer').textContent = data.activePlayer || '—';
+                document.getElementById('auctionStatus').textContent = data.status === 'active' ? 'LIVE 🔴' : 'Inactive ⏸️';
+                const timer = data.timerRemaining || 0;
+                const mins = Math.floor(timer / 60);
+                const secs = timer % 60;
+                document.getElementById('timerDisplay').textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                
+                if (data.status === 'active') {
+                    document.getElementById('auctionStatus').className = 'text-red-600 font-bold';
+                } else {
+                    document.getElementById('auctionStatus').className = 'text-gray-600 font-bold';
+                }
+            }
+        }
+
+        function initFirebase() {
+            const app = firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            
+            database.ref(`teams/${teamId}`).on('value', (snap) => {
+                if (snap.exists()) updateBudget(snap.val().budget);
+            });
+            
+            database.ref('current_auction').on('value', (snap) => {
+                if (snap.exists()) updateAuctionStatus(snap.val());
+            });
+        }
+
+        initFirebase();
+        
+        const squad = [
+            "MS Dhoni (C)", "Ruturaj Gaikwad", "Devon Conway", "Ajinkya Rahane", "Shivam Dube",
+            "Ravindra Jadeja", "Moeen Ali", "Deepak Chahar", "Tushar Deshpande", "Matheesha Pathirana",
+            "Maheesh Theekshana", "Mitchell Santner", "Rajvardhan Hangargekar"
+        ];
+        
+        document.getElementById('squadList').innerHTML = squad.map(player => `
+            <div class="bg-gradient-to-r from-yellow-50 to-white rounded-lg p-3 border border-yellow-200 hover:shadow-md transition">
+                <i class="fas fa-user-circle text-yellow-600 mr-2"></i>
+                <span class="text-gray-700 font-medium">${player}</span>
+            </div>
+        `).join('');
+    </script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Auction 2026 | Official Team Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .team-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 280px;
+        }
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.25);
+        }
+        .modal {
+            transition: all 0.3s ease;
+        }
+        .toast-notify {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-weight: 600;
+            z-index: 100;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            font-size: 0.95rem;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.75rem;
+        }
+        @media (max-width: 1024px) {
+            .grid-container { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        }
+        @media (max-width: 768px) {
+            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+            .team-card { min-height: 250px; }
+        }
+        @media (max-width: 480px) {
+            .grid-container { grid-template-columns: repeat(1, 1fr); }
+        }
+        .team-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .team-card:hover .team-logo-img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
+
+    <nav class="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-2 rounded-xl shadow-md">
+                        <i class="fas fa-trophy text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-extrabold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent tracking-tight">
+                            IPL Auction 2026
+                        </h1>
+                        <p class="text-xs text-gray-500 font-medium">Official Team Management Portal</p>
+                    </div>
+                </div>
+                <div class="hidden sm:flex items-center space-x-2 bg-gray-100 px-3 py-1.5 rounded-full">
+                    <i class="fas fa-shield-alt text-green-600 text-sm"></i>
+                    <span class="text-xs font-semibold text-gray-700">Verified Access</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 text-center">
+            <div class="inline-flex items-center bg-indigo-100 text-indigo-800 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+                <i class="fas fa-gavel mr-2 text-indigo-600"></i> Mega Auction · 2026 Edition
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-800 mb-4 leading-tight">
+                Welcome to <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">IPL Mega Auction</span>
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Select your franchise or panel role to enter the dashboard.
+            </p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid-container" id="teamsGrid">
+            </div>
+        
+        <div class="mt-12 text-center">
+            <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-5 py-2 rounded-full shadow-sm border border-gray-200">
+                <i class="fas fa-key text-indigo-500 text-sm"></i>
+                <span class="text-xs text-gray-600 font-medium">Demo: Teams (csk/csk2026) | Admin: admin/auction2026</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 modal transition-all duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all scale-95 opacity-0 modal-content">
+            <div class="p-6 md:p-7">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-extrabold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-sign-in-alt text-indigo-500"></i>
+                        <span id="modalTeamName text-sm">Role Login</span>
+                    </h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="flex justify-center mb-6">
+                    <div id="modalTeamIcon" class="w-28 h-28 p-2 rounded-2xl flex items-center justify-center shadow-md bg-white border border-gray-100">
+                        </div>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-5">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                        <input type="text" id="username" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none transition-all" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="password" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none transition-all" required>
+                    </div>
+                    <div class="mb-5 p-3 bg-indigo-50 rounded-xl border border-indigo-100">
+                        <span id="credentialHint" class="font-mono text-[10px] text-indigo-700 uppercase tracking-tighter"></span>
+                    </div>
+                    <button type="submit" class="w-full gradient-bg text-white font-bold py-3.5 rounded-xl hover:shadow-xl transition-all transform active:scale-95">
+                        Access Dashboard
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastMsg" class="toast-notify opacity-0 pointer-events-none"></div>
+
+    <script>
+        const teams = [
+            { id: "csk", name: "Chennai Super Kings", shortName: "CSK", color: "#FDB913", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/CHH/logos/logo-rect/CSK.png" },
+            { id: "mi", name: "Mumbai Indians", shortName: "MI", color: "#004BA0", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/MUM/logos/logo-rect/MI.png" },
+            { id: "rcb", name: "Royal Challengers Bengaluru", shortName: "RCB", color: "#EC1C24", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/ROY/logos/logo-rect/RCB.png" },
+            { id: "kkr", name: "Kolkata Knight Riders", shortName: "KKR", color: "#3A225D", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/KOL/logos/logo-rect/KKR.png" },
+            { id: "srh", name: "Sunrisers Hyderabad", shortName: "SRH", color: "#F26522", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/SUN/logos/logo-rect/SRH.png" },
+            { id: "dc", name: "Delhi Capitals", shortName: "DC", color: "#0078BC", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/DEL/logos/logo-rect/DC.png" },
+            { id: "pbks", name: "Punjab Kings", shortName: "PBKS", color: "#ED1B24", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/PUN/logos/logo-rect/PBKS.png" },
+            { id: "rr", name: "Rajasthan Royals", shortName: "RR", color: "#254AA5", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/RAJ/logos/logo-rect/RR.png" },
+            { id: "lsg", name: "Lucknow Super Giants", shortName: "LSG", color: "#2AA9C9", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/LUC/logos/logo-rect/LSG.png" },
+            { id: "gt", name: "Gujarat Titans", shortName: "GT", color: "#1B2B32", logo: "https://bcciplayerimages.s3.ap-south-1.amazonaws.com/ipl/GUJ/logos/logo-rect/GT.png" },
+            { id: "auctioneer", name: "Auctioneer Panel", shortName: "ADMIN", color: "#F59E0B", logo: "https://cdn-icons-png.flaticon.com/512/2620/2620611.png", role: "special" },
+            { id: "audience", name: "Audience Zone", shortName: "FANS", color: "#3B82F6", logo: "https://cdn-icons-png.flaticon.com/512/2634/2634312.png", role: "special" }
+        ];
+
+        let selectedTeam = null;
+
+        function renderTeamCards() {
+            const grid = document.getElementById('teamsGrid');
+            grid.innerHTML = teams.map(team => `
+                <div class="team-card bg-white rounded-2xl shadow-lg border-t-[6px] group" 
+                     style="border-top-color: ${team.color}" 
+                     onclick='openModal(${JSON.stringify(team)})'>
+                    <div class="w-32 h-32 mb-4 p-2 bg-white rounded-xl">
+                        <img src="${team.logo}" alt="${team.name}" class="team-logo-img">
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">${team.name}</h3>
+                    <div class="mt-2 px-4 py-1 rounded-full text-xs font-black" 
+                         style="background: ${team.color}15; color: ${team.color}">
+                        ${team.shortName}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openModal(team) {
+            selectedTeam = team;
+            const modal = document.getElementById('loginModal');
+            document.getElementById('modalTeamIcon').innerHTML = `<img src="${team.logo}" class="max-h-full object-contain">`;
+            document.getElementById('credentialHint').innerText = `ID: ${team.id} | PASS: ${team.id}2026`;
+            if(team.id === 'auctioneer') document.getElementById('credentialHint').innerText = "ID: admin | PASS: auction2026";
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('loginModal');
+            modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            showToast(`Welcome back, ${selectedTeam.name}! Redirecting...`);
+            setTimeout(() => window.location.href = `${selectedTeam.id}.html`, 1200);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            t.innerText = msg;
+            t.classList.remove('opacity-0');
+            setTimeout(() => t.classList.add('opacity-0'), 3000);
+        }
+
+        window.onload = renderTeamCards;
+    </script>
+</body>
+</html>

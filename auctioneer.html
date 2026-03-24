@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Master | IPL 2026 Auction Controller</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .timer-font { font-family: 'Inter', monospace; font-weight: 700; }
+        .team-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.15);
+        }
+        .toast-notify {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            z-index: 50;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-purple-50">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-black">
+                    <span class="gradient-text">🏏 IPL Auction 2026</span>
+                </h1>
+                <p class="text-gray-600 text-sm mt-2">Auctioneer Control Panel · Real-time Sync</p>
+            </div>
+            <div class="flex gap-2">
+                <div class="bg-white px-4 py-2 rounded-xl shadow-md flex items-center gap-2 border border-gray-200">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-gray-700 font-mono text-sm" id="connectionStatus">Connecting...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Panel: Controls -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                        <h2 class="text-white font-bold text-xl flex items-center gap-2">
+                            <i class="fas fa-gavel"></i> Auction Console
+                        </h2>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <!-- Current Auction State -->
+                        <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-indigo-100">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 font-medium">⏱️ Auction Status</span>
+                                <span id="auctionStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-gray-200 text-gray-700">Inactive</span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="text-2xl font-bold text-indigo-700" id="activePlayerDisplay">—</div>
+                                <div class="text-xs text-gray-500 mt-1">Current Player on Auction</div>
+                            </div>
+                            <div class="mt-3 pt-2 border-t border-gray-200 flex justify-between items-center">
+                                <span class="text-gray-600 text-sm">Timer:</span>
+                                <span id="timerValue" class="timer-font font-bold text-3xl text-indigo-600">00:00</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="grid grid-cols-1 gap-3">
+                            <button id="startAuctionBtn" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                                <i class="fas fa-play"></i> START AUCTION
+                            </button>
+                            <button id="nextPlayerBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                                <i class="fas fa-forward"></i> NEXT PLAYER
+                            </button>
+                            <button id="resetTimerBtn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                                <i class="fas fa-clock"></i> RESET TIMER (30s)
+                            </button>
+                        </div>
+
+                        <!-- Player List Quick Reference -->
+                        <div class="bg-gray-50 rounded-xl p-3 border border-gray-200">
+                            <p class="text-xs text-gray-600 mb-2 font-semibold"><i class="fas fa-list"></i> Player Queue</p>
+                            <div id="playerQueuePreview" class="text-xs text-gray-500 space-y-1 max-h-32 overflow-y-auto">
+                                <!-- Dynamic player queue -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Teams Grid -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-4">
+                        <h2 class="text-white font-bold text-xl flex items-center gap-2">
+                            <i class="fas fa-trophy"></i> IPL Teams · Live Budgets
+                        </h2>
+                        <p class="text-pink-100 text-xs mt-1">Click any team card to view detailed page</p>
+                    </div>
+                    <div class="p-6">
+                        <div id="teamsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Teams will be populated here -->
+                            <div class="animate-pulse space-y-3">
+                                <div class="h-24 bg-gray-200 rounded-xl"></div>
+                                <div class="h-24 bg-gray-200 rounded-xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastMsg" class="toast-notify opacity-0 pointer-events-none"></div>
+
+    <script>
+        // Firebase Configuration - REPLACE WITH YOUR ACTUAL CONFIG
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        let database, currentAuctionRef, teamsRef;
+        let firebaseAvailable = false;
+
+        // Team Data with Colors and URLs
+        const teams = [
+            { id: "csk", name: "Chennai Super Kings", shortName: "CSK", color: "#FDB913", bgColor: "#FFF8E7", budget: 120000000, url: "csk.html" },
+            { id: "mi", name: "Mumbai Indians", shortName: "MI", color: "#004BA0", bgColor: "#E8F0FF", budget: 120000000, url: "mi.html" },
+            { id: "rcb", name: "Royal Challengers Bangalore", shortName: "RCB", color: "#EC1C24", bgColor: "#FFE8E8", budget: 120000000, url: "rcb.html" },
+            { id: "kkr", name: "Kolkata Knight Riders", shortName: "KKR", color: "#3A225D", bgColor: "#F0E8FF", budget: 120000000, url: "kkr.html" },
+            { id: "srh", name: "Sunrisers Hyderabad", shortName: "SRH", color: "#F26522", bgColor: "#FFF0E8", budget: 120000000, url: "srh.html" },
+            { id: "dc", name: "Delhi Capitals", shortName: "DC", color: "#0078BC", bgColor: "#E8F4FF", budget: 120000000, url: "dc.html" },
+            { id: "pbks", name: "Punjab Kings", shortName: "PBKS", color: "#ED1B24", bgColor: "#FFE8E8", budget: 120000000, url: "pbks.html" },
+            { id: "rr", name: "Rajasthan Royals", shortName: "RR", color: "#254AA5", bgColor: "#E8F0FF", budget: 120000000, url: "rr.html" },
+            { id: "lsg", name: "Lucknow Super Giants", shortName: "LSG", color: "#2AA9C9", bgColor: "#E8F9FF", budget: 120000000, url: "lsg.html" },
+            { id: "gt", name: "Gujarat Titans", shortName: "GT", color: "#1B2B32", bgColor: "#E8ECEE", budget: 120000000, url: "gt.html" }
+        ];
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            toast.textContent = msg;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function updateAuctionUI(snapshot) {
+            if (!snapshot.exists()) return;
+            const data = snapshot.val();
+            const status = data.status || 'inactive';
+            const activePlayer = data.activePlayer || '—';
+            const timer = data.timerRemaining || 0;
+
+            const badge = document.getElementById('auctionStatusBadge');
+            if (status === 'active') {
+                badge.textContent = '🔴 LIVE AUCTION';
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white animate-pulse';
+            } else {
+                badge.textContent = '⏸️ INACTIVE';
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-gray-300 text-gray-700';
+            }
+            document.getElementById('activePlayerDisplay').textContent = activePlayer;
+            const mins = Math.floor(Math.max(0, timer) / 60);
+            const secs = Math.floor(Math.max(0, timer) % 60);
+            document.getElementById('timerValue').textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+
+        function renderTeams(teamsData) {
+            const grid = document.getElementById('teamsGrid');
+            if (!teamsData || typeof teamsData !== 'object') {
+                // Show default team cards
+                grid.innerHTML = teams.map(team => `
+                    <div class="team-card bg-white rounded-xl p-4 border-2 border-gray-200 hover:shadow-lg transition-all cursor-pointer" 
+                         onclick="window.open('${team.url}', '_blank')"
+                         style="border-left: 5px solid ${team.color}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">${team.name}</h3>
+                                <p class="text-gray-500 text-xs">${team.shortName}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-2xl font-bold text-green-600">₹12.0 Cr</span>
+                                <p class="text-xs text-gray-500">Initial Budget</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                return;
+            }
+
+            // Update with real Firebase data
+            grid.innerHTML = teams.map(team => {
+                const firebaseTeam = teamsData[team.id] || teamsData[team.shortName.toLowerCase()];
+                const budget = firebaseTeam ? firebaseTeam.budget : team.budget;
+                const budgetCr = (budget / 10000000).toFixed(1);
+                return `
+                    <div class="team-card bg-white rounded-xl p-4 border-2 border-gray-200 hover:shadow-lg transition-all cursor-pointer"
+                         onclick="window.open('${team.url}', '_blank')"
+                         style="border-left: 5px solid ${team.color}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">${team.name}</h3>
+                                <p class="text-gray-500 text-xs">${team.shortName}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-2xl font-bold text-green-600">₹${budgetCr} Cr</span>
+                                <p class="text-xs text-gray-500">Remaining Budget</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-3">
+                            <div class="h-2 rounded-full transition-all duration-500" style="width: ${(budget / 120000000) * 100}%; background-color: ${team.color}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Firebase Actions
+        function updateCurrentAuction(data) {
+            if (!firebaseAvailable || !currentAuctionRef) {
+                showToast("Firebase not connected - using local mode", true);
+                return Promise.reject();
+            }
+            return currentAuctionRef.update(data).then(() => {
+                showToast(`✅ Auction updated: ${Object.keys(data).join(', ')}`);
+            }).catch(err => showToast("Update failed: " + err.message, true));
+        }
+
+        function startAuction() {
+            updateCurrentAuction({ status: 'active', timerRemaining: 30 });
+        }
+
+        function nextPlayer() {
+            const players = ["Virat Kohli", "Rohit Sharma", "MS Dhoni", "Jasprit Bumrah", "Rashid Khan", "Jos Buttler", "Shubman Gill", "Hardik Pandya", "KL Rahul", "Ravindra Jadeja", "Suryakumar Yadav", "Andre Russell"];
+            const randomPlayer = players[Math.floor(Math.random() * players.length)];
+            updateCurrentAuction({ activePlayer: randomPlayer, timerRemaining: 30, status: 'active' });
+        }
+
+        function resetTimer() {
+            updateCurrentAuction({ timerRemaining: 30 });
+        }
+
+        function initFirebase() {
+            try {
+                const app = firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+                const connectedRef = firebase.database().ref('.info/connected');
+                connectedRef.on('value', (snap) => {
+                    if (snap.val() === true) {
+                        firebaseAvailable = true;
+                        document.getElementById('connectionStatus').textContent = 'Connected';
+                        document.getElementById('connectionStatus').className = 'text-green-600 font-mono text-sm';
+                        showToast("🔥 Firebase Connected! Real-time sync active");
+                        
+                        currentAuctionRef = firebase.database().ref('current_auction');
+                        teamsRef = firebase.database().ref('teams');
+                        
+                        currentAuctionRef.on('value', updateAuctionUI);
+                        teamsRef.on('value', (snapshot) => renderTeams(snapshot.val()));
+                        
+                        // Initialize default auction data if not exists
+                        currentAuctionRef.once('value', (snap) => {
+                            if (!snap.exists()) {
+                                currentAuctionRef.set({
+                                    status: 'inactive',
+                                    activePlayer: 'Ready for Auction',
+                                    timerRemaining: 30
+                                });
+                            }
+                        });
+                        
+                        // Initialize teams with default budgets
+                        teamsRef.once('value', (snap) => {
+                            if (!snap.exists()) {
+                                const initialTeams = {};
+                                teams.forEach(team => {
+                                    initialTeams[team.id] = {
+                                        teamName: team.name,
+                                        shortName: team.shortName,
+                                        budget: 120000000,
+                                        color: team.color
+                                    };
+                                });
+                                teamsRef.set(initialTeams);
+                            }
+                        });
+                    } else {
+                        firebaseAvailable = false;
+                        document.getElementById('connectionStatus').textContent = 'Disconnected';
+                        document.getElementById('connectionStatus').className = 'text-red-600 font-mono text-sm';
+                        showToast("⚠️ Firebase disconnected - using offline mode", true);
+                        renderTeams(null);
+                    }
+                });
+            } catch (err) {
+                console.error("Firebase init error:", err);
+                showToast("Firebase init failed - using demo mode", true);
+                renderTeams(null);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('startAuctionBtn').addEventListener('click', startAuction);
+        document.getElementById('nextPlayerBtn').addEventListener('click', nextPlayer);
+        document.getElementById('resetTimerBtn').addEventListener('click', resetTimer);
+
+        // Initialize
+        initFirebase();
+
+        // Player queue preview
+        const playersList = ["1. Virat Kohli", "2. Rohit Sharma", "3. MS Dhoni", "4. Jasprit Bumrah", "5. Rashid Khan"];
+        const queueDiv = document.getElementById('playerQueuePreview');
+        queueDiv.innerHTML = playersList.map(p => `<div class="text-gray-600">${p}</div>`).join('');
+    </script>
+</body>
+</html>

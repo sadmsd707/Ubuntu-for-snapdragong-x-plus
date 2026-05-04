@@ -9,3 +9,4 @@ graphics
 phtsics pdf
 12th result
 neet paper
+eg drawing 

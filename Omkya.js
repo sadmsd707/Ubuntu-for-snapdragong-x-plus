@@ -15,3 +15,4 @@ exam week
 bet units
 physics chapter 
 Saturday 
+exam day

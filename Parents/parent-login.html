@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e6f2ff, #cce0ff);
+      color: #1a3a5f;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%233b82f6' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.3;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      position: relative;
+    }
+
+    .login-container {
+      max-width: 420px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+      text-align: center;
+      flex-grow: 1;
+      border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .login-container h2 {
+      color: #1d4ed8;
+      margin-bottom: 25px;
+      font-size: 1.7rem;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #1e40af;
+      font-size: 0.95rem;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1.5px solid #dbeafe;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+      color: #1e3a8a;
+    }
+
+    .login-container input:focus {
+      border: 1.5px solid #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      background: white;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .login-btn:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .info-text {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 25px;
+      text-align: center;
+      line-height: 1.6;
+      padding: 15px;
+      background: #f0f9ff;
+      border-radius: 10px;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: #2563eb;
+      text-decoration: none;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+      background: #eff6ff;
+      transform: translateX(-3px);
+    }
+
+    footer {
+      padding: 25px;
+      text-align: center;
+      background: linear-gradient(135deg, #1e40af, #1e3a8a);
+      color: white;
+      font-size: 0.9rem;
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%233b82f6' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.2;
+    }
+
+    footer p {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .parent-icon {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      color: #3b82f6;
+      filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.3));
+    }
+
+    .validation-message {
+      font-size: 0.8rem;
+      margin-top: 6px;
+      color: #64748b;
+      display: none;
+      padding-left: 5px;
+    }
+
+    .loading {
+      opacity: 0.8;
+      pointer-events: none;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    }
+
+    .student-info {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 25px;
+      margin-bottom: 30px;
+      border-left: 5px solid #3b82f6;
+      box-shadow: 0 4px 12px rgba(219, 234, 254, 0.5);
+    }
+
+    .student-info h4 {
+      color: #1e40af;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .student-info h4::before {
+      content: "👨‍🎓";
+      font-size: 1.2rem;
+    }
+
+    .student-info p {
+      font-size: 0.95rem;
+      color: #1e3a8a;
+      line-height: 1.5;
+    }
+
+    #studentClassDisplay {
+      font-weight: 500;
+      color: #3b82f6;
+      margin-top: 5px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .login-container {
+        margin: 40px 20px;
+        padding: 30px 20px;
+      }
+      
+      header {
+        padding: 20px 20px;
+      }
+      
+      header h1 {
+        font-size: 1.7rem;
+      }
+      
+      .login-container h2 {
+        font-size: 1.5rem;
+      }
+      
+      .parent-icon {
+        font-size: 3rem;
+      }
+    }
+
+    /* Animation for form */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-container {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Parent Login</h1>
+  </header>
+
+  <div class="login-container">
+    <div class="parent-icon">👨‍👩‍👧‍👦</div>
+    <h2>Parent Login</h2>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="parentId">Parent ID</label>
+        <input type="text" id="parentId" placeholder="Enter your Parent ID" required />
+        <div id="parentIdMessage" class="validation-message"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your Password" required />
+        <div id="passwordMessage" class="validation-message"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="studentDob">Student Date of Birth (Verification)</label>
+        <input type="date" id="studentDob" required />
+        <div id="dobMessage" class="validation-message"></div>
+      </div>
+      
+      <button type="submit" class="login-btn" id="loginButton">Login</button>
+    </form>
+    
+    <a href="role-selection.html" class="back-link">← Back to Role Selection</a>
+    
+    <p class="info-text">
+      Use your Parent ID and password provided by the school.<br>
+      Student DOB is required for additional verification.
+    </p>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Soham Educational Institute. All rights reserved.</p>
+    <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Made with ❤️ by Team Soham</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const parentIdInput = document.getElementById("parentId");
+    const passwordInput = document.getElementById("password");
+    const studentDobInput = document.getElementById("studentDob");
+    const loginButton = document.getElementById("loginButton");
+    const parentIdMessage = document.getElementById("parentIdMessage");
+    const passwordMessage = document.getElementById("passwordMessage");
+    const dobMessage = document.getElementById("dobMessage");
+    const studentNameDisplay = document.getElementById("studentNameDisplay");
+    const studentClassDisplay = document.getElementById("studentClassDisplay");
+
+    // Sample parent data with the requested credentials
+    const parents = [
+      { 
+        parentId: "P001", 
+        password: "parent123", 
+        name: "Mr. Sharma", 
+        studentName: "Aarav Sharma",
+        studentClass: "Class 10-A",
+        studentRoll: "20241001",
+        studentDob: "2008-05-15"
+      },
+      { 
+        parentId: "SOHAM2901", 
+        password: "290108", 
+        name: "Mrs. Gupta", 
+        studentName: "Priya Gupta",
+        studentClass: "Class 12-Science",
+        studentRoll: "20241201",
+        studentDob: "2006-03-22"
+      },
+      { 
+        parentId: "P003", 
+        password: "parent789", 
+        name: "Mr. Patel", 
+        studentName: "Rohan Patel",
+        studentClass: "Class 9-B",
+        studentRoll: "20240901",
+        studentDob: "2009-11-30"
+      }
+    ];
+
+    // Set today's date as max for DOB input (students can't be born in future)
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date().toISOString().split('T')[0];
+      studentDobInput.max = today;
+      
+      // Set a default date for easier testing
+      const defaultDate = new Date();
+      defaultDate.setFullYear(defaultDate.getFullYear() - 16);
+      studentDobInput.value = defaultDate.toISOString().split('T')[0];
+      
+      // Load student data based on institute code
+      loadStudentData();
+    });
+
+    function loadStudentData() {
+      const instituteCode = localStorage.getItem("instituteCode");
+      const userRole = localStorage.getItem("userRole");
+      
+      // Check if user came from proper flow
+      if (!instituteCode) {
+        window.location.href = "#";
+        return;
+      }
+      
+      if (userRole !== "parent") {
+        window.location.href = "#";
+        return;
+      }
+      
+      // Try to get student info from localStorage (set in role selection)
+      const studentData = localStorage.getItem("studentData");
+      if (studentData) {
+        const student = JSON.parse(studentData);
+        studentNameDisplay.textContent = `Student: ${student.name}`;
+        studentClassDisplay.textContent = `${student.class} | Roll No: ${student.roll}`;
+        
+        // Pre-fill the parent ID if available
+        if (student.parentId) {
+          parentIdInput.value = student.parentId;
+          parentIdInput.readOnly = true;
+        }
+      } else {
+        // Default display
+        studentNameDisplay.textContent = "Please select student from role selection";
+      }
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      // Clear previous messages
+      parentIdMessage.style.display = "none";
+      passwordMessage.style.display = "none";
+      dobMessage.style.display = "none";
+      
+      const parentId = parentIdInput.value.trim();
+      const password = passwordInput.value.trim();
+      const studentDob = studentDobInput.value;
+
+      // Validate inputs
+      let isValid = true;
+      
+      if (!parentId) {
+        parentIdMessage.textContent = "Please enter your Parent ID";
+        parentIdMessage.style.display = "block";
+        parentIdMessage.style.color = "#dc2626";
+        isValid = false;
+      } else if (parentId.length < 3) {
+        parentIdMessage.textContent = "Parent ID must be at least 3 characters";
+        parentIdMessage.style.display = "block";
+        parentIdMessage.style.color = "#dc2626";
+        isValid = false;
+      }
+      
+      if (!password) {
+        passwordMessage.textContent = "Please enter your password";
+        passwordMessage.style.display = "block";
+        passwordMessage.style.color = "#dc2626";
+        isValid = false;
+      } else if (password.length < 6) {
+        passwordMessage.textContent = "Password must be at least 6 characters";
+        passwordMessage.style.display = "block";
+        passwordMessage.style.color = "#dc2626";
+        isValid = false;
+      }
+
+      if (!studentDob) {
+        dobMessage.textContent = "Please select student's date of birth";
+        dobMessage.style.display = "block";
+        dobMessage.style.color = "#dc2626";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Show loading state
+      loginButton.textContent = "Logging in...";
+      loginButton.classList.add("loading");
+
+      // Simulate database lookup
+      const parent = parents.find(p => 
+        p.parentId === parentId && 
+        p.password === password && 
+        p.studentDob === studentDob
+      );
+
+      // Simulate API delay
+      setTimeout(() => {
+        if (parent) {
+          // Store parent and student info
+          localStorage.setItem("currentParent", JSON.stringify({
+            parentId: parent.parentId,
+            name: parent.name,
+            studentName: parent.studentName,
+            studentClass: parent.studentClass,
+            studentRoll: parent.studentRoll,
+            role: "parent"
+          }));
+          
+          // Set login status
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("username", parent.name);
+          localStorage.setItem("userRole", "parent");
+          
+          // Success animation
+          loginButton.style.background = "linear-gradient(135deg, #10b981, #059669)";
+          loginButton.textContent = "✓ Login Successful";
+          
+          // Redirect to parent dashboard
+          setTimeout(() => {
+            window.location.href="parent-dashboard.html";
+          }, 800);
+        } else {
+          // Reset button
+          loginButton.textContent = "Login";
+          loginButton.classList.remove("loading");
+          
+          // Show error message
+          parentIdMessage.textContent = "Invalid credentials or DOB mismatch";
+          parentIdMessage.style.display = "block";
+          parentIdMessage.style.color = "#dc2626";
+          
+          // Shake animation for error
+          form.style.animation = "shake 0.5s";
+          setTimeout(() => {
+            form.style.animation = "";
+          }, 500);
+        }
+      }, 800);
+    });
+
+    // Clear validation messages when user starts typing
+    parentIdInput.addEventListener('input', function() {
+      parentIdMessage.style.display = "none";
+    });
+
+    passwordInput.addEventListener('input', function() {
+      passwordMessage.style.display = "none";
+    });
+
+    studentDobInput.addEventListener('change', function() {
+      dobMessage.style.display = "none";
+    });
+
+    // Quick login for testing (remove in production)
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'p') {
+        parentIdInput.value = "SOHAM2901";
+        passwordInput.value = "290108";
+        studentDobInput.value = "2006-03-22";
+        
+        // Show success message
+        parentIdMessage.textContent = "Test credentials loaded ✓";
+        parentIdMessage.style.display = "block";
+        parentIdMessage.style.color = "#10b981";
+      }
+    });
+
+    // Add shake animation for errors
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

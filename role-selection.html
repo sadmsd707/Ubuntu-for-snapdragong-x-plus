@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select Role - Soham</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .role-selection {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .role-selection h2 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #1e3a8a;
+    }
+
+    .role-selection p {
+      font-size: 1.2rem;
+      margin-bottom: 50px;
+      color: #555;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    .role-card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      border-top: 4px solid #2563eb;
+      flex: 1;
+      min-width: 300px;
+      max-width: 350px;
+      cursor: pointer;
+    }
+
+    .role-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .role-card.student {
+      border-top-color: #10b981;
+    }
+
+    .role-card.teacher {
+      border-top-color: #f59e0b;
+    }
+
+    .role-card.parent {
+      border-top-color: #8b5cf6;
+    }
+
+    .role-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .role-card h3 {
+      color: #1e3a8a;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+    }
+
+    .role-card p {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .role-card button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .role-card.student button {
+      background: #10b981;
+    }
+
+    .role-card.teacher button {
+      background: #f59e0b;
+    }
+
+    .role-card.parent button {
+      background: #8b5cf6;
+    }
+
+    .role-card button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+    }
+
+    footer p {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .role-selection h2 {
+        font-size: 2rem;
+      }
+
+      .role-selection p {
+        font-size: 1.1rem;
+      }
+
+      .cards-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .role-card {
+        width: 100%;
+        max-width: 400px;
+      }
+    }
+
+    /* Loading spinner (if needed) */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, .3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Soham</h1>
+  </header>
+
+  <section class="role-selection">
+    <h2>Select Your Role</h2>
+    <p>Choose how you'd like to use Soham. Your experience will be tailored based on your selection.</p>
+
+    <div class="cards-container">
+      <div class="role-card student">
+        <div class="role-icon">🎓</div>
+        <h3>Student</h3>
+        <p>Access practice tests, track your progress, and improve your exam performance with personalized
+          recommendations.</p>
+        <button onclick="selectRole('student')">Continue as Student</button>
+      </div>
+
+      <div class="role-card teacher">
+        <div class="role-icon">👨‍🏫</div>
+        <h3>Teacher</h3>
+        <p>Create custom tests, monitor student performance, and manage classroom activities with our teacher dashboard.
+        </p>
+        <button onclick="selectRole('teacher')">Continue as Teacher</button>
+      </div>
+
+      <div class="role-card parent">
+        <div class="role-icon">👨‍👩‍👧‍👦</div>
+        <h3>Parent</h3>
+        <p>Track your child's academic progress, view performance reports, and communicate with teachers for better
+          support.</p>
+        <button onclick="selectRole('parent')">Continue as Parent</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Soham. All rights reserved.</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+  </footer>
+
+  <script>
+    // ---------- Firebase Configuration ----------
+    // !! Replace with your own Firebase project config !!
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ---------- Role Selection Function ----------
+    function selectRole(role) {
+      // Optional: store the role in localStorage (not used for authentication)
+      localStorage.setItem("userRole", role);
+
+      // Redirect to the appropriate login page
+      if (role === "student") {
+        window.location.href = "Student/student-login.html";
+      } else if (role === "teacher") {
+        window.location.href = "Teachers/teacher-login.html";
+      } else if (role === "parent") {
+        window.location.href = "Parents/parent-login.html";
+      }
+    }
+
+    // ---------- Optional: Auto-redirect if already logged in ----------
+    // If you want users who are already logged in to skip the role page,
+    // uncomment the block below and implement a check (e.g., based on Firestore role).
+    /*
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // Check Firestore for the user's role (requires a 'users' collection)
+        // and redirect accordingly. Otherwise, leave them on this page.
+      }
+    });
+    */
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Study Resources - Student Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    /* Hamburger Menu Styles */
+    .hamburger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      padding: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background-color: white;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    /* Side Navigation Panel */
+    .side-nav {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100vh;
+      background: linear-gradient(to bottom, #2563eb, #1e3a8a);
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      transition: right 0.4s ease;
+      z-index: 1000;
+      padding-top: 70px;
+    }
+
+    .side-nav.active {
+      right: 0;
+    }
+
+    .side-nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .side-nav ul li {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .side-nav ul li a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .side-nav ul li a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding-left: 40px;
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Dashboard Styles */
+    .dashboard {
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .welcome-section {
+      background: linear-gradient(to right, #2563eb, #1e3a8a);
+      color: white;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-section::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(30deg);
+    }
+
+    .welcome-section h2 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .welcome-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      position: relative;
+    }
+
+    .dashboard-section {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .dashboard-section h3 {
+      color: #1e3a8a;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Resource Categories */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .category-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-top: 4px solid #2563eb;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .category-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .category-card.physics {
+      border-top-color: #ef4444;
+    }
+
+    .category-card.chemistry {
+      border-top-color: #3b82f6;
+    }
+
+    .category-card.mathematics {
+      border-top-color: #10b981;
+    }
+
+    .category-card.biology {
+      border-top-color: #8b5cf6;
+    }
+
+    .category-card.english {
+      border-top-color: #f59e0b;
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .category-title {
+      font-size: 1.3rem;
+      color: #1e3a8a;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .category-count {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    /* Resource Cards */
+    .resources-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .resource-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-left: 4px solid #2563eb;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .resource-card.pdf {
+      border-left-color: #ef4444;
+    }
+
+    .resource-card.video {
+      border-left-color: #3b82f6;
+    }
+
+    .resource-card.notes {
+      border-left-color: #10b981;
+    }
+
+    .resource-card.paper {
+      border-left-color: #f59e0b;
+    }
+
+    .resource-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-pdf {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .badge-video {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .badge-notes {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-paper {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .resource-header {
+      margin-bottom: 15px;
+      padding-right: 80px;
+    }
+
+    .resource-header h4 {
+      color: #1e3a8a;
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+
+    .resource-subject {
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .resource-description {
+      margin-bottom: 20px;
+      color: #4b5563;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .resource-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .resource-size {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .resource-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1e3a8a;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #2563eb;
+      color: #2563eb;
+    }
+
+    .btn-outline:hover {
+      background: #2563eb;
+      color: white;
+    }
+
+    /* Search functionality */
+    .search-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+    }
+
+    /* Filter Section */
+    .filter-section {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-size: 0.9rem;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    .filter-select {
+      padding: 10px 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: white;
+      font-size: 0.9rem;
+      min-width: 150px;
+      cursor: pointer;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h4 {
+      color: #475569;
+      margin-bottom: 10px;
+    }
+
+    /* Resource Preview Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      background: #2563eb;
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .modal-body {
+      padding: 30px;
+    }
+
+    .resource-preview {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .resource-info {
+      margin-bottom: 20px;
+    }
+
+    .resource-info h4 {
+      color: #1e3a8a;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .info-value {
+      font-size: 0.95rem;
+      color: #1f2937;
+      font-weight: 500;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .loading-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e5e7eb;
+      border-top: 5px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    footer {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+    }
+
+    footer p {
+      font-size: 1rem;
+    }
+
+    /* Quick Stats */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      border-top: 4px solid #2563eb;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    /* Recent Downloads */
+    .recent-downloads {
+      margin-top: 40px;
+    }
+
+    .downloads-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .download-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border-left: 4px solid #2563eb;
+    }
+
+    .download-info h5 {
+      color: #1e3a8a;
+      margin-bottom: 5px;
+    }
+
+    .download-meta {
+      font-size: 0.8rem;
+      color: #6b7280;
+      display: flex;
+      gap: 15px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+      }
+      
+      .welcome-section h2 {
+        font-size: 1.8rem;
+      }
+      
+      .welcome-section p {
+        font-size: 1rem;
+      }
+      
+      .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      
+      .resources-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .resource-actions {
+        flex-direction: column;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .resource-header {
+        padding-right: 0;
+      }
+      
+      .download-item {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .categories-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Soham - Student Dashboard</h1>
+    <button class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Side Navigation -->
+  <div class="side-nav" id="sideNav">
+    <ul>
+      <li><a href="student-dashboard.html">Home</a></li>
+      <li><a href="Exams/take-test.html">Take a Test</a></li>
+      <li><a href="Exams/exam.html">Practice</a></li>
+      <li><a href="Exams/scores.html">Scores</a></li>
+      <li><a href="student-announcement.html">Announcements</a></li>
+      <li><a href="student-resources.html" style="background-color: rgba(255, 255, 255, 0.15); padding-left: 40px;">
+        <span class="nav-icon">📚</span> Resources
+      </a></li>
+      <li><a href="Boardprep/board-prep.html">Board Preparation</a></li>
+      <li><a href="student-account.html">My Account</a></li>
+      <li><a href="../role-selection.html" onclick="logout()">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Overlay for closing the menu when clicking outside -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p>Loading resources...</p>
+  </div>
+
+  <!-- Resource Preview Modal -->
+  <div class="modal" id="resourcePreviewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Resource Details</h3>
+        <button class="close-modal" onclick="closeResourcePreview()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="resource-preview">
+          <div class="resource-info">
+            <h4 id="previewTitle">Resource Title</h4>
+            <p id="previewDescription">Resource description will appear here.</p>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Subject</span>
+                <span class="info-value" id="previewSubject">Physics</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Type</span>
+                <span class="info-value" id="previewType">PDF</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Size</span>
+                <span class="info-value" id="previewSize">2.5 MB</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Uploaded</span>
+                <span class="info-value" id="previewDate">2 days ago</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="resource-actions" style="justify-content: center; margin-top: 25px;">
+            <button class="btn btn-primary" onclick="downloadResource()">
+              <span>📥</span> Download Resource
+            </button>
+            <button class="btn btn-outline" onclick="closeResourcePreview()">
+              <span>Close</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="dashboard">
+    <section class="welcome-section">
+      <h2>Study Resources</h2>
+      <p>Access comprehensive study materials for your exam preparation</p>
+    </section>
+
+    <!-- Resource Statistics -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value" id="totalResources">0</div>
+        <div class="stat-label">Total Resources</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="pdfCount">0</div>
+        <div class="stat-label">PDF Documents</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="videoCount">0</div>
+        <div class="stat-label">Video Lectures</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="recentCount">0</div>
+        <div class="stat-label">Recent Additions</div>
+      </div>
+    </div>
+
+    <!-- Subject Categories -->
+    <div class="dashboard-section">
+      <h3><span class="icon">📚</span> Browse by Subject</h3>
+      <div class="categories-grid">
+        <div class="category-card physics" onclick="filterResources('physics')">
+          <div class="category-icon">⚛️</div>
+          <div class="category-title">Physics</div>
+          <div class="category-count" id="physicsCount">12 resources</div>
+        </div>
+        <div class="category-card chemistry" onclick="filterResources('chemistry')">
+          <div class="category-icon">🧪</div>
+          <div class="category-title">Chemistry</div>
+          <div class="category-count" id="chemistryCount">10 resources</div>
+        </div>
+        <div class="category-card mathematics" onclick="filterResources('mathematics')">
+          <div class="category-icon">🧮</div>
+          <div class="category-title">Mathematics</div>
+          <div class="category-count" id="mathCount">15 resources</div>
+        </div>
+        <div class="category-card biology" onclick="filterResources('biology')">
+          <div class="category-icon">🧬</div>
+          <div class="category-title">Biology</div>
+          <div class="category-count" id="biologyCount">8 resources</div>
+        </div>
+        <div class="category-card english" onclick="filterResources('english')">
+          <div class="category-icon">📖</div>
+          <div class="category-title">English</div>
+          <div class="category-count" id="englishCount">6 resources</div>
+        </div>
+        <div class="category-card" onclick="filterResources('all')">
+          <div class="category-icon">📁</div>
+          <div class="category-title">All Subjects</div>
+          <div class="category-count" id="allCount">51 resources</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resources Section -->
+    <div class="dashboard-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3><span class="icon">📄</span> Study Materials</h3>
+        <button class="btn btn-primary" onclick="refreshResources()">
+          <span>🔄</span> Refresh Resources
+        </button>
+      </div>
+      
+      <!-- Search and Filters -->
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search resources by title, description, or subject..." onkeyup="searchResources()">
+        <span class="search-icon">🔍</span>
+      </div>
+      
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label class="filter-label">Filter by Subject</label>
+          <select class="filter-select" id="subjectFilter" onchange="filterResources()">
+            <option value="all">All Subjects</option>
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="mathematics">Mathematics</option>
+            <option value="biology">Biology</option>
+            <option value="english">English</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Filter by Type</label>
+          <select class="filter-select" id="typeFilter" onchange="filterResources()">
+            <option value="all">All Types</option>
+            <option value="pdf">PDF Documents</option>
+            <option value="video">Video Lectures</option>
+            <option value="notes">Study Notes</option>
+            <option value="paper">Question Papers</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Sort by</label>
+          <select class="filter-select" id="sortFilter" onchange="filterResources()">
+            <option value="recent">Most Recent</option>
+            <option value="popular">Most Downloaded</option>
+            <option value="name">Name (A-Z)</option>
+            <option value="subject">Subject</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Resources Container -->
+      <div class="resources-container" id="resourcesContainer">
+        <!-- Resource cards will be populated by JavaScript -->
+      </div>
+
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">📚</div>
+        <h4>No resources available</h4>
+        <p>No study materials found for the selected filters. Try changing your search criteria.</p>
+      </div>
+
+      <!-- Recent Downloads -->
+      <div class="recent-downloads">
+        <h3 style="margin-bottom: 20px;"><span class="icon">📥</span> Recently Downloaded</h3>
+        <div class="downloads-list" id="recentDownloads">
+          <!-- Recent downloads will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+  </footer>
+
+  <script>
+    // Check if user is logged in and is a student
+    if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "student") {
+      window.location.href="../role-selection.html";
+    }
+
+    // Sample resources data
+    const resourcesData = [
+      {
+        id: 1,
+        title: "Complete Physics Formula Sheet",
+        subject: "physics",
+        type: "pdf",
+        description: "Comprehensive formula sheet covering all chapters of MHT-CET Physics syllabus with important derivations.",
+        size: "1.2 MB",
+        uploadDate: new Date().toISOString(),
+        downloads: 245,
+        author: "Dr. Sharma",
+        badge: "pdf"
+      },
+      {
+        id: 2,
+        title: "Chemical Bonding Video Lecture",
+        subject: "chemistry",
+        type: "video",
+        description: "Detailed video explanation of chemical bonding concepts with solved examples and tricks.",
+        size: "45 MB",
+        uploadDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 189,
+        author: "Ms. Patel",
+        badge: "video"
+      },
+      {
+        id: 3,
+        title: "Calculus Short Notes",
+        subject: "mathematics",
+        type: "notes",
+        description: "Concise notes on differential and integral calculus with shortcut methods and formulas.",
+        size: "0.8 MB",
+        uploadDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 312,
+        author: "Mr. Kumar",
+        badge: "notes"
+      },
+      {
+        id: 4,
+        title: "2025 MHT-CET Physics Paper",
+        subject: "physics",
+        type: "paper",
+        description: "Previous year question paper with detailed solutions and answer key.",
+        size: "2.1 MB",
+        uploadDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 421,
+        author: "Exam Cell",
+        badge: "paper"
+      },
+      {
+        id: 5,
+        title: "Organic Chemistry Revision Notes",
+        subject: "chemistry",
+        type: "notes",
+        description: "Complete revision notes for organic chemistry covering all important reactions.",
+        size: "1.5 MB",
+        uploadDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 198,
+        author: "Dr. Gupta",
+        badge: "notes"
+      },
+      {
+        id: 6,
+        title: "Vectors & 3D Geometry Video",
+        subject: "mathematics",
+        type: "video",
+        description: "Complete video tutorial on vectors and 3D geometry concepts with practice problems.",
+        size: "65 MB",
+        uploadDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 156,
+        author: "Mr. Verma",
+        badge: "video"
+      },
+      {
+        id: 7,
+        title: "Human Physiology Notes",
+        subject: "biology",
+        type: "pdf",
+        description: "Detailed notes on human physiology covering all systems with diagrams.",
+        size: "3.2 MB",
+        uploadDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 234,
+        author: "Dr. Reddy",
+        badge: "pdf"
+      },
+      {
+        id: 8,
+        title: "English Grammar Rules",
+        subject: "english",
+        type: "pdf",
+        description: "Complete grammar guide with rules, examples, and common errors.",
+        size: "0.9 MB",
+        uploadDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 178,
+        author: "Ms. Joshi",
+        badge: "pdf"
+      },
+      {
+        id: 9,
+        title: "Electromagnetism Problems",
+        subject: "physics",
+        type: "notes",
+        description: "Collection of solved problems on electromagnetism with step-by-step solutions.",
+        size: "1.8 MB",
+        uploadDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 267,
+        author: "Dr. Sharma",
+        badge: "notes"
+      },
+      {
+        id: 10,
+        title: "Coordination Compounds Video",
+        subject: "chemistry",
+        type: "video",
+        description: "Video lecture on coordination compounds with crystal field theory explanation.",
+        size: "52 MB",
+        uploadDate: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 143,
+        author: "Ms. Patel",
+        badge: "video"
+      },
+      {
+        id: 11,
+        title: "Probability & Statistics PDF",
+        subject: "mathematics",
+        type: "pdf",
+        description: "Complete PDF guide on probability and statistics with practice questions.",
+        size: "2.3 MB",
+        uploadDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 298,
+        author: "Mr. Kumar",
+        badge: "pdf"
+      },
+      {
+        id: 12,
+        title: "Genetics Study Material",
+        subject: "biology",
+        type: "notes",
+        description: "Comprehensive study material on genetics with Mendelian inheritance problems.",
+        size: "1.7 MB",
+        uploadDate: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        downloads: 189,
+        author: "Dr. Reddy",
+        badge: "notes"
+      }
+    ];
+
+    let allResources = [];
+    let filteredResources = [];
+    let currentResource = null;
+    let recentDownloads = [];
+
+    // Format date for display
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) {
+        return 'Today';
+      } else if (diffDays === 1) {
+        return 'Yesterday';
+      } else if (diffDays < 7) {
+        return `${diffDays} days ago`;
+      } else {
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      }
+    }
+
+    // Get badge class based on type
+    function getBadgeClass(type) {
+      switch(type) {
+        case 'pdf': return 'badge-pdf';
+        case 'video': return 'badge-video';
+        case 'notes': return 'badge-notes';
+        case 'paper': return 'badge-paper';
+        default: return 'badge-pdf';
+      }
+    }
+
+    // Get card class based on type
+    function getCardClass(type) {
+      switch(type) {
+        case 'pdf': return 'resource-card pdf';
+        case 'video': return 'resource-card video';
+        case 'notes': return 'resource-card notes';
+        case 'paper': return 'resource-card paper';
+        default: return 'resource-card';
+      }
+    }
+
+    // Get type display name
+    function getTypeName(type) {
+      switch(type) {
+        case 'pdf': return 'PDF Document';
+        case 'video': return 'Video Lecture';
+        case 'notes': return 'Study Notes';
+        case 'paper': return 'Question Paper';
+        default: return 'Document';
+      }
+    }
+
+    // Get subject display name
+    function getSubjectName(subject) {
+      switch(subject) {
+        case 'physics': return 'Physics';
+        case 'chemistry': return 'Chemistry';
+        case 'mathematics': return 'Mathematics';
+        case 'biology': return 'Biology';
+        case 'english': return 'English';
+        default: return 'General';
+      }
+    }
+
+    // Load resources from localStorage or use sample data
+    function loadResources() {
+      const savedResources = localStorage.getItem('studentResources');
+      const savedDownloads = localStorage.getItem('recentDownloads');
+      
+      if (savedResources) {
+        allResources = JSON.parse(savedResources);
+      } else {
+        allResources = resourcesData;
+        localStorage.setItem('studentResources', JSON.stringify(allResources));
+      }
+      
+      if (savedDownloads) {
+        recentDownloads = JSON.parse(savedDownloads);
+      }
+      
+      filteredResources = [...allResources];
+      displayResources();
+      updateResourceStatistics();
+      updateCategoryCounts();
+      displayRecentDownloads();
+    }
+
+    // Display resources
+    function displayResources() {
+      const container = document.getElementById('resourcesContainer');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredResources.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      let html = '';
+      filteredResources.forEach(resource => {
+        const badgeClass = getBadgeClass(resource.type);
+        const cardClass = getCardClass(resource.type);
+        const typeName = getTypeName(resource.type);
+        const subjectName = getSubjectName(resource.subject);
+        const formattedDate = formatDate(resource.uploadDate);
+        
+        html += `
+          <div class="${cardClass}">
+            <div class="resource-badge ${badgeClass}">${typeName}</div>
+            
+            <div class="resource-header">
+              <h4>${resource.title}</h4>
+              <div class="resource-subject">${subjectName} • ${resource.author}</div>
+            </div>
+            
+            <div class="resource-description">
+              ${resource.description}
+            </div>
+            
+            <div class="resource-meta">
+              <div class="resource-size">
+                <span>📦</span>
+                <span>${resource.size}</span>
+              </div>
+              <div>
+                <span>📥 ${resource.downloads} downloads</span>
+              </div>
+            </div>
+            
+            <div class="resource-actions">
+              <button class="btn btn-primary" onclick="previewResource(${resource.id})">
+                <span>👁️</span> Preview
+              </button>
+              <button class="btn btn-secondary" onclick="downloadResource(${resource.id})">
+                <span>📥</span> Download
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    // Update resource statistics
+    function updateResourceStatistics() {
+      const totalResources = allResources.length;
+      const pdfCount = allResources.filter(r => r.type === 'pdf').length;
+      const videoCount = allResources.filter(r => r.type === 'video').length;
+      
+      // Count resources from last 7 days
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const recentCount = allResources.filter(r => new Date(r.uploadDate) > weekAgo).length;
+      
+      document.getElementById('totalResources').textContent = totalResources;
+      document.getElementById('pdfCount').textContent = pdfCount;
+      document.getElementById('videoCount').textContent = videoCount;
+      document.getElementById('recentCount').textContent = recentCount;
+    }
+
+    // Update category counts
+    function updateCategoryCounts() {
+      const physicsCount = allResources.filter(r => r.subject === 'physics').length;
+      const chemistryCount = allResources.filter(r => r.subject === 'chemistry').length;
+      const mathCount = allResources.filter(r => r.subject === 'mathematics').length;
+      const biologyCount = allResources.filter(r => r.subject === 'biology').length;
+      const englishCount = allResources.filter(r => r.subject === 'english').length;
+      const allCount = allResources.length;
+      
+      document.getElementById('physicsCount').textContent = `${physicsCount} resources`;
+      document.getElementById('chemistryCount').textContent = `${chemistryCount} resources`;
+      document.getElementById('mathCount').textContent = `${mathCount} resources`;
+      document.getElementById('biologyCount').textContent = `${biologyCount} resources`;
+      document.getElementById('englishCount').textContent = `${englishCount} resources`;
+      document.getElementById('allCount').textContent = `${allCount} resources`;
+    }
+
+    // Display recent downloads
+    function displayRecentDownloads() {
+      const container = document.getElementById('recentDownloads');
+      
+      if (recentDownloads.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No recent downloads</p>';
+        return;
+      }
+      
+      let html = '';
+      recentDownloads.slice(0, 5).forEach(download => {
+        html += `
+          <div class="download-item">
+            <div class="download-info">
+              <h5>${download.title}</h5>
+              <div class="download-meta">
+                <span>${getSubjectName(download.subject)}</span>
+                <span>${getTypeName(download.type)}</span>
+                <span>${formatDate(download.downloadDate)}</span>
+              </div>
+            </div>
+            <button class="btn btn-outline" onclick="downloadResource(${download.id})" style="padding: 8px 15px; font-size: 0.8rem;">
+              Download Again
+            </button>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    // Search resources
+    function searchResources() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      let filtered = [...allResources];
+      
+      // Apply search filter
+      if (searchTerm) {
+        filtered = filtered.filter(resource => 
+          resource.title.toLowerCase().includes(searchTerm) ||
+          resource.description.toLowerCase().includes(searchTerm) ||
+          resource.subject.toLowerCase().includes(searchTerm) ||
+          resource.author.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      // Apply other filters
+      filtered = applyFilters(filtered);
+      
+      filteredResources = filtered;
+      displayResources();
+    }
+
+    // Apply filters to resources
+    function applyFilters(resources) {
+      const subjectFilter = document.getElementById('subjectFilter').value;
+      const typeFilter = document.getElementById('typeFilter').value;
+      const sortFilter = document.getElementById('sortFilter').value;
+      
+      let filtered = [...resources];
+      
+      // Apply subject filter
+      if (subjectFilter !== 'all') {
+        filtered = filtered.filter(resource => resource.subject === subjectFilter);
+      }
+      
+      // Apply type filter
+      if (typeFilter !== 'all') {
+        filtered = filtered.filter(resource => resource.type === typeFilter);
+      }
+      
+      // Apply sorting
+      filtered.sort((a, b) => {
+        if (sortFilter === 'recent') {
+          return new Date(b.uploadDate) - new Date(a.uploadDate);
+        } else if (sortFilter === 'popular') {
+          return b.downloads - a.downloads;
+        } else if (sortFilter === 'name') {
+          return a.title.localeCompare(b.title);
+        } else if (sortFilter === 'subject') {
+          return a.subject.localeCompare(b.subject);
+        }
+        return 0;
+      });
+      
+      return filtered;
+    }
+
+    // Filter resources
+    function filterResources(subject = null) {
+      if (subject) {
+        document.getElementById('subjectFilter').value = subject;
+      }
+      
+      const filtered = applyFilters(allResources);
+      filteredResources = filtered;
+      displayResources();
+    }
+
+    // Preview resource
+    function previewResource(resourceId) {
+      currentResource = allResources.find(r => r.id === resourceId);
+      if (!currentResource) return;
+      
+      document.getElementById('previewTitle').textContent = currentResource.title;
+      document.getElementById('previewDescription').textContent = currentResource.description;
+      document.getElementById('previewSubject').textContent = getSubjectName(currentResource.subject);
+      document.getElementById('previewType').textContent = getTypeName(currentResource.type);
+      document.getElementById('previewSize').textContent = currentResource.size;
+      document.getElementById('previewDate').textContent = formatDate(currentResource.uploadDate);
+      
+      document.getElementById('resourcePreviewModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close resource preview
+    function closeResourcePreview() {
+      document.getElementById('resourcePreviewModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+      currentResource = null;
+    }
+
+    // Download resource
+    function downloadResource(resourceId = null) {
+      const resource = resourceId ? allResources.find(r => r.id === resourceId) : currentResource;
+      if (!resource) return;
+      
+      // Show loading overlay
+      document.getElementById('loadingOverlay').classList.add('active');
+      
+      // Simulate download delay
+      setTimeout(() => {
+        // Update download count
+        resource.downloads++;
+        localStorage.setItem('studentResources', JSON.stringify(allResources));
+        
+        // Add to recent downloads
+        const downloadRecord = {
+          id: resource.id,
+          title: resource.title,
+          subject: resource.subject,
+          type: resource.type,
+          downloadDate: new Date().toISOString()
+        };
+        
+        recentDownloads.unshift(downloadRecord);
+        if (recentDownloads.length > 10) {
+          recentDownloads = recentDownloads.slice(0, 10);
+        }
+        
+        localStorage.setItem('recentDownloads', JSON.stringify(recentDownloads));
+        
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').classList.remove('active');
+        
+        // Close modal if open
+        closeResourcePreview();
+        
+        // Update display
+        displayResources();
+        displayRecentDownloads();
+        
+        // Show success message
+        showSuccessMessage(`Downloaded: ${resource.title}`);
+        
+        // Simulate file download
+        simulateFileDownload(resource);
+      }, 1500);
+    }
+
+    // Simulate file download
+    function simulateFileDownload(resource) {
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      
+      // In a real application, this would be the actual file URL
+      // For simulation, we'll create a text file with resource info
+      const content = `${resource.title}\n\n${resource.description}\n\nSubject: ${getSubjectName(resource.subject)}\nType: ${getTypeName(resource.type)}\nSize: ${resource.size}\nAuthor: ${resource.author}`;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      link.href = url;
+      link.download = `${resource.title.replace(/\s+/g, '_')}.txt`;
+      link.click();
+      
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    }
+
+    // Refresh resources
+    function refreshResources() {
+      // Show loading overlay
+      document.getElementById('loadingOverlay').classList.add('active');
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        // In a real application, this would fetch from an API
+        loadResources();
+        
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').classList.remove('active');
+        
+        // Show success message
+        showSuccessMessage('Resources refreshed successfully!');
+      }, 1000);
+    }
+
+    // Show success message
+    function showSuccessMessage(message) {
+      // Create a simple notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #2563eb;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      `;
+      notification.innerHTML = `<span>✅</span><span>${message}</span>`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 3000);
+    }
+
+    // Logout function
+    function logout() {
+      const logoutBtn = event.target;
+      const originalText = logoutBtn.innerHTML;
+      logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
+      logoutBtn.disabled = true;
+      
+      setTimeout(() => {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userName");
+        window.location.href = "../role-selection.html";
+      }, 1000);
+    }
+
+    // Hamburger menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const sideNav = document.getElementById('sideNav');
+    const overlay = document.getElementById('overlay');
+
+    hamburger.addEventListener('click', () => {
+      sideNav.classList.toggle('active');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+    });
+
+    overlay.addEventListener('click', () => {
+      sideNav.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close menu when clicking on a link
+    const navLinks = document.querySelectorAll('.side-nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+    });
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadResources();
+    });
+  </script>
+</body>
+</html>

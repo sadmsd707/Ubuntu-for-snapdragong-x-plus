@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Login - Soham</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 15px 40px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .login-container h2 {
+      color: #2563eb;
+      margin-bottom: 25px;
+      font-size: 1.6rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #1e40af;
+      font-size: 1rem;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .login-container input:focus {
+      border: 1px solid #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+
+    .login-btn:hover {
+      background: #1e40af;
+    }
+
+    .info-text {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: #2563eb;
+      text-decoration: none;
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      padding: 20px;
+      text-align: center;
+      background: #2563eb;
+      color: white;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+
+    .student-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #2563eb;
+    }
+
+    .validation-message {
+      font-size: 0.8rem;
+      margin-top: 5px;
+      color: #6b7280;
+      display: none;
+    }
+
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .login-info {
+      background: #dbeafe;
+      border: 1px solid #2563eb;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .login-info h4 {
+      color: #1e40af;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .login-info p {
+      color: #475569;
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+    }
+
+    .required-field::after {
+      content: " *";
+      color: #dc2626;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      border: 1px solid #ef4444;
+      color: #b91c1c;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      background: #dcfce7;
+      border: 1px solid #10b981;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .forgot-link {
+      display: inline-block;
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+
+    .forgot-link:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .password-toggle:hover {
+      color: #2563eb;
+    }
+
+    /* Loading overlay */
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    #loadingOverlay.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Soham Student Portal</h1>
+  </header>
+
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Verifying credentials...</div>
+  </div>
+
+  <div class="login-container">
+    <div class="student-icon">👨‍🎓</div>
+    <h2>Student Login</h2>
+
+    <div class="error-message" id="errorMessage">
+      Invalid Student ID, Password, or Mother's Name. Please try again.
+    </div>
+
+    <div class="success-message" id="successMessage">
+      Login successful! Redirecting to dashboard...
+    </div>
+
+    <div class="login-info">
+      <h4>Login Information</h4>
+      <p><strong>Student ID:</strong> Use the ID created by your teacher</p>
+      <p><strong>Password:</strong> 290108 (default for all students)</p>
+      <p><strong>Mother's Name:</strong> Enter your mother's full name (as registered by teacher)</p>
+      <p><em>Contact your teacher if you've forgotten your credentials</em></p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="studentId" class="required-field">Student ID</label>
+        <input type="text" id="studentId" placeholder="Enter your Student ID" required />
+        <div id="studentIdMessage" class="validation-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="required-field">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Enter your Password" required />
+          <button type="button" class="password-toggle" id="passwordToggle">👁️</button>
+        </div>
+        <div id="passwordMessage" class="validation-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="motherName" class="required-field">Mother's Name</label>
+        <input type="text" id="motherName" placeholder="Enter your Mother's Full Name" required />
+        <div id="motherNameMessage" class="validation-message"></div>
+      </div>
+
+      <button type="submit" class="login-btn" id="loginButton">Login</button>
+
+      <a href="forgot-credentials.html" class="forgot-link">Forgot Student ID, Password or Mother's Name?</a>
+    </form>
+
+    <a href="../role-selection.html" class="back-link">← Back to Role Selection</a>
+
+    <p class="info-text">Please contact administration if you've forgotten your credentials</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Soham Educational Institute. All rights reserved.</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+  </footer>
+
+  <script>
+    // ---------- Firebase Configuration ----------
+    // !! Replace with your own Firebase project config !!
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-institute.firebaseapp.com",
+      projectId: "soham-institute",
+      storageBucket: "soham-institute.firebasestorage.app",
+      messagingSenderId: "788578536180",
+      appId: "1:788578536180:web:9961df7746b3e22b00fc24"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const form = document.getElementById("loginForm");
+    const studentIdInput = document.getElementById("studentId");
+    const passwordInput = document.getElementById("password");
+    const motherNameInput = document.getElementById("motherName");
+    const loginButton = document.getElementById("loginButton");
+    const passwordToggle = document.getElementById("passwordToggle");
+    const studentIdMessage = document.getElementById("studentIdMessage");
+    const passwordMessage = document.getElementById("passwordMessage");
+    const motherNameMessage = document.getElementById("motherNameMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const successMessage = document.getElementById("successMessage");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+
+    // Password visibility toggle
+    let isPasswordVisible = false;
+    passwordToggle.addEventListener("click", function () {
+      isPasswordVisible = !isPasswordVisible;
+      passwordInput.type = isPasswordVisible ? "text" : "password";
+      this.textContent = isPasswordVisible ? "🙈" : "👁️";
+    });
+
+    // Form submission
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      // Hide messages
+      errorMessage.classList.remove("show");
+      successMessage.classList.remove("show");
+      studentIdMessage.style.display = "none";
+      passwordMessage.style.display = "none";
+      motherNameMessage.style.display = "none";
+
+      const studentId = studentIdInput.value.trim();
+      const password = passwordInput.value.trim();
+      const motherName = motherNameInput.value.trim();
+
+      // Basic validation
+      let isValid = true;
+      if (!studentId || studentId.length < 3) {
+        studentIdMessage.textContent = "Please enter a valid Student ID";
+        studentIdMessage.style.display = "block";
+        studentIdMessage.style.color = "#dc2626";
+        isValid = false;
+      }
+      if (!password || password.length < 6) {
+        passwordMessage.textContent = "Password must be at least 6 characters";
+        passwordMessage.style.display = "block";
+        passwordMessage.style.color = "#dc2626";
+        isValid = false;
+      }
+      if (!motherName || motherName.length < 3) {
+        motherNameMessage.textContent = "Please enter a valid mother's name";
+        motherNameMessage.style.display = "block";
+        motherNameMessage.style.color = "#dc2626";
+        isValid = false;
+      }
+      if (!isValid) return;
+
+      // Check role selection
+      const userRole = localStorage.getItem("userRole");
+      if (userRole !== "student") {
+        errorMessage.textContent = "Please select student role first from role selection page";
+        errorMessage.classList.add("show");
+        return;
+      }
+
+      // Show loading overlay
+      loadingOverlay.classList.add("show");
+      loginButton.disabled = true;
+      loginButton.textContent = "Logging in...";
+
+      try {
+        // Fetch student credentials from Firestore
+        const docRef = db.collection("studentCredentials").doc(studentId);
+        const docSnap = await docRef.get();
+
+        if (!docSnap.exists) {
+          throw new Error("No student found with that ID");
+        }
+
+        const studentData = docSnap.data();
+
+        // Check password (exact match, same as before)
+        if (studentData.password !== password) {
+          throw new Error("Invalid password");
+        }
+
+        // Check mother's name (case-insensitive)
+        if (!studentData.motherName || studentData.motherName.toLowerCase() !== motherName.toLowerCase()) {
+          throw new Error("Mother's name does not match");
+        }
+
+        // Successful login
+        localStorage.setItem("currentStudent", JSON.stringify({
+          studentId: studentData.studentId,
+          name: studentData.name,
+          class: studentData.class,
+          motherName: studentData.motherName,
+          role: "student",
+          loginTime: new Date().toISOString()
+        }));
+
+        localStorage.setItem("lastMotherName", motherName);
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("username", studentData.name);
+        localStorage.setItem("userRole", "student");
+
+        successMessage.classList.add("show");
+
+        setTimeout(() => {
+          window.location.href = "student-dashboard.html";
+        }, 1500);
+
+      } catch (error) {
+        // Hide loading overlay
+        loadingOverlay.classList.remove("show");
+        loginButton.disabled = false;
+        loginButton.textContent = "Login";
+
+        // Show appropriate error
+        if (error.message === "No student found with that ID") {
+          errorMessage.textContent = "Invalid Student ID. Please check and try again.";
+        } else if (error.message === "Invalid password") {
+          errorMessage.textContent = "Incorrect password. Please try again.";
+        } else if (error.message === "Mother's name does not match") {
+          errorMessage.textContent = "Mother's name does not match. Please enter the name registered by your teacher.";
+        } else {
+          errorMessage.textContent = "Invalid Student ID, Password, or Mother's Name.";
+        }
+        errorMessage.classList.add("show");
+
+        // Clear password field for security
+        passwordInput.value = "";
+        // Shake animation
+        form.style.animation = "shake 0.5s";
+        setTimeout(() => {
+          form.style.animation = "";
+        }, 500);
+      }
+    });
+
+    // Clear validation messages when typing
+    studentIdInput.addEventListener('input', () => {
+      studentIdMessage.style.display = "none";
+      errorMessage.classList.remove("show");
+    });
+    passwordInput.addEventListener('input', () => {
+      passwordMessage.style.display = "none";
+      errorMessage.classList.remove("show");
+    });
+    motherNameInput.addEventListener('input', () => {
+      motherNameMessage.style.display = "none";
+      errorMessage.classList.remove("show");
+    });
+
+    // On page load, check role selection and pre-populate fields
+    document.addEventListener('DOMContentLoaded', function () {
+      const userRole = localStorage.getItem("userRole");
+
+      if (userRole !== "student") {
+        errorMessage.textContent = "Please select 'Student' role from the role selection page.";
+        errorMessage.classList.add("show");
+        loginButton.disabled = true;
+        setTimeout(() => {
+          window.location.href = "../role-selection.html";
+        }, 3000);
+        return;
+      }
+
+      // Pre-populate student ID and mother's name from localStorage if available
+      const lastStudentId = localStorage.getItem("lastStudentId");
+      if (lastStudentId) studentIdInput.value = lastStudentId;
+      const lastMotherName = localStorage.getItem("lastMotherName");
+      if (lastMotherName) motherNameInput.value = lastMotherName;
+
+      // Save student ID on blur for future autofill
+      studentIdInput.addEventListener('blur', function () {
+        if (this.value.trim()) localStorage.setItem("lastStudentId", this.value.trim());
+      });
+
+      // Auto-capitalize mother's name
+      motherNameInput.addEventListener('blur', function () {
+        if (this.value) {
+          this.value = this.value.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+        }
+      });
+
+      // Enter key navigation
+      studentIdInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); passwordInput.focus(); }
+      });
+      passwordInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); motherNameInput.focus(); }
+      });
+      motherNameInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); form.dispatchEvent(new Event('submit')); }
+      });
+    });
+
+    // Add shake animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+
+</html>

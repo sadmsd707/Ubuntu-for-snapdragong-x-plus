@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMR Scanner - Soham Teacher Dashboard</title>
+    <style>
+        /* Dashboard Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header matching teacher dashboard */
+        header {
+            background: linear-gradient(to right, #2563eb, #1e3a8a);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+            height: 70px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            padding: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        /* Side Navigation Panel */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(to bottom, #2563eb, #1e3a8a);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-nav.active {
+            right: 0;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .side-nav ul::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .side-nav ul::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .side-nav ul::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .side-nav ul::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .side-nav ul li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .side-nav ul li:first-child {
+            border-top: none;
+            margin-top: 70px;
+        }
+
+        .side-nav ul li a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: transparent;
+            margin: 0;
+        }
+
+        .side-nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 40px;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(to right, #2563eb, #1e3a8a);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+        }
+
+        .welcome-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        /* Main container with dashboard styling */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section styling matching dashboard */
+        .upload-section, .results-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid #2563eb;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-section:hover, .results-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .section-title {
+            color: #1e3a8a;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+        }
+
+        .section-title .icon {
+            font-size: 1.3rem;
+            color: #2563eb;
+        }
+
+        /* Upload area with dashboard theme */
+        .upload-area {
+            border: 3px dashed #2563eb;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background: #e8f0fe;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-container {
+            width: 100%;
+            max-height: 300px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Controls with dashboard button styling */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* Quiz select styling */
+        .quiz-select {
+            margin-bottom: 20px;
+        }
+
+        .quiz-select label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quiz-select select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+
+        .quiz-select select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        /* Score card with dashboard stats styling */
+        .score-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 4px solid #10b981;
+            display: none;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            margin-bottom: 15px;
+        }
+
+        .score-number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .score-total {
+            font-size: 1.8rem;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        .percentage {
+            font-size: 1.8rem;
+            color: #10b981;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        /* Results list matching dashboard items */
+        .results-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .results-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .results-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .results-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .results-list::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+            border: 1px solid #e2e8f0;
+        }
+
+        .result-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-correct {
+            border-left-color: #10b981;
+        }
+
+        .result-wrong {
+            border-left-color: #ef4444;
+        }
+
+        .result-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .question-number {
+            background: #2563eb;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .result-details {
+            font-size: 14px;
+        }
+
+        .selected-answer {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .correct-answer {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .status-icon {
+            font-size: 20px;
+        }
+
+        .correct-icon {
+            color: #10b981;
+        }
+
+        .wrong-icon {
+            color: #ef4444;
+        }
+
+        /* Instructions with dashboard styling */
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .instructions h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            color: #856404;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer matching dashboard */
+        footer {
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        footer p {
+            font-size: 1rem;
+        }
+
+        /* Camera modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* No results placeholder */
+        .no-results {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 2px dashed #e2e8f0;
+        }
+
+        .no-results .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.5;
+        }
+
+        /* Recent Tests Section */
+        .recent-tests {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s ease;
+        }
+
+        .test-item:hover {
+            transform: translateX(5px);
+        }
+
+        .test-info h4 {
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+
+        .test-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .test-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Section Styling */
+        .dashboard-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid #2563eb;
+        }
+
+        .dashboard-section h3 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-section {
+                margin: 15px;
+                padding: 20px;
+            }
+            
+            .welcome-section h2 {
+                font-size: 1.8rem;
+            }
+            
+            .welcome-section p {
+                font-size: 1rem;
+            }
+            
+            .main-content {
+                padding: 0 15px;
+                gap: 20px;
+            }
+            
+            .upload-section, .results-section {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .result-info {
+                width: 100%;
+            }
+            
+            .score-number {
+                font-size: 2.5rem;
+            }
+            
+            /* Make side nav taller on mobile */
+            .side-nav {
+                height: 100vh;
+            }
+            
+            .side-nav ul {
+                max-height: 100vh;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-scanner"></i> OMR Scanner</h1>
+        <button class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- Side Navigation -->
+    <div class="side-nav" id="sideNav">
+        <ul>
+            <li><a href="teacher-dashboard.html" class="nav-active"><span class="nav-icon">📊</span>Dashboard</a></li>
+      <li><a href="teacher-classes.html"><span class="nav-icon">🏫</span>My Classes</a></li>
+      <li><a href="attendance.html"><span class="nav-icon">📅</span>Attendance</a></li>
+      <li><a href="announcements.html"><span class="nav-icon">📢</span>Announcements</a></li>
+      <li><a href="create-test.html"><span class="nav-icon">✏️</span>Create Test</a></li>
+      <li><a href="my-tests.html"><span class="nav-icon">📝</span>My Tests</a></li>
+      <li><a href="sitting-arrangement.html"><span class="nav-icon">💺</span>Sitting Arrangement</a></li>
+      <li><a href="omr-scanner.html"><span class="nav-icon">📸</span>OMR Scanner</a></li>
+      <li><a href="teacher-scores.html"><span class="nav-icon">📈</span>Student Scores</a></li>
+      <li><a href="add-student.html"><span class="nav-icon">👨‍🎓</span>Add Student</a></li>
+      <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
+      <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
+      <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
+      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Overlay for closing the menu when clicking outside -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="main-container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h2>OMR Answer Sheet Scanner</h2>
+            <p>Upload scanned OMR sheets to automatically grade and analyze student responses</p>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h2 class="section-title"><span class="icon"><i class="fas fa-upload"></i></span> Upload Answer Sheet</h2>
+                
+                <div class="quiz-select">
+                    <label for="quizSelect"><i class="fas fa-file-alt"></i> Select Test:</label>
+                    <select id="quizSelect">
+                        <option value="">-- Select a test --</option>
+                        <option value="physics_thermo">Physics - Thermodynamics</option>
+                        <option value="chem_organic">Chemistry - Organic Compounds</option>
+                        <option value="math_calculus">Mathematics - Calculus</option>
+                        <option value="bio_genetics">Biology - Genetics</option>
+                        <option value="english_grammar">English Grammar</option>
+                    </select>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Upload OMR Answer Sheet</h3>
+                    <p>Drag & drop scanned image or click to browse</p>
+                    <p class="file-types">Supports: JPG, PNG, PDF (Max: 10MB)</p>
+                    <input type="file" id="imageInput" class="file-input" accept="image/*,.pdf">
+                </div>
+                
+                <div class="preview-container" id="previewContainer">
+                    <img id="imagePreview" src="" alt="Preview">
+                </div>
+                
+                <div class="instructions">
+                    <h4><i class="fas fa-info-circle"></i> Instructions for Best Results:</h4>
+                    <ul>
+                        <li>Ensure good lighting when scanning/photographing</li>
+                        <li>Keep the OMR sheet flat and fully visible</li>
+                        <li>Use dark pen/pencil to fill bubbles completely</li>
+                        <li>Avoid shadows and glare on the sheet</li>
+                        <li>Save results to automatically update student scores</li>
+                    </ul>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="captureBtn">
+                        <i class="fas fa-camera"></i> Use Camera
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                    <button class="btn btn-success" id="scanBtn">
+                        <i class="fas fa-play"></i> Scan & Evaluate
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2 class="section-title"><span class="icon"><i class="fas fa-chart-line"></i></span> Evaluation Results</h2>
+                
+                <div class="score-card" id="scoreCard">
+                    <h3>Student Score</h3>
+                    <div class="score-display">
+                        <span class="score-number" id="score">0</span>
+                        <span class="score-total">/ <span id="total">0</span></span>
+                    </div>
+                    <div class="percentage" id="percentage">0%</div>
+                    <p id="scoreMessage">Score will appear here after scanning</p>
+                    <button class="btn btn-success btn-small" id="saveResultsBtn" style="margin-top: 15px; display: none;">
+                        <i class="fas fa-save"></i> Save to Student Record
+                    </button>
+                </div>
+                
+                <h3 style="color: #1e3a8a; margin-bottom: 20px;">Question-wise Analysis</h3>
+                <div class="results-list" id="resultsList">
+                    <div class="no-results" id="noResults">
+                        <span class="icon"><i class="fas fa-clipboard-check"></i></span>
+                        <p>Upload and scan an OMR sheet to view detailed results</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Results will show correct/incorrect answers and student responses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Scans Section -->
+        <section class="dashboard-section">
+            <h3><span class="icon"><i class="fas fa-history"></i></span> Recently Scanned Tests</h3>
+            <div class="recent-tests" id="recentTests">
+                <div class="test-item">
+                    <div class="test-info">
+                        <h4>Physics - Thermodynamics</h4>
+                        <p>Scanned: Today • 12th MHTCET (PCM) • Score: 85%</p>
+                    </div>
+                    <div class="test-actions">
+                        <a href="#" class="btn btn-small">View Results</a>
+                        <a href="#" class="btn btn-small btn-secondary">Re-scan</a>
+                    </div>
+                </div>
+                <div class="test-item">
+                    <div class="test-info">
+                        <h4>Chemistry - Organic Compounds</h4>
+                        <p>Scanned: Yesterday • 11th MHTCET (PCB) • Score: 92%</p>
+                    </div>
+                    <div class="test-actions">
+                        <a href="#" class="btn btn-small">View Results</a>
+                        <a href="#" class="btn btn-small btn-secondary">Re-scan</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>© 2026 Soham - Entrance Exam Practice. OMR Scanner </p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+    </footer>
+
+    <!-- Camera Modal -->
+    <div class="modal" id="cameraModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-camera"></i> Capture OMR Sheet</h3>
+                <button class="close-modal" id="closeCameraBtn">×</button>
+            </div>
+            <div style="padding: 20px;">
+                <video id="cameraVideo" autoplay style="width: 100%; border-radius: 10px;"></video>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="capturePhotoBtn" class="btn btn-primary" style="margin: 0 10px;">
+                        <i class="fas fa-camera"></i> Capture Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in and is a teacher
+        if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "teacher") {
+            window.location.href="../role-selection.html";
+        }
+
+        // Logout function
+        function logout() {
+            // Show loading state
+            const logoutBtn = event.target;
+            const originalText = logoutBtn.innerHTML;
+            logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
+            logoutBtn.disabled = true;
+            
+            setTimeout(() => {
+                localStorage.removeItem("isLoggedIn");
+                localStorage.removeItem("userRole");
+                window.location.href="../role-selection.html";
+            }, 1000);
+        }
+
+        // Hamburger menu functionality
+        const hamburger = document.getElementById('hamburger');
+        const sideNav = document.getElementById('sideNav');
+        const overlay = document.getElementById('overlay');
+
+        hamburger.addEventListener('click', () => {
+            sideNav.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+        });
+
+        overlay.addEventListener('click', () => {
+            sideNav.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.side-nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                sideNav.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // DOM Elements
+        const imageInput = document.getElementById('imageInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const scanBtn = document.getElementById('scanBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const quizSelect = document.getElementById('quizSelect');
+        const scoreCard = document.getElementById('scoreCard');
+        const resultsList = document.getElementById('resultsList');
+        const noResults = document.getElementById('noResults');
+        const scoreElement = document.getElementById('score');
+        const totalElement = document.getElementById('total');
+        const percentageElement = document.getElementById('percentage');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const saveResultsBtn = document.getElementById('saveResultsBtn');
+        const cameraModal = document.getElementById('cameraModal');
+        const cameraVideo = document.getElementById('cameraVideo');
+        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+        const closeCameraBtn = document.getElementById('closeCameraBtn');
+        
+        let currentImage = null;
+        let stream = null;
+        
+        // Event Listeners
+        uploadArea.addEventListener('click', () => imageInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#e8f0fe';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '#f8fafc';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f8fafc';
+            const file = e.dataTransfer.files[0];
+            if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
+                handleImageUpload(file);
+            }
+        });
+        
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageUpload(file);
+            }
+        });
+        
+        scanBtn.addEventListener('click', scanOMR);
+        resetBtn.addEventListener('click', resetAll);
+        captureBtn.addEventListener('click', openCamera);
+        capturePhotoBtn.addEventListener('click', capturePhoto);
+        closeCameraBtn.addEventListener('click', closeCamera);
+        saveResultsBtn.addEventListener('click', saveToStudentRecord);
+        
+        // Initialize with sample recent scans data
+        function initializeRecentScans() {
+            const recentTests = JSON.parse(localStorage.getItem('recentScans')) || [
+                {
+                    testName: "Physics - Thermodynamics",
+                    className: "12th MHTCET (PCM)",
+                    date: "Today",
+                    score: "85%"
+                },
+                {
+                    testName: "Chemistry - Organic Compounds",
+                    className: "11th MHTCET (PCB)",
+                    date: "Yesterday",
+                    score: "92%"
+                }
+            ];
+            
+            localStorage.setItem('recentScans', JSON.stringify(recentTests));
+            displayRecentScans(recentTests);
+        }
+        
+        function displayRecentScans(scans) {
+            const recentTestsContainer = document.getElementById('recentTests');
+            let html = '';
+            
+            scans.forEach(scan => {
+                html += `
+                    <div class="test-item">
+                        <div class="test-info">
+                            <h4>${scan.testName}</h4>
+                            <p>Scanned: ${scan.date} • ${scan.className} • Score: ${scan.score}</p>
+                        </div>
+                        <div class="test-actions">
+                            <a href="#" class="btn btn-small" onclick="viewScanResults('${scan.testName}')">View Results</a>
+                            <a href="#" class="btn btn-small btn-secondary" onclick="rescanTest('${scan.testName}')">Re-scan</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            recentTestsContainer.innerHTML = html;
+        }
+        
+        // Functions
+        function handleImageUpload(file) {
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size too large. Please upload a file under 10MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImage = e.target.result;
+                if (file.type.startsWith('image/')) {
+                    imagePreview.src = currentImage;
+                    previewContainer.style.display = 'block';
+                } else {
+                    // For PDF files, show a placeholder
+                    imagePreview.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGMEY0RkYiLz48cGF0aCBkPSJNNTAgNzVIMTUwVjEyNUg1MFY3NVoiIGZpbGw9IiMyNTYzRUIiLz48cGF0aCBkPSJNNTAgMTI1SDE1MFYxNzVINTBWMTI1WiIgZmlsbD0iIzI1NjNFQiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMyNTYzRUIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5QREYgRmlsZTwvdGV4dD48L3N2Zz4=';
+                    previewContainer.style.display = 'block';
+                }
+                scanBtn.disabled = false;
+                scanBtn.style.opacity = '1';
+                
+                // Scroll to preview
+                previewContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        async function scanOMR() {
+            if (!currentImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            if (!quizSelect.value) {
+                alert('Please select a test first!');
+                return;
+            }
+            
+            // Show loading on button
+            const originalText = scanBtn.innerHTML;
+            scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning...';
+            scanBtn.disabled = true;
+            
+            // Simulate API call (Replace with actual backend call)
+            setTimeout(() => {
+                // Mock results for demo
+                const mockResults = generateMockResults();
+                displayResults(mockResults);
+                
+                // Restore button
+                scanBtn.innerHTML = originalText;
+                scanBtn.disabled = false;
+                
+                // Scroll to results
+                scoreCard.scrollIntoView({ behavior: 'smooth' });
+                
+                // Add to recent scans
+                addToRecentScans();
+            }, 2500);
+        }
+        
+        function generateMockResults() {
+            const totalQuestions = 20;
+            const correctAnswers = ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D'];
+            const userAnswers = [];
+            const results = [];
+            
+            // Generate random user answers for demo
+            for (let i = 0; i < totalQuestions; i++) {
+                const options = ['A', 'B', 'C', 'D'];
+                const randomAnswer = options[Math.floor(Math.random() * options.length)];
+                userAnswers.push(randomAnswer);
+                
+                const isCorrect = randomAnswer === correctAnswers[i];
+                
+                results.push({
+                    question: i + 1,
+                    selected: randomAnswer,
+                    correct: correctAnswers[i],
+                    isCorrect: isCorrect
+                });
+            }
+            
+            const score = results.filter(r => r.isCorrect).length;
+            const percentage = (score / totalQuestions) * 100;
+            
+            return {
+                results: results,
+                score: score,
+                total: totalQuestions,
+                percentage: percentage,
+                testName: document.getElementById('quizSelect').options[document.getElementById('quizSelect').selectedIndex].text,
+                studentName: generateRandomStudentName(),
+                studentId: 'STU' + Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+            };
+        }
+        
+        function generateRandomStudentName() {
+            const firstNames = ['Rahul', 'Priya', 'Amit', 'Neha', 'Sandeep', 'Anjali', 'Vikram', 'Pooja'];
+            const lastNames = ['Sharma', 'Patel', 'Kumar', 'Singh', 'Verma', 'Gupta', 'Joshi', 'Reddy'];
+            return firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + 
+                   lastNames[Math.floor(Math.random() * lastNames.length)];
+        }
+        
+        function displayResults(data) {
+            // Update score card
+            scoreElement.textContent = data.score;
+            totalElement.textContent = data.total;
+            percentageElement.textContent = `${data.percentage.toFixed(1)}%`;
+            scoreCard.style.display = 'block';
+            
+            // Set score message
+            let message = '';
+            let color = '';
+            if (data.percentage >= 90) {
+                message = 'Outstanding! Excellent performance!';
+                color = '#10b981';
+            } else if (data.percentage >= 75) {
+                message = 'Very Good! Keep up the good work!';
+                color = '#3b82f6';
+            } else if (data.percentage >= 60) {
+                message = 'Good effort! Room for improvement.';
+                color = '#f59e0b';
+            } else if (data.percentage >= 40) {
+                message = 'Needs improvement. Review the concepts.';
+                color = '#ef4444';
+            } else {
+                message = 'Requires attention. Consider remedial classes.';
+                color = '#dc2626';
+            }
+            
+            scoreMessage.textContent = `${data.studentName} (${data.studentId}) - ${message}`;
+            scoreMessage.style.color = color;
+            
+            // Show save button
+            saveResultsBtn.style.display = 'inline-flex';
+            
+            // Generate results list
+            let resultsHTML = '';
+            data.results.forEach(result => {
+                const resultClass = result.isCorrect ? 'result-correct' : 'result-wrong';
+                const statusIcon = result.isCorrect ? 
+                    '<i class="fas fa-check-circle status-icon correct-icon"></i>' : 
+                    '<i class="fas fa-times-circle status-icon wrong-icon"></i>';
+                
+                resultsHTML += `
+                    <div class="result-item ${resultClass}">
+                        <div class="result-info">
+                            <div class="question-number">Q${result.question}</div>
+                            <div class="result-details">
+                                <p>Selected: <span class="selected-answer">${result.selected}</span> | 
+                                   Correct: <span class="correct-answer">${result.correct}</span></p>
+                                <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">
+                                    ${result.isCorrect ? '✓ Correct Answer' : '✗ Incorrect Answer'}
+                                </p>
+                            </div>
+                        </div>
+                        ${statusIcon}
+                    </div>
+                `;
+            });
+            
+            // Update results list
+            resultsList.innerHTML = resultsHTML;
+            noResults.style.display = 'none';
+        }
+        
+        function resetAll() {
+            imageInput.value = '';
+            currentImage = null;
+            imagePreview.src = '';
+            previewContainer.style.display = 'none';
+            quizSelect.value = '';
+            scoreCard.style.display = 'none';
+            saveResultsBtn.style.display = 'none';
+            resultsList.innerHTML = `
+                <div class="no-results" id="noResults">
+                    <span class="icon"><i class="fas fa-clipboard-check"></i></span>
+                    <p>Upload and scan an OMR sheet to view detailed results</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Results will show correct/incorrect answers and student responses</p>
+                </div>
+            `;
+            noResults.style.display = 'block';
+        }
+        
+        async function openCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                cameraVideo.srcObject = stream;
+                cameraModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                alert('Unable to access camera. Please check your permissions.');
+            }
+        }
+        
+        function capturePhoto() {
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraVideo.videoWidth;
+            canvas.height = cameraVideo.videoHeight;
+            canvas.getContext('2d').drawImage(cameraVideo, 0, 0);
+            
+            currentImage = canvas.toDataURL('image/jpeg');
+            imagePreview.src = currentImage;
+            previewContainer.style.display = 'block';
+            scanBtn.disabled = false;
+            scanBtn.style.opacity = '1';
+            
+            closeCamera();
+        }
+        
+        function closeCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            cameraModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function addToRecentScans() {
+            const testName = document.getElementById('quizSelect').options[document.getElementById('quizSelect').selectedIndex].text;
+            const recentScans = JSON.parse(localStorage.getItem('recentScans')) || [];
+            
+            // Add new scan to beginning
+            recentScans.unshift({
+                testName: testName,
+                className: "12th MHTCET (PCM)", // Default class, you can make this dynamic
+                date: "Just now",
+                score: `${Math.floor(Math.random() * 30) + 70}%`
+            });
+            
+            // Keep only last 5 scans
+            if (recentScans.length > 5) {
+                recentScans.pop();
+            }
+            
+            localStorage.setItem('recentScans', JSON.stringify(recentScans));
+            displayRecentScans(recentScans);
+        }
+        
+        function saveToStudentRecord() {
+            const score = document.getElementById('score').textContent;
+            const total = document.getElementById('total').textContent;
+            const percentage = document.getElementById('percentage').textContent;
+            const testName = document.getElementById('quizSelect').options[document.getElementById('quizSelect').selectedIndex].text;
+            
+            // Get existing test results
+            const testResults = JSON.parse(localStorage.getItem('testResults')) || [];
+            
+            // Add new result
+            testResults.push({
+                testName: testName,
+                score: score,
+                total: total,
+                percentage: percentage,
+                studentName: "Scanned Student", // This would come from the OMR sheet
+                date: new Date().toISOString(),
+                type: "OMR Scan"
+            });
+            
+            localStorage.setItem('testResults', JSON.stringify(testResults));
+            
+            // Show success message
+            alert(`Results saved successfully to student record!\n\nTest: ${testName}\nScore: ${score}/${total} (${percentage})`);
+            
+            // Update save button
+            saveResultsBtn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully';
+            saveResultsBtn.style.background = '#10b981';
+            saveResultsBtn.disabled = true;
+            
+            setTimeout(() => {
+                saveResultsBtn.innerHTML = '<i class="fas fa-save"></i> Save to Student Record';
+                saveResultsBtn.style.background = '';
+                saveResultsBtn.disabled = false;
+            }, 3000);
+        }
+        
+        function viewScanResults(testName) {
+            alert(`Viewing detailed results for: ${testName}\n\nThis would show complete analysis and statistics for the scanned test.`);
+        }
+        
+        function rescanTest(testName) {
+            alert(`Initiating re-scan for: ${testName}\n\nThis would reset the current scan and prepare for a new upload.`);
+            resetAll();
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            resetAll();
+            initializeRecentScans();
+        });
+
+        // Add subtle animations to elements when they come into view
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        setTimeout(() => {
+            document.querySelectorAll('.upload-section, .results-section, .test-item').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+        }, 100);
+    </script>
+</body>
+</html>

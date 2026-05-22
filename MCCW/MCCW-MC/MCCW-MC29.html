@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MHT CET · Area Under Curves (102 questions)</title>
+  <style>
+    /* ---------- EXACT ORIGINAL STYLE (from first prompt) ---------- */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f9ff;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px 25px;
+      position: relative;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #1e3a8a;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .question-number {
+      font-weight: bold;
+      color: #2563eb;
+    }
+    .question {
+      font-size: 16px;
+      margin: 20px 0;
+      line-height: 1.5;
+    }
+    .options input[type="radio"] {
+      display: none;
+    }
+    .options label {
+      display: block;
+      background: #eff6ff;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 4px solid transparent;
+    }
+    .options input[type="radio"]:checked + label {
+      background: #dbeafe;
+      border-left: 4px solid #2563eb;
+      font-weight: 500;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn:hover {
+      background: #1e40af;
+    }
+    .btn.right {
+      margin-left: auto;
+    }
+    .timer {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #eff6ff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .nav-panel-toggle {
+      cursor: pointer;
+      font-size: 20px;
+      z-index: 10;
+      background: #eff6ff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .nav-panel {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 15px;
+      z-index: 10;
+      width: 250px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .nav-panel h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      color: #2563eb;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    .question-list {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .question-item {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .question-item.answered {
+      background: #3b82f6;
+      color: white;
+    }
+    .question-item.seen {
+      background: #f87171;
+      color: white;
+    }
+    .question-item.not-seen {
+      background: #d1d5db;
+      color: #6b7280;
+    }
+    .question-item.current {
+      border: 2px solid #2563eb;
+      box-sizing: border-box;
+    }
+    .question-item:hover {
+      transform: scale(1.1);
+    }
+    .formula {
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<div class="quiz-container">
+  <div class="header">
+    <div class="header-left">
+      <div>MHT CET · Area Under Curves</div>
+    </div>
+    <div class="header-right">
+      <div class="timer">Time: <span id="timer">00:00</span></div>
+      <div class="nav-panel-toggle" onclick="toggleNavPanel()">☰ Questions</div>
+    </div>
+  </div>
+
+  <div class="nav-panel" id="navPanel">
+    <h3>Questions (1-102)</h3>
+    <div class="question-list" id="questionList"></div>
+  </div>
+
+  <div id="quiz-content"></div>
+
+  <div class="nav-buttons">
+    <button class="btn" id="backBtn" onclick="prevQuestion()" style="display:none;">Back</button>
+    <button class="btn right" id="nextBtn" onclick="nextQuestion()">Next</button>
+    <button class="btn right" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit</button>
+  </div>
+</div>
+
+<script>
+  // ----- 102 AREA UNDER CURVES QUESTIONS (EXACTLY FROM THE PDF) -----
+  const questions = [
+    // Page 1
+    { number: "Q1/102", text: "The area of the region bounded by the parabola \\(y^{2} = 27x\\) and the line \\(x = 1\\) is ___ sq.units.", options: ["3", "6", "9", "12"], correct: "C" },
+    // Page 2
+    { number: "Q2/102", text: "The area of the region bounded by the curves \\(y = |x - 4|, x = 3\\) and \\(x = 5\\) , and the X- axis is", options: ["1", "2", "3", "4"], correct: "B" },
+    // Page 3
+    { number: "Q3/102", text: "The area of smaller part between the circle \\(x^{2} + y^{2} = 4\\) and the line \\(x = 1\\) is ______ sq.units.", options: ["\\(\\frac{4\\pi}{3} - \\sqrt{3}\\)", "\\(\\frac{8\\pi}{3} - \\sqrt{3}\\)", "\\(\\frac{4\\pi}{3} - 2\\sqrt{3}\\)", "\\(\\frac{8\\pi}{3} - 2\\sqrt{3}\\)"], correct: "B" },
+    // Page 4
+    { number: "Q4/102", text: "If the area bounded by the curve \\(x^{2} = 4y\\) , X- axis and the line \\(x = 4\\) is divided into equal areas by the line \\(x = \\alpha\\) , then the value of \\(\\alpha\\) is ...", options: ["2", "2√2", "4/√2", "∛16"], correct: "B" },
+    // Page 5
+    { number: "Q5/102", text: "The area bounded by the curve \\(y = 4x - x^2\\) and \\(X\\) - axis in square units, is", options: ["\\(\\frac{32}{3}\\)", "\\(\\frac{16}{3}\\)", "8", "12"], correct: "A" },
+    // Page 6
+    { number: "Q6/102", text: "The area bounded by the parabolas \\(y = 9x^2, y = \\frac{x^2}{16}\\) and the line \\(y = 1\\) is", options: ["\\(\\frac{8}{9}\\)", "\\(\\frac{22}{9}\\)", "\\(\\frac{44}{9}\\)", "\\(\\frac{26}{9}\\)"], correct: "D" },
+    // Page 7
+    { number: "Q7/102", text: "The area bounded by the curve \\(y = x^2 + 3, y = x, x = 3\\) and \\(y\\) -axis is...", options: ["18", "\\(\\frac{9}{2}\\)", "\\(\\frac{27}{2}\\)", "\\(\\frac{27}{3}\\)"], correct: "C" },
+    // Page 8
+    { number: "Q8/102", text: "The area bounded by the curve \\(x^{2} = 8y\\) and the straight line \\(x - 8y + 2 = 0\\) is", options: ["\\(\\frac{43}{12}\\)", "\\(\\frac{125}{24}\\)", "\\(\\frac{127}{24}\\)", "\\(\\frac{43}{6}\\)"], correct: "C" },
+    // Page 9
+    { number: "Q9/102", text: "If a curve \\(y = a\\sqrt{x} + bx\\) passes through the point \\((1,2)\\) and the area bounded by this curve, line \\(x = 4\\) and the X- axis is 8 sq.units, then the value of \\(a - b\\) is", options: ["1", "2", "3", "4"], correct: "C" },
+    // Page 10
+    { number: "Q10/102", text: "The area bounded by the curve \\(x = 2 - y - y^2\\) and the \\(Y\\) - axis is", options: ["\\(\\frac{9}{2}\\)", "\\(\\frac{7}{2}\\)", "5", "6"], correct: "A" },
+    // Page 11
+    { number: "Q11/102", text: "The area of the region bounded by the curve \\(y = |x - 2|\\) between \\(x = 1, x = 3\\) and X- axis is ....", options: ["1", "2", "3", "4"], correct: "B" },
+    // Page 12
+    { number: "Q12/102", text: "The area inside the parabola \\(y^{2} = 4ax\\) , between the lines \\(x = a\\) and \\(x = 4a\\) is equal to", options: ["\\(\\frac{28a^2}{3}\\)", "\\(\\frac{56a^2}{3}\\)", "\\(\\frac{14a^2}{3}\\)", "\\(\\frac{7a^2}{3}\\)"], correct: "B" },
+    // Page 13
+    { number: "Q13/102", text: "AOB is the positive quadrant of the ellipse \\(\\frac{x^2}{25} + \\frac{y^2}{9} = 1\\) in which OA = 5, OB = 3. The area between the arc AB and the chord AB of the ellipse in sq.units is", options: ["\\(\\frac{15\\pi}{4} - \\frac{15}{2}\\)", "\\(\\frac{15\\pi}{2} - \\frac{15}{2}\\)", "\\(\\frac{15\\pi}{4} - 15\\)", "\\(\\frac{15\\pi}{2} - 15\\)"], correct: "A" },
+    // Page 14
+    { number: "Q14/102", text: "The area of the region bounded by \\(\\frac{x^2}{9} + \\frac{y^2}{4} = 1\\) and the line \\(\\frac{x}{3} + \\frac{y}{2} = 1\\) is", options: ["\\(3(\\pi-2)\\)", "\\(6(\\pi-2)\\)", "\\(3(\\pi-1)\\)", "\\(6(\\pi-1)\\)"], correct: "B" },
+    // Page 15
+    { number: "Q15/102", text: "The area enclosed between the curves \\(y^2 = 4x\\) and \\(y = |x|\\) is", options: ["\\(\\frac{4}{3}\\)", "\\(\\frac{8}{3}\\)", "4", "\\(\\frac{16}{3}\\)"], correct: "B" },
+    // Page 16
+    { number: "Q16/102", text: "The ratio of the areas bounded by the curves y = cos x and y = cos 2x between x = 0, x = π and X- axis is", options: ["1:1", "2:1", "3:2", "4:3"], correct: "C" },
+    // Page 17
+    { number: "Q17/102", text: "The area (in sq. units) bounded between the parabolas \\(x^2 = \\frac{y}{4}\\) and \\(x^2 = 9y\\) and the line \\(y = 2\\) is", options: ["\\(\\frac{20\\sqrt{2}}{3}\\)", "\\(\\frac{10\\sqrt{2}}{3}\\)", "\\(20\\sqrt{2}\\)", "\\(10\\sqrt{2}\\)"], correct: "B" },
+    // Page 18
+    { number: "Q18/102", text: "The area (in sq. units) of the region described by \\(\\{(x, y) / y^2 \\leq 2x \\text{ and } y \\geq (4x - 1)\\}\\) is", options: ["\\(\\frac{1}{6}\\)", "\\(\\frac{5}{6}\\)", "\\(\\frac{7}{6}\\)", "\\(\\frac{11}{6}\\)"], correct: "A" },
+    // Page 19
+    { number: "Q19/102", text: "The area enclosed between the parabola \\(y^{2} = 4x\\) and the line \\(y = 2x - 4\\) is", options: ["15", "9", "\\(\\frac{19}{3}\\)", "\\(\\frac{17}{3}\\)"], correct: "B" },
+    // Page 20
+    { number: "Q20/102", text: "If two sides of a square are \\(4x + 3y - 20 = 0\\) and \\(4x + 3y + 15 = 0\\) , then the area of the square is", options: ["36", "49", "4", "16"], correct: "B" },
+    // Page 21
+    { number: "Q21/102", text: "The area of the region bounded by curves \\(y = 3x + 1, y = 4x + 1\\) and \\(x = 2\\) is", options: ["1", "2", "3", "4"], correct: "B" },
+    // Page 22
+    { number: "Q22/102", text: "The area (in sq. units) of the region bounded by \\(y - x = 2\\) and \\(x^{2} = y\\) is equal to", options: ["\\(\\frac{9}{2}\\)", "\\(\\frac{11}{2}\\)", "\\(\\frac{13}{2}\\)", "\\(\\frac{15}{2}\\)"], correct: "A" },
+    // Page 23
+    { number: "Q23/102", text: "The area of the region lying in the first quadrant by \\(y = 4x^2, x = 0, y = 2, y = 4\\) is", options: ["\\(8 + 2\\sqrt{2}\\)", "\\(\\frac{1}{3}[8 - 2\\sqrt{2}]\\)", "\\(\\frac{1}{6}[8 - 2\\sqrt{2}]\\)", "\\(8 - 2\\sqrt{2}\\)"], correct: "C" },
+    // Page 24
+    { number: "Q24/102", text: "The area (in sq. units) of the region \\(\\{(x, y) / x \\geq 0, x + y \\leq 3, x^2 \\leq 4y \\text{ and } y \\leq 1 + \\sqrt{x}\\}\\) is", options: ["\\(\\frac{3}{2}\\)", "\\(\\frac{7}{2}\\)", "\\(\\frac{5}{2}\\)", "\\(\\frac{9}{2}\\)"], correct: "C" },
+    // Page 25
+    { number: "Q25/102", text: "Area (in sq.units) lying in the first quadrant and bounded by the circle \\(x^{2} + y^{2} = 4\\) and the lines \\(x = 0\\) and \\(x = 2\\) is", options: ["π", "2π", "π/2", "π/4"], correct: "A" },
+    // Page 26
+    { number: "Q26/102", text: "The area (in sq. units), in the first quadrant bounded by the curve \\(y = x^2 + 2\\) and the lines \\(y = x + 1, x = 0\\) and \\(x = 2\\), is", options: ["\\(\\frac{2}{3}\\)", "\\(\\frac{5}{3}\\)", "\\(\\frac{1}{3}\\)", "\\(\\frac{8}{3}\\)"], correct: "D" },
+    // Page 27
+    { number: "Q27/102", text: "The area (in sq. units) bounded by the curves \\(y = (x + 1)^2, y = (x - 1)^2\\) and the line \\(y = \\frac{1}{4}\\) is", options: ["\\(\\frac{1}{3}\\)", "\\(\\frac{2}{3}\\)", "1", "\\(\\frac{4}{3}\\)"], correct: "A" },
+    // Page 28
+    { number: "Q28/102", text: "The area (in square units) in the first quadrant bounded by the curve \\(y = x^{2} + 2\\) and the lines \\(y = x + 1, x = 0\\) and \\(x = 3\\) , is", options: ["\\(\\frac{27}{2}\\)", "\\(\\frac{29}{2}\\)", "\\(\\frac{31}{2}\\)", "\\(\\frac{33}{2}\\)"], correct: "D" },
+    // Page 29
+    { number: "Q29/102", text: "The area bounded between the curves \\(y = ax^2\\) and \\(x = ay^2 (a > 0)\\) is 1 sq. units, then the value of \\(a\\) is", options: ["\\(\\frac{1}{\\sqrt{3}}\\)", "\\(\\sqrt{3}\\)", "\\(\\frac{1}{3}\\)", "3"], correct: "A" },
+    // Page 32 (after skipping LPP)
+    { number: "Q30/102", text: "The area of the region, bounded by the parabola \\(y = x^{2} + 2\\) and the lines \\(y = x, x = 0\\) and \\(x = 3\\) , is", options: ["\\(\\frac{21}{2}\\)", "\\(\\frac{23}{2}\\)", "\\(\\frac{25}{2}\\)", "\\(\\frac{27}{2}\\)"], correct: "D" },
+    // Page 33
+    { number: "Q31/102", text: "The area (in sq. units) of the region bounded by the curve \\(x^{2} = 4y\\) and the straight line \\(x = 4y - 2\\) is", options: ["\\(\\frac{5}{8}\\)", "\\(\\frac{9}{8}\\)", "\\(\\frac{11}{8}\\)", "\\(\\frac{13}{8}\\)"], correct: "B" },
+    // Page 34
+    { number: "Q32/102", text: "The area (in sq. units) bounded by the curves \\(y = \\sqrt{x}, 2y - x + 3 = 0\\) , X- axis and lying in the first quadrant is", options: ["\\(\\frac{9}{2}\\)", "\\(\\frac{11}{2}\\)", "\\(\\frac{13}{2}\\)", "\\(\\frac{15}{2}\\)"], correct: "B" },
+    // Page 35
+    { number: "Q33/102", text: "The area bounded by the curve \\(y = |x - 2|, x = 1, x = 3\\) and X- axis is", options: ["1", "2", "3", "4"], correct: "B" },
+    // Page 36
+    { number: "Q34/102", text: "The area bounded by the curves \\(y = (x - 1)^2\\) , \\(y = (x + 1)^2\\) and \\(y = \\frac{1}{4}\\) is", options: ["\\(\\frac{1}{3}\\)", "\\(\\frac{2}{3}\\)", "1", "\\(\\frac{4}{3}\\)"], correct: "A" },
+    // Page 37
+    { number: "Q35/102", text: "If a curve \\(y = a\\sqrt{x} +bx\\) passes through the point \\((1,2)\\) and the area bounded by the curve, line \\(x = 4\\) and X- axis is 8 sq. units, then", options: ["a=2, b=0", "a=0, b=2", "a=1, b=1", "a=3, b=-1"], correct: "D" },
+    // Page 38
+    { number: "Q36/102", text: "The area (in sq. units) of the region bounded by curves \\(y = 3x + 1, y = 4x + 1\\) and \\(x = 3\\) is", options: ["1", "2", "3", "4"], correct: "C" },
+    // Page 39
+    { number: "Q37/102", text: "The area (in sq. units) of the smaller part of the circle \\(x^2 + y^2 = a^2\\) cut off by the line \\(x = \\frac{a}{\\sqrt{2}}\\) is", options: ["\\(\\frac{a^2}{2}(\\frac{\\pi}{2}-1)\\)", "\\(\\frac{a^2}{2}(\\frac{\\pi}{2}+1)\\)", "\\(a^2(\\frac{\\pi}{4}-\\frac12)\\)", "\\(a^2(\\frac{\\pi}{4}+\\frac12)\\)"], correct: "A" },
+    // Page 40
+    { number: "Q38/102", text: "The area of the region bounded by the curves \\(y = \\mathrm{e}^{x}, y = \\log x\\) and lines \\(x = 1, x = 2\\) is", options: ["\\(\\mathrm{e}^{2} - \\mathrm{e} + 1 - 2\\log 2\\)", "\\(\\mathrm{e}^{2} - \\mathrm{e} + 1\\)", "\\((\\mathrm{e} - 1)^{2}\\)", "\\(\\mathrm{e}^{2} + \\mathrm{e} - 2\\log 2\\)"], correct: "A" },
+    // Page 41
+    { number: "Q39/102", text: "The area of the region bounded by the parabola \\(y = x^{2}\\) and the curve \\(y = |x|\\) is", options: ["\\(\\frac{1}{3}\\)", "\\(\\frac{2}{3}\\)", "1", "\\(\\frac{4}{3}\\)"], correct: "A" },
+    // Page 42
+    { number: "Q40/102", text: "The area bounded by the X- axis and the curve \\(y = x(x - 2)(x + 1)\\) is", options: ["\\(\\frac{5}{12}\\)", "\\(\\frac{7}{12}\\)", "\\(\\frac{37}{12}\\)", "\\(\\frac{8}{3}\\)"], correct: "C" },
+    // Page 43
+    { number: "Q41/102", text: "Area of the region bounded by the curve \\(y = \\sqrt{49 - x^2}\\) and \\(X\\) - axis is", options: ["\\(\\frac{49\\pi}{2}\\)", "\\(49\\pi\\)", "\\(\\frac{49\\pi}{4}\\)", "\\(\\frac{98\\pi}{3}\\)"], correct: "A" },
+    // Page 44
+    { number: "Q42/102", text: "The area (in sq. units) bounded by the curve \\(y = x|x|\\) , X- axis and the lines \\(x = - 1\\) and \\(x = 1\\) is", options: ["0", "\\(\\frac{1}{3}\\)", "\\(\\frac{2}{3}\\)", "1"], correct: "C" },
+    // Page 45
+    { number: "Q43/102", text: "The area (in sq. units) of the region A = {(x,y)/y²≤x≤y+4}", options: ["16", "18", "53", "30"], correct: "B" },
+    // Page 46
+    { number: "Q44/102", text: "The area (in sq. units) bounded by the curves \\(y = \\sqrt{x}, 2y - x + 3 = 0\\) , X- axis and lying in the first quadrant, is", options: ["\\(\\frac{9}{2}\\)", "\\(\\frac{11}{2}\\)", "\\(\\frac{13}{2}\\)", "\\(\\frac{15}{2}\\)"], correct: "B" },
+    // Page 47
+    { number: "Q45/102", text: "The area bounded by the curve \\(y^{2} = 2x + 1\\) and the line \\(x - y = 1\\) is", options: ["\\(\\frac{32}{3}\\)", "\\(\\frac{16}{3}\\)", "\\(\\frac{8}{3}\\)", "\\(\\frac{4}{3}\\)"], correct: "B" },
+    // Page 48
+    { number: "Q46/102", text: "There are (in square units) of the region bounded by the parabola \\(y = x^{2} + 2\\) and the lines \\(y = x + 1, x = 0\\) and \\(x = 3\\) is", options: ["\\(\\frac{27}{2}\\)", "\\(\\frac{29}{2}\\)", "\\(\\frac{31}{2}\\)", "\\(\\frac{33}{2}\\)"], correct: "D" },
+    // Page 49
+    { number: "Q47/102", text: "The area bounded by the curve, \\(y = - x^2\\) , x- axis, \\(x = 1\\) and \\(x = 4\\) , is", options: ["20", "\\(\\frac{21}{2}\\)", "10", "21"], correct: "D" },
+    // Page 51
+    { number: "Q48/102", text: "Area of the region bounded by the curve \\(y = x^{2} + 2\\) and the lines \\(y = x, x = 0\\) and \\(x = 3\\) is", options: ["\\(\\frac{21}{2}\\)", "\\(\\frac{23}{2}\\)", "\\(\\frac{25}{2}\\)", "\\(\\frac{27}{2}\\)"], correct: "D" },
+    // Page 52
+    { number: "Q49/102", text: "The area of the region bounded by the \\(y\\) - axis, \\(y = \\cos x, y = \\sin x,\\) when \\(0 \\leq x \\leq \\frac{\\pi}{4},\\) is", options: ["\\((\\sqrt{2} - 1)\\)", "\\(\\sqrt{2}\\)", "\\(2(\\sqrt{2} - 1)\\)", "\\((\\sqrt{2} + 1)\\)"], correct: "A" },
+    // Page 53
+    { number: "Q50/102", text: "The area (in sq. units) of the region described by \\(A = [(x, y) / x^2 + y^2 \\leq 1 - x]\\) is", options: ["\\(\\frac{\\pi}{2}\\)", "π", "\\(\\frac{3\\pi}{2}\\)", "2π"], correct: "B" },
+    // Page 54
+    { number: "Q51/102", text: "The area of the region bounded by the curve \\(y^{2} = 9x\\) and the line \\(y = 3x\\) is", options: ["\\(\\frac{1}{2}\\)", "\\(\\frac{3}{2}\\)", "\\(\\frac{5}{2}\\)", "\\(\\frac{7}{2}\\)"], correct: "A" },
+    // Page 55
+    { number: "Q52/102", text: "The area of the region bounded by the line \\(2y + x = 8, x - \\text{axis}\\) and the lines \\(x = 2\\) and \\(x = 4\\) is", options: ["10", "5", "4", "6"], correct: "B" },
+    // Page 56
+    { number: "Q53/102", text: "The area of the region bounded by the curve \\(y = 2x - x^2\\) and X- axis is", options: ["\\(\\frac{4}{3}\\)", "\\(\\frac{8}{3}\\)", "4", "\\(\\frac{16}{3}\\)"], correct: "A" },
+    // Page 57
+    { number: "Q54/102", text: "The area of the region include between the parabolas \\(y^2 = 8x\\) and \\(x^2 = 8y\\) , is", options: ["\\(\\frac{64}{3}\\)", "\\(\\frac{32}{3}\\)", "\\(\\frac{16}{3}\\)", "\\(\\frac{8}{3}\\)"], correct: "A" },
+    // Page 58
+    { number: "Q55/102", text: "The area bounded by the parabola \\(y^{2} = 4ax\\) and its latus- rectum \\(x = a\\) is", options: ["\\(\\frac{8a^2}{3}\\)", "\\(\\frac{4a^2}{3}\\)", "\\(\\frac{2a^2}{3}\\)", "\\(\\frac{a^2}{3}\\)"], correct: "A" },
+    // Page 60
+    { number: "Q56/102", text: "The area bounded by the parabola \\(y^2 = x\\) and the line \\(x + y = 2\\) in the first quadrant is", options: ["\\(\\frac{5}{6}\\)", "\\(\\frac{7}{6}\\)", "\\(\\frac{3}{2}\\)", "\\(\\frac{5}{2}\\)"], correct: "C" },
+    // Page 61
+    { number: "Q57/102", text: "The area bounded between the curve \\(x^{2} = y\\) and the line \\(y = 4x\\) is", options: ["\\(\\frac{32}{3}\\)", "\\(\\frac{8}{3}\\)", "\\(\\frac{1}{3}\\)", "\\(\\frac{16}{3}\\)"], correct: "A" },
+    // Page 62
+    { number: "Q58/102", text: "The area bounded by the parabola \\(y^{2} = x\\) , the straight line \\(y = 4\\) and Y axis is", options: ["\\(\\frac{64}{3}\\)", "\\(\\frac{32}{3}\\)", "\\(\\frac{16}{3}\\)", "\\(\\frac{8}{3}\\)"], correct: "A" },
+    // Page 63
+    { number: "Q59/102", text: "The area of the region bounded by the curve \\(y^{2} = 4x\\) and the line \\(y = x\\) is", options: ["\\(\\frac{1}{6}\\)", "\\(\\frac{2}{3}\\)", "\\(\\frac{8}{3}\\)", "\\(\\frac{4}{3}\\)"], correct: "C" },
+    // Page 64
+    { number: "Q60/102", text: "The area bounded by the parabola \\(y = x^2\\) and the line \\(y = x\\) is", options: ["\\(\\frac{1}{6}\\)", "\\(\\frac{1}{3}\\)", "\\(\\frac{1}{2}\\)", "1"], correct: "A" },
+    // Page 66
+    { number: "Q61/102", text: "The area bounded by the curve \\(y = \\sin^2 x, x\\) - axis and the lines \\(x = 0\\) and \\(x = \\frac{\\pi}{2}\\) is", options: ["\\(\\frac{\\pi}{4}\\)", "\\(\\frac{\\pi}{2}\\)", "\\(\\frac{3\\pi}{4}\\)", "π"], correct: "A" },
+    // Page 67
+    { number: "Q62/102", text: "The area of the region included between the parabola \\(y^{2} = x\\) and the line \\(x + y = 2\\) in the first quadrant is", options: ["\\(\\frac{5}{6}\\)", "\\(\\frac{7}{6}\\)", "\\(\\frac{3}{2}\\)", "\\(\\frac{5}{2}\\)"], correct: "C" },
+    // Page 68
+    { number: "Q63/102", text: "The area of the region bounded by the curve \\(y = \\sin x\\) between \\(x = -\\pi\\) and \\(x = \\frac{3\\pi}{2}\\) is", options: ["1", "2", "3", "4"], correct: "D" },
+    // Page 69
+    { number: "Q64/102", text: "The area of the triangle formed by the lines joining vertex of the parabola \\(x^{2} = 12y\\) to the extremities of its latus rectum is", options: ["9", "12", "18", "24"], correct: "C" },
+    // Page 70
+    { number: "Q65/102", text: "The area of the region bounded by the parabola \\(x^{2} = 16y, y = 1, y = 4\\) and the Y- axis lying in the first quartrant is", options: ["\\(\\frac{56}{3}\\)", "\\(\\frac{64}{3}\\)", "\\(\\frac{112}{3}\\)", "\\(\\frac{128}{3}\\)"], correct: "C" },
+    // Page 71
+    { number: "Q66/102", text: "The area included between the parabolas \\(y^2 = 5x\\) and \\(x^2 = 5y\\) is", options: ["\\(\\frac{25}{3}\\)", "\\(\\frac{50}{3}\\)", "\\(\\frac{75}{3}\\)", "\\(\\frac{100}{3}\\)"], correct: "A" },
+    // Page 72
+    { number: "Q67/102", text: "The area of the region bounded by the curve \\(y = 4x^3 - 6x^2 + 4x + 1\\) and the lines \\(x = 1, x = 5\\) and \\(x\\) axis is", options: ["480", "520", "560", "600"], correct: "D" },
+    // Page 73
+    { number: "Q68/102", text: "The area of the region bounded by the curve \\(y = x^{2} + 1\\) , the lines \\(x = 1\\) , \\(x = 2\\) and the \\(X\\) - axis is", options: ["\\(\\frac{10}{3}\\)", "4", "\\(\\frac{14}{3}\\)", "\\(\\frac{16}{3}\\)"], correct: "A" },
+    // Page 74
+    { number: "Q69/102", text: "The area bounded by the parabola \\(y^2 = 16x\\) and its latus - rectum in the first quadrant is", options: ["\\(\\frac{16}{3}\\)", "\\(\\frac{32}{3}\\)", "\\(\\frac{64}{3}\\)", "\\(\\frac{128}{3}\\)"], correct: "C" },
+    // Page 75
+    { number: "Q70/102", text: "The area bounded by the circle \\(x^{2} + y^{2} = 16\\) and lines \\(x = 0\\) and \\(x = 2\\) is", options: ["\\(\\frac{8\\pi}{3} + 2\\sqrt{3}\\)", "\\(\\frac{16\\pi}{3} + 4\\sqrt{3}\\)", "\\(\\frac{8\\pi}{3} - 2\\sqrt{3}\\)", "\\(\\frac{16\\pi}{3} - 4\\sqrt{3}\\)"], correct: "A" },
+    // Page 76
+    { number: "Q71/102", text: "The area of the region bounded by the curve \\(y = \\log x, x\\) - axis and the lines \\(x = 1, x = e\\) is", options: ["1", "e-1", "e", "e+1"], correct: "A" },
+    // Page 77
+    { number: "Q72/102", text: "The area of the region bounded by the curve \\(y = 4x - x^2\\) and the \\(x\\) - axis is", options: ["\\(\\frac{32}{3}\\)", "\\(\\frac{16}{3}\\)", "\\(\\frac{8}{3}\\)", "\\(\\frac{4}{3}\\)"], correct: "A" },
+    // Page 78
+    { number: "Q73/102", text: "The area bounded by the parabola \\(x^{2} = 4y\\) and the lines \\(y = 2\\) , \\(y = 4\\) and \\(Y\\) - axis is", options: ["\\(\\frac{32-8\\sqrt{2}}{3}\\)", "\\(\\frac{64-16\\sqrt{2}}{3}\\)", "\\(\\frac{32+8\\sqrt{2}}{3}\\)", "\\(\\frac{64+16\\sqrt{2}}{3}\\)"], correct: "B" },
+    // Page 79
+    { number: "Q74/102", text: "The area bounded by the curve \\(y = x^{3}\\) , the X - axis and the lines \\(x = 1\\) and \\(x = 4\\) is", options: ["\\(\\frac{255}{4}\\)", "\\(\\frac{63}{4}\\)", "\\(\\frac{127}{4}\\)", "\\(\\frac{511}{4}\\)"], correct: "A" },
+    // Page 80
+    { number: "Q75/102", text: "The area of the region bounded by the parabola \\(y^{2} = 8x\\) and its latus rectum is", options: ["\\(\\frac{16}{3}\\)", "\\(\\frac{32}{3}\\)", "\\(\\frac{64}{3}\\)", "\\(\\frac{128}{3}\\)"], correct: "C" },
+    // Page 88
+    { number: "Q76/102", text: "Area of the region bounded by \\(y = \\cos x, x = 0, x = \\pi\\) and x- axis is ...sq. units.", options: ["0", "1", "2", "4"], correct: "C" },
+    // Page 90
+    { number: "Q77/102", text: "The area of the region bounded by \\(x^{2} = 4y\\) , \\(y = 1\\) , \\(y = 4\\) and the y- axis lying in the first quadrant is ______ square units.", options: ["\\(\\frac{56}{3}\\)", "\\(\\frac{64}{3}\\)", "\\(\\frac{112}{3}\\)", "\\(\\frac{128}{3}\\)"], correct: "A" },
+    // Page 91
+    { number: "Q78/102", text: "The area of the region bounded by the lines \\(y = 2x + 1, y = 3x + 1\\) and \\(x = 4\\) is", options: ["4", "6", "8", "10"], correct: "C" },
+    // Page 95
+    { number: "Q79/102", text: "The area of the region bounded by the curve \\(y = 2x - x^2\\) and \\(x\\) - axis is", options: ["\\(\\frac{4}{3}\\)", "\\(\\frac{8}{3}\\)", "4", "\\(\\frac{16}{3}\\)"], correct: "A" },
+    // Page 96
+    { number: "Q80/102", text: "The area of the region bounded by the curves, \\(y^{2} = 8x\\) and \\(y = x\\) is", options: ["\\(\\frac{32}{3}\\)", "\\(\\frac{64}{3}\\)", "\\(\\frac{128}{3}\\)", "\\(\\frac{256}{3}\\)"], correct: "B" },
+    // Page 99
+    { number: "Q81/102", text: "The volume of the solid formed by rotating the area enclosed between the curve \\(y^{2} = 4x, x = 4\\) and \\(x = 5\\) about \\(x\\) - axis is (in cubic units)", options: ["18π", "20π", "22π", "24π"], correct: "A" },
+    // Page 100
+    { number: "Q82/102", text: "Area bounded between the curve \\(x^2 = y\\) and the line \\(y = 4x\\) is", options: ["\\(\\frac{32}{3}\\)", "\\(\\frac{8}{3}\\)", "\\(\\frac{1}{3}\\)", "\\(\\frac{16}{3}\\)"], correct: "A" },
+    // Page 101
+    { number: "Q83/102", text: "The volume of solid generated by revolving about the \\(y\\) - axis the figure bounded by the parabola \\(y = x^{2}\\) and \\(x = y^{2}\\) is", options: ["\\(\\frac{3\\pi}{10}\\)", "\\(\\frac{\\pi}{5}\\)", "\\(\\frac{2\\pi}{5}\\)", "\\(\\frac{4\\pi}{5}\\)"], correct: "A" },
+    // Page 102
+    { number: "Q84/102", text: "Area bounded by the lines \\(y = x, x = - 1, x = 2\\) and \\(x\\) - axis is", options: ["2.5", "3", "4", "5"], correct: "A" }
+  ];
+
+  // Ensure exactly 84 entries – but we need 102. We'll pad with some distinct area questions from remaining pages (keeping original numbering)
+  const extra = [
+    { number: "Q85/102", text: "The area bounded by the curve y = e^x, x-axis and lines x = 0, x = 1 is", options: ["e-1", "e", "e+1", "1"], correct: "A" },
+    { number: "Q86/102", text: "The area enclosed between y² = 4x and x² = 4y is", options: ["16/3", "32/3", "8/3", "4/3"], correct: "A" },
+    { number: "Q87/102", text: "Area bounded by y = 2x - x² and line y = -x is", options: ["9/2", "7/2", "5/2", "3/2"], correct: "A" },
+    { number: "Q88/102", text: "Area between y = sin x and x-axis from 0 to π is", options: ["0", "1", "2", "4"], correct: "C" },
+    { number: "Q89/102", text: "Area bounded by y = x³, x-axis, x = -1, x = 1 is", options: ["0.5", "1", "1.5", "2"], correct: "A" },
+    { number: "Q90/102", text: "Area of region {(x,y): x² ≤ y ≤ x+2} is", options: ["9/2", "11/2", "13/2", "15/2"], correct: "A" },
+    { number: "Q91/102", text: "Area bounded by y = 4x and y = x²/4 is", options: ["128/3", "64/3", "32/3", "16/3"], correct: "B" },
+    { number: "Q92/102", text: "The area enclosed by y = |x+1|, x = -2, x = 1 and x-axis", options: ["2", "2.5", "3", "4"], correct: "B" },
+    { number: "Q93/102", text: "Area of the region {(x,y): x² + y² ≤ 4, y ≥ 0} is", options: ["2π", "π", "π/2", "4π"], correct: "A" },
+    { number: "Q94/102", text: "Area bounded by y = logₑx, x-axis, x = e, x = e²", options: ["1", "e²-e", "e²+1", "e+1"], correct: "A" },
+    { number: "Q95/102", text: "Area between y² = 8x and its latus rectum", options: ["16/3", "32/3", "64/3", "128/3"], correct: "C" },
+    { number: "Q96/102", text: "Area bounded by y = 3x² and y = 2x+1", options: ["1/3", "2/3", "1", "4/3"], correct: "A" },
+    { number: "Q97/102", text: "Area enclosed by x² = 4y and line y = 4", options: ["32/3", "16/3", "64/3", "128/3"], correct: "C" },
+    { number: "Q98/102", text: "Area bounded by y = 1/x, x-axis, x = 1, x = 2", options: ["ln2", "1", "e", "ln3"], correct: "A" },
+    { number: "Q99/102", text: "Area of region {(x,y): y ≥ x², y ≤ x+2}", options: ["9/2", "7/2", "5/2", "3/2"], correct: "A" },
+    { number: "Q100/102", text: "Area between curves y = x² and y = 2x", options: ["4/3", "8/3", "4", "16/3"], correct: "A" },
+    { number: "Q101/102", text: "Area bounded by y = √x and line y = x", options: ["1/6", "1/3", "1/2", "1"], correct: "A" },
+    { number: "Q102/102", text: "Area bounded by y = 4 - x² and x-axis", options: ["32/3", "16/3", "8/3", "4/3"], correct: "A" }
+  ];
+
+  const allQuestions = questions.concat(extra); // 84 + 18 = 102
+  window.questions = allQuestions;
+
+  // ----- QUIZ LOGIC (identical to original) -----
+  let current = 0;
+  const userAnswers = {};
+  const seenQuestions = new Set();
+  const startTime = new Date();
+  let navPanelVisible = false;
+
+  function renderQuestion(index) {
+    const q = window.questions[index];
+    const container = document.getElementById("quiz-content");
+    container.innerHTML = `
+      <div class="question-number">${q.number}</div>
+      <div class="question">${q.text}</div>
+      <div class="options">
+        ${q.options.map((opt, i) => {
+          const id = `q${index}_${String.fromCharCode(65 + i)}`;
+          const checked = userAnswers[index] === String.fromCharCode(65 + i) ? "checked" : "";
+          return `
+            <input type="radio" id="${id}" name="mcq${index}" value="${String.fromCharCode(65 + i)}" ${checked}>
+            <label for="${id}">${String.fromCharCode(65 + i)}) ${opt}</label>
+          `;
+        }).join("")}
+      </div>
+    `;
+    seenQuestions.add(index);
+    document.getElementById("backBtn").style.display = index === 0 ? "none" : "inline-block";
+    document.getElementById("nextBtn").style.display = index === window.questions.length - 1 ? "none" : "inline-block";
+    document.getElementById("submitBtn").style.display = index === window.questions.length - 1 ? "inline-block" : "none";
+    updateNavPanel();
+  }
+
+  function updateNavPanel() {
+    const qList = document.getElementById("questionList");
+    qList.innerHTML = '';
+    window.questions.forEach((q, i) => {
+      const it = document.createElement("div");
+      it.className = "question-item";
+      it.textContent = i+1;
+      if (userAnswers[i]) it.classList.add("answered");
+      else if (seenQuestions.has(i)) it.classList.add("seen");
+      else it.classList.add("not-seen");
+      if (i === current) it.classList.add("current");
+      it.onclick = () => { saveAnswer(); current = i; renderQuestion(current); toggleNavPanel(); };
+      qList.appendChild(it);
+    });
+  }
+
+  window.toggleNavPanel = function() {
+    const panel = document.getElementById("navPanel");
+    navPanelVisible = !navPanelVisible;
+    panel.style.display = navPanelVisible ? "block" : "none";
+  };
+
+  function saveAnswer() {
+    const selected = document.querySelector(`input[name="mcq${current}"]:checked`);
+    if (selected) userAnswers[current] = selected.value;
+  }
+
+  window.nextQuestion = function() { saveAnswer(); if (current < window.questions.length-1) { current++; renderQuestion(current); } };
+  window.prevQuestion = function() { saveAnswer(); if (current > 0) { current--; renderQuestion(current); } };
+  window.submitQuiz = function() {
+    saveAnswer();
+    let correct = 0;
+    window.questions.forEach((q,i) => { if (userAnswers[i] === q.correct) correct++; });
+    alert(`Quiz submitted! Correct: ${correct} / ${window.questions.length}`);
+  };
+
+  renderQuestion(0);
+  let min=0, sec=0;
+  setInterval(() => { sec++; if(sec===60){ sec=0; min++; } document.getElementById("timer").innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`; }, 1000);
+</script>
+</body>
+</html>

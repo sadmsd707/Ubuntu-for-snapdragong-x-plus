@@ -12,7 +12,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <style>
-    /* ========== YOUR EXACT ORIGINAL CSS (NO CHANGES) ========== */
+    /* ========== YOUR ORIGINAL CSS (UNCHANGED) ========== */
     * {
       margin: 0;
       padding: 0;
@@ -27,7 +27,6 @@
       overflow-x: hidden;
     }
 
-    /* Loading overlay */
     #loadingOverlay {
       position: fixed;
       top: 0;
@@ -58,32 +57,6 @@
       to {
         transform: rotate(360deg);
       }
-    }
-
-    /* Warning message for bad config */
-    #configWarning {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      z-index: 99999;
-      text-align: center;
-      padding-top: 20vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    #configWarning h2 {
-      color: #dc2626;
-      margin-bottom: 1rem;
-    }
-
-    #configWarning p {
-      color: #475569;
-      max-width: 600px;
-      margin: 1rem auto;
     }
 
     header {
@@ -991,16 +964,6 @@
     <div>Checking authentication...</div>
   </div>
 
-  <!-- Warning if Firebase config is still placeholder -->
-  <div id="configWarning">
-    <h2>⚠️ Firebase Configuration Missing</h2>
-    <p>You need to replace the placeholder Firebase config in this HTML file with your own project's settings.</p>
-    <p>Go to your Firebase Console → Project Settings → General → Your apps → Web app and copy the
-      <code>firebaseConfig</code> object.
-    </p>
-    <button class="btn" onclick="location.reload()">I've updated it, reload</button>
-  </div>
-
   <header>
     <h1>Soham - Teacher Dashboard</h1>
     <button class="hamburger" id="hamburger">
@@ -1218,8 +1181,7 @@
   </footer>
 
   <script>
-    // ---------- Firebase Configuration ----------
-    // !! REPLACE THESE VALUES with your own Firebase project config !!
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
     const firebaseConfig = {
       apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
       authDomain: "soham-6d886.firebaseapp.com",
@@ -1230,453 +1192,515 @@
       measurementId: "G-CB1J6LQ7DJ"
     };
 
-    // Check if config is still placeholder
-    if (firebaseConfig.apiKey === "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc") {
-      document.getElementById("loadingOverlay").style.display = "none";
-      document.getElementById("configWarning").style.display = "block";
-    } else {
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-      const auth = firebase.auth();
+    // Initialize Firebase immediately (no placeholder check)
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-      // Prevent redirect loops
-      let redirecting = false;
+    // Prevent redirect loops
+    let redirecting = false;
 
-      // Global variables
-      let allStudents = [];
-      let filteredStudents = [];
-      let currentPage = 1;
-      const studentsPerPage = 10;
-      let isStudentListVisible = false;
-      let currentEditingStudentId = null;
+    // Global variables
+    let allStudents = [];
+    let filteredStudents = [];
+    let currentPage = 1;
+    const studentsPerPage = 10;
+    let isStudentListVisible = false;
+    let currentEditingStudentId = null;
 
-      // ---------- Authentication Check ----------
-      auth.onAuthStateChanged(async (user) => {
-        if (redirecting) return;
+    // ---------- Authentication Check ----------
+    auth.onAuthStateChanged(async (user) => {
+      if (redirecting) return;
 
-        if (!user) {
-          redirecting = true;
-          window.location.replace("../role-selection.html");
+      if (!user) {
+        redirecting = true;
+        window.location.replace("../role-selection.html");
+        return;
+      }
+
+      try {
+        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
+        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
+          // User is not a teacher – show error but do NOT auto-signout to avoid loop
+          document.getElementById("loadingOverlay").innerHTML = `
+            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
+            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
+            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
+            <button class="btn" onclick="auth.signOut()">Logout</button>
+          `;
           return;
         }
 
-        try {
-          const teacherDoc = await db.collection("teachers").doc(user.uid).get();
-          if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
-            // User is not a teacher – show error but do NOT auto-signout to avoid loop
-            document.getElementById("loadingOverlay").innerHTML = `
-              <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
-              <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
-              <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
-              <button class="btn" onclick="auth.signOut()">Logout</button>
-            `;
-            return;
-          }
-
-          // Valid teacher – hide loading screen
-          document.getElementById("loadingOverlay").style.display = "none";
-          console.log("Teacher authenticated:", user.email);
-        } catch (error) {
-          console.error("Auth check error:", error);
-          document.getElementById("loadingOverlay").innerHTML = `
-            <div style="color:#dc2626;">Error checking permissions. Please try again.</div>
-            <button class="btn" onclick="location.reload()">Reload</button>
-          `;
-        }
-      });
-
-      // Logout
-      document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-        e.preventDefault();
-        await auth.signOut();
-        window.location.href = "../role-selection.html";
-      });
-
-      // ---------- Utility Functions ----------
-      function calculateAge(dob) {
-        if (!dob) return null;
-        const birthDate = new Date(dob);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
-        return age;
+        // Valid teacher – hide loading screen
+        document.getElementById("loadingOverlay").style.display = "none";
+        console.log("Teacher authenticated:", user.email);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        document.getElementById("loadingOverlay").innerHTML = `
+          <div style="color:#dc2626;">Error checking permissions. Please try again.</div>
+          <button class="btn" onclick="location.reload()">Reload</button>
+        `;
       }
+    });
 
-      function formatDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-      }
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await auth.signOut();
+      window.location.href = "../role-selection.html";
+    });
 
-      function showSuccessMessage(message, icon = '✅') {
-        const successMessage = document.getElementById('successMessage');
-        successMessage.innerHTML = `<span class="success-icon">${icon}</span><span>${message}</span>`;
-        successMessage.classList.add('show');
-        setTimeout(() => successMessage.classList.remove('show'), 3000);
-      }
+    // ---------- Utility Functions ----------
+    function calculateAge(dob) {
+      if (!dob) return null;
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+      return age;
+    }
 
-      function showAutoSaveIndicator() {
-        const indicator = document.getElementById('autoSaveIndicator');
-        indicator.classList.add('show');
-        setTimeout(() => indicator.classList.remove('show'), 2000);
-      }
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
 
-      // ---------- Form Auto‑save (client‑side only) ----------
-      const form = document.getElementById('addStudentForm');
-      const formFields = form.querySelectorAll('input, select');
+    function showSuccessMessage(message, icon = '✅') {
+      const successMessage = document.getElementById('successMessage');
+      successMessage.innerHTML = `<span class="success-icon">${icon}</span><span>${message}</span>`;
+      successMessage.classList.add('show');
+      setTimeout(() => successMessage.classList.remove('show'), 3000);
+    }
 
-      window.addEventListener('DOMContentLoaded', () => {
-        if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-          loadSavedData();
-        }
-      });
+    function showAutoSaveIndicator() {
+      const indicator = document.getElementById('autoSaveIndicator');
+      indicator.classList.add('show');
+      setTimeout(() => indicator.classList.remove('show'), 2000);
+    }
 
-      formFields.forEach(field => {
-        field.addEventListener('input', () => { saveFormData(); showAutoSaveIndicator(); });
-        field.addEventListener('change', () => { saveFormData(); showAutoSaveIndicator(); });
-      });
+    // ---------- Form Auto‑save (client‑side only) ----------
+    const form = document.getElementById('addStudentForm');
+    const formFields = form.querySelectorAll('input, select');
 
-      function saveFormData() {
-        const formData = {
-          studentName: document.getElementById('studentName').value,
-          studentId: document.getElementById('studentId').value,
-          motherName: document.getElementById('motherName').value,
-          dateOfBirth: document.getElementById('dateOfBirth').value,
-          studentClass: document.getElementById('studentClass').value,
-          studentMobile: document.getElementById('studentMobile').value,
-          parentMobile: document.getElementById('parentMobile').value
-        };
-        localStorage.setItem('studentFormData', JSON.stringify(formData));
-      }
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+    });
 
-      function loadSavedData() {
-        const savedData = localStorage.getItem('studentFormData');
-        if (savedData) {
-          const formData = JSON.parse(savedData);
-          document.getElementById('studentName').value = formData.studentName || '';
-          document.getElementById('studentId').value = formData.studentId || '';
-          document.getElementById('motherName').value = formData.motherName || '';
-          document.getElementById('dateOfBirth').value = formData.dateOfBirth || '';
-          document.getElementById('studentClass').value = formData.studentClass || '';
-          document.getElementById('studentMobile').value = formData.studentMobile || '';
-          document.getElementById('parentMobile').value = formData.parentMobile || '';
-          if (formData.dateOfBirth) {
-            const age = calculateAge(formData.dateOfBirth);
-            document.getElementById('ageDisplay').textContent = `Age: ${age} years`;
-            document.getElementById('ageDisplay').style.display = 'inline-block';
-          }
+    formFields.forEach(field => {
+      field.addEventListener('input', () => { saveFormData(); showAutoSaveIndicator(); });
+      field.addEventListener('change', () => { saveFormData(); showAutoSaveIndicator(); });
+    });
+
+    function saveFormData() {
+      const formData = {
+        studentName: document.getElementById('studentName').value,
+        studentId: document.getElementById('studentId').value,
+        motherName: document.getElementById('motherName').value,
+        dateOfBirth: document.getElementById('dateOfBirth').value,
+        studentClass: document.getElementById('studentClass').value,
+        studentMobile: document.getElementById('studentMobile').value,
+        parentMobile: document.getElementById('parentMobile').value
+      };
+      localStorage.setItem('studentFormData', JSON.stringify(formData));
+    }
+
+    function loadSavedData() {
+      const savedData = localStorage.getItem('studentFormData');
+      if (savedData) {
+        const formData = JSON.parse(savedData);
+        document.getElementById('studentName').value = formData.studentName || '';
+        document.getElementById('studentId').value = formData.studentId || '';
+        document.getElementById('motherName').value = formData.motherName || '';
+        document.getElementById('dateOfBirth').value = formData.dateOfBirth || '';
+        document.getElementById('studentClass').value = formData.studentClass || '';
+        document.getElementById('studentMobile').value = formData.studentMobile || '';
+        document.getElementById('parentMobile').value = formData.parentMobile || '';
+        if (formData.dateOfBirth) {
+          const age = calculateAge(formData.dateOfBirth);
+          document.getElementById('ageDisplay').textContent = `Age: ${age} years`;
+          document.getElementById('ageDisplay').style.display = 'inline-block';
         }
       }
+    }
 
-      window.clearForm = function () {
+    window.clearForm = function () {
+      form.reset();
+      document.getElementById('ageDisplay').style.display = 'none';
+      localStorage.removeItem('studentFormData');
+      currentEditingStudentId = null;
+      document.getElementById('addStudentForm').querySelector('button[type="submit"]').innerHTML = '<span>Add Student</span>';
+      form.onsubmit = defaultFormSubmit;
+      showSuccessMessage('Form cleared successfully!', '🗑️');
+    };
+
+    window.generateStudentId = function () {
+      const prefix = 'SOHAM';
+      const random = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('studentId').value = `${prefix}${random}`;
+      saveFormData();
+      showAutoSaveIndicator();
+    };
+
+    document.getElementById('dateOfBirth').addEventListener('change', function () {
+      const dob = this.value;
+      const ageDisplay = document.getElementById('ageDisplay');
+      if (dob) {
+        ageDisplay.textContent = `Age: ${calculateAge(dob)} years`;
+        ageDisplay.style.display = 'inline-block';
+      } else {
+        ageDisplay.style.display = 'none';
+      }
+    });
+
+    // ---------- Firebase CRUD ----------
+    async function saveStudentToFirebase(formData) {
+      await db.collection("students").doc(formData.studentId).set({
+        ...formData,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      await db.collection("studentCredentials").doc(formData.studentId).set({
+        studentId: formData.studentId,
+        password: '290108',
+        name: formData.studentName,
+        motherName: formData.motherName,
+        class: formData.studentClass,
+        role: 'student'
+      });
+      await incrementClassCount(formData.studentClass, 1);
+    }
+
+    async function updateStudentInFirebase(oldStudentId, formData) {
+      if (oldStudentId !== formData.studentId) {
+        const newDoc = await db.collection("students").doc(formData.studentId).get();
+        if (newDoc.exists) throw new Error("A student with the new ID already exists.");
+        await db.collection("students").doc(oldStudentId).delete();
+        await db.collection("studentCredentials").doc(oldStudentId).delete();
+        const oldStudent = allStudents.find(s => s.studentId === oldStudentId);
+        if (oldStudent) await incrementClassCount(oldStudent.studentClass, -1);
+      }
+      await db.collection("students").doc(formData.studentId).set({
+        ...formData,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      await db.collection("studentCredentials").doc(formData.studentId).set({
+        studentId: formData.studentId,
+        password: '290108',
+        name: formData.studentName,
+        motherName: formData.motherName,
+        class: formData.studentClass,
+        role: 'student'
+      }, { merge: true });
+      await incrementClassCount(formData.studentClass, 1);
+    }
+
+    async function deleteStudentFromFirebase(studentId) {
+      const studentDoc = await db.collection("students").doc(studentId).get();
+      const studentData = studentDoc.data();
+      await db.collection("students").doc(studentId).delete();
+      await db.collection("studentCredentials").doc(studentId).delete();
+      if (studentData) await incrementClassCount(studentData.studentClass, -1);
+    }
+
+    async function incrementClassCount(className, delta) {
+      if (!className) return;
+      const ref = db.collection("classStats").doc(className);
+      await db.runTransaction(async (transaction) => {
+        const doc = await transaction.get(ref);
+        let newCount = (doc.exists ? (doc.data().studentCount || 0) : 0) + delta;
+        newCount = Math.max(0, newCount);
+        transaction.set(ref, { studentCount: newCount }, { merge: true });
+      });
+    }
+
+    // ---------- Form Submission ----------
+    const defaultFormSubmit = async function (e) {
+      e.preventDefault();
+      const dob = document.getElementById('dateOfBirth').value;
+      if (!dob) { alert('Please enter Date of Birth'); return; }
+      const age = calculateAge(dob);
+      if (age < 10 || age > 25) {
+        if (!confirm(`Student age is ${age} years. Are you sure?`)) return;
+      }
+
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="loading"></span> Saving...';
+      submitBtn.disabled = true;
+
+      const formData = {
+        studentName: document.getElementById('studentName').value,
+        studentId: document.getElementById('studentId').value,
+        motherName: document.getElementById('motherName').value,
+        dateOfBirth: dob,
+        age: age,
+        studentClass: document.getElementById('studentClass').value,
+        studentMobile: document.getElementById('studentMobile').value,
+        parentMobile: document.getElementById('parentMobile').value
+      };
+
+      try {
+        if (currentEditingStudentId) {
+          await updateStudentInFirebase(currentEditingStudentId, formData);
+          showSuccessMessage('Student updated successfully!', '✅');
+        } else {
+          const existing = await db.collection("students").doc(formData.studentId).get();
+          if (existing.exists) throw new Error("Student ID already exists.");
+          await saveStudentToFirebase(formData);
+          showSuccessMessage('Student added successfully!', '✅');
+        }
+
         form.reset();
         document.getElementById('ageDisplay').style.display = 'none';
         localStorage.removeItem('studentFormData');
         currentEditingStudentId = null;
-        document.getElementById('addStudentForm').querySelector('button[type="submit"]').innerHTML = '<span>Add Student</span>';
-        form.onsubmit = defaultFormSubmit;
-        showSuccessMessage('Form cleared successfully!', '🗑️');
-      };
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        if (isStudentListVisible) loadStudentsFromFirebase();
+      } catch (error) {
+        alert('Error: ' + error.message);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    };
+    form.onsubmit = defaultFormSubmit;
 
-      window.generateStudentId = function () {
-        const prefix = 'SOHAM';
-        const random = Math.floor(1000 + Math.random() * 9000);
-        document.getElementById('studentId').value = `${prefix}${random}`;
-        saveFormData();
-        showAutoSaveIndicator();
-      };
+    // ---------- Load Students ----------
+    async function loadStudentsFromFirebase() {
+      try {
+        const snapshot = await db.collection("students").orderBy("timestamp", "desc").get();
+        allStudents = [];
+        snapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+        filteredStudents = [...allStudents];
+        renderStudentTable();
+        updatePagination();
+        setupSearchAndFilterListeners();
+      } catch (error) {
+        console.error("Error loading students:", error);
+      }
+    }
 
-      document.getElementById('dateOfBirth').addEventListener('change', function () {
-        const dob = this.value;
-        const ageDisplay = document.getElementById('ageDisplay');
-        if (dob) {
-          ageDisplay.textContent = `Age: ${calculateAge(dob)} years`;
-          ageDisplay.style.display = 'inline-block';
-        } else {
-          ageDisplay.style.display = 'none';
-        }
+    function renderStudentTable() {
+      const tableBody = document.getElementById('studentTableBody');
+      const emptyState = document.getElementById('emptyState');
+      const tableContainer = document.querySelector('.student-table-container');
+      const pagination = document.getElementById('pagination');
+
+      if (filteredStudents.length === 0) {
+        tableContainer.style.display = 'none';
+        emptyState.style.display = 'block';
+        pagination.style.display = 'none';
+        return;
+      }
+
+      tableContainer.style.display = 'block';
+      emptyState.style.display = 'none';
+      pagination.style.display = 'flex';
+
+      const startIndex = (currentPage - 1) * studentsPerPage;
+      const endIndex = Math.min(startIndex + studentsPerPage, filteredStudents.length);
+      const studentsToShow = filteredStudents.slice(startIndex, endIndex);
+
+      tableBody.innerHTML = '';
+      studentsToShow.forEach(student => {
+        const row = document.createElement('tr');
+        const initials = student.studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        const className = student.studentClass.replace(/-/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase());
+        const age = student.age || calculateAge(student.dateOfBirth);
+        row.innerHTML = `
+          <td><div class="student-name-cell"><div class="student-avatar">${initials}</div><div>${student.studentName}</div></div></td>
+          <td>${student.studentId}</td>
+          <td>${student.motherName || '-'}</td>
+          <td>${formatDate(student.dateOfBirth)}</td>
+          <td><span class="age-badge">${age} yrs</span></td>
+          <td><span class="class-badge ${student.studentClass}">${className}</span></td>
+          <td>${student.studentMobile}</td>
+          <td>${student.parentMobile}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn edit-btn" onclick="editStudent('${student.studentId}')">✏️</button>
+              <button class="action-btn delete-btn" onclick="deleteStudent('${student.studentId}')">🗑️</button>
+            </div>
+          </td>
+        `;
+        tableBody.appendChild(row);
       });
+    }
 
-      // ---------- Firebase CRUD ----------
-      async function saveStudentToFirebase(formData) {
-        await db.collection("students").doc(formData.studentId).set({
-          ...formData,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await db.collection("studentCredentials").doc(formData.studentId).set({
-          studentId: formData.studentId,
-          password: '290108',
-          name: formData.studentName,
-          motherName: formData.motherName,
-          class: formData.studentClass,
-          role: 'student'
-        });
-        await incrementClassCount(formData.studentClass, 1);
-      }
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+      const paginationInfo = document.getElementById('paginationInfo');
+      const paginationControls = document.getElementById('paginationControls');
 
-      async function updateStudentInFirebase(oldStudentId, formData) {
-        if (oldStudentId !== formData.studentId) {
-          const newDoc = await db.collection("students").doc(formData.studentId).get();
-          if (newDoc.exists) throw new Error("A student with the new ID already exists.");
-          await db.collection("students").doc(oldStudentId).delete();
-          await db.collection("studentCredentials").doc(oldStudentId).delete();
-          const oldStudent = allStudents.find(s => s.studentId === oldStudentId);
-          if (oldStudent) await incrementClassCount(oldStudent.studentClass, -1);
-        }
-        await db.collection("students").doc(formData.studentId).set({
-          ...formData,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await db.collection("studentCredentials").doc(formData.studentId).set({
-          studentId: formData.studentId,
-          password: '290108',
-          name: formData.studentName,
-          motherName: formData.motherName,
-          class: formData.studentClass,
-          role: 'student'
-        }, { merge: true });
-        await incrementClassCount(formData.studentClass, 1);
-      }
+      const startIndex = (currentPage - 1) * studentsPerPage + 1;
+      const endIndex = Math.min(currentPage * studentsPerPage, filteredStudents.length);
+      paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${filteredStudents.length} students`;
 
-      async function deleteStudentFromFirebase(studentId) {
-        const studentDoc = await db.collection("students").doc(studentId).get();
-        const studentData = studentDoc.data();
-        await db.collection("students").doc(studentId).delete();
-        await db.collection("studentCredentials").doc(studentId).delete();
-        if (studentData) await incrementClassCount(studentData.studentClass, -1);
-      }
+      paginationControls.innerHTML = '';
 
-      async function incrementClassCount(className, delta) {
-        if (!className) return;
-        const ref = db.collection("classStats").doc(className);
-        await db.runTransaction(async (transaction) => {
-          const doc = await transaction.get(ref);
-          let newCount = (doc.exists ? (doc.data().studentCount || 0) : 0) + delta;
-          newCount = Math.max(0, newCount);
-          transaction.set(ref, { studentCount: newCount }, { merge: true });
-        });
-      }
+      const prevButton = document.createElement('button');
+      prevButton.className = 'pagination-btn';
+      prevButton.innerHTML = '&laquo; Previous';
+      prevButton.disabled = currentPage === 1;
+      prevButton.addEventListener('click', () => {
+        if (currentPage > 1) { currentPage--; renderStudentTable(); updatePagination(); }
+      });
+      paginationControls.appendChild(prevButton);
 
-      // ---------- Form Submission ----------
-      const defaultFormSubmit = async function (e) {
-        e.preventDefault();
-        const dob = document.getElementById('dateOfBirth').value;
-        if (!dob) { alert('Please enter Date of Birth'); return; }
-        const age = calculateAge(dob);
-        if (age < 10 || age > 25) {
-          if (!confirm(`Student age is ${age} years. Are you sure?`)) return;
-        }
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      if (endPage - startPage + 1 < maxVisiblePages) startPage = Math.max(1, endPage - maxVisiblePages + 1);
 
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span class="loading"></span> Saving...';
-        submitBtn.disabled = true;
-
-        const formData = {
-          studentName: document.getElementById('studentName').value,
-          studentId: document.getElementById('studentId').value,
-          motherName: document.getElementById('motherName').value,
-          dateOfBirth: dob,
-          age: age,
-          studentClass: document.getElementById('studentClass').value,
-          studentMobile: document.getElementById('studentMobile').value,
-          parentMobile: document.getElementById('parentMobile').value
-        };
-
-        try {
-          if (currentEditingStudentId) {
-            await updateStudentInFirebase(currentEditingStudentId, formData);
-            showSuccessMessage('Student updated successfully!', '✅');
-          } else {
-            const existing = await db.collection("students").doc(formData.studentId).get();
-            if (existing.exists) throw new Error("Student ID already exists.");
-            await saveStudentToFirebase(formData);
-            showSuccessMessage('Student added successfully!', '✅');
-          }
-
-          form.reset();
-          document.getElementById('ageDisplay').style.display = 'none';
-          localStorage.removeItem('studentFormData');
-          currentEditingStudentId = null;
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-          if (isStudentListVisible) loadStudentsFromFirebase();
-        } catch (error) {
-          alert('Error: ' + error.message);
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-        }
-      };
-      form.onsubmit = defaultFormSubmit;
-
-      // ---------- Load Students ----------
-      async function loadStudentsFromFirebase() {
-        try {
-          const snapshot = await db.collection("students").orderBy("timestamp", "desc").get();
-          allStudents = [];
-          snapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
-          filteredStudents = [...allStudents];
+      for (let i = startPage; i <= endPage; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+        pageButton.textContent = i;
+        pageButton.addEventListener('click', () => {
+          currentPage = i;
           renderStudentTable();
           updatePagination();
-          setupSearchAndFilterListeners();
-        } catch (error) {
-          console.error("Error loading students:", error);
-        }
+        });
+        paginationControls.appendChild(pageButton);
       }
 
-      function renderStudentTable() {
-        const tableBody = document.getElementById('studentTableBody');
-        const emptyState = document.getElementById('emptyState');
-        const tableContainer = document.querySelector('.student-table-container');
-        const pagination = document.getElementById('pagination');
-
-        if (filteredStudents.length === 0) {
-          tableContainer.style.display = 'none';
-          emptyState.style.display = 'block';
-          pagination.style.display = 'none';
-          return;
-        }
-
-        tableContainer.style.display = 'block';
-        emptyState.style.display = 'none';
-        pagination.style.display = 'flex';
-
-        const startIndex = (currentPage - 1) * studentsPerPage;
-        const endIndex = Math.min(startIndex + studentsPerPage, filteredStudents.length);
-        const studentsToShow = filteredStudents.slice(startIndex, endIndex);
-
-        tableBody.innerHTML = '';
-        studentsToShow.forEach(student => {
-          const row = document.createElement('tr');
-          const initials = student.studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-          const className = student.studentClass.replace(/-/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase());
-          const age = student.age || calculateAge(student.dateOfBirth);
-          row.innerHTML = `
-            <td><div class="student-name-cell"><div class="student-avatar">${initials}</div><div>${student.studentName}</div></div></td>
-            <td>${student.studentId}</td>
-            <td>${student.motherName || '-'}</td>
-            <td>${formatDate(student.dateOfBirth)}</td>
-            <td><span class="age-badge">${age} yrs</span></td>
-            <td><span class="class-badge ${student.studentClass}">${className}</span></td>
-            <td>${student.studentMobile}</td>
-            <td>${student.parentMobile}</td>
-            <td>
-              <div class="action-buttons">
-                <button class="action-btn edit-btn" onclick="editStudent('${student.studentId}')">✏️</button>
-                <button class="action-btn delete-btn" onclick="deleteStudent('${student.studentId}')">🗑️</button>
-              </div>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
-      }
-
-      function updatePagination() { /* same as before, omitted for brevity but included in full code */ }
-      function setupSearchAndFilterListeners() { /* same as before */ }
-      function filterStudents() { /* same as before */ }
-
-      window.toggleStudentList = function () {
-        const section = document.getElementById('studentListSection');
-        const toggleText = document.getElementById('studentListToggleText');
-        isStudentListVisible = !isStudentListVisible;
-        if (isStudentListVisible) {
-          section.style.display = 'block';
-          toggleText.textContent = 'Hide Students';
-          loadStudentsFromFirebase();
-          section.scrollIntoView({ behavior: 'smooth' });
-        } else {
-          section.style.display = 'none';
-          toggleText.textContent = 'View All Students';
-        }
-      };
-
-      window.editStudent = function (studentId) {
-        const student = allStudents.find(s => s.studentId === studentId);
-        if (!student) return;
-        document.getElementById('studentName').value = student.studentName;
-        document.getElementById('studentId').value = student.studentId;
-        document.getElementById('motherName').value = student.motherName || '';
-        document.getElementById('dateOfBirth').value = student.dateOfBirth || '';
-        document.getElementById('studentClass').value = student.studentClass;
-        document.getElementById('studentMobile').value = student.studentMobile;
-        document.getElementById('parentMobile').value = student.parentMobile;
-        if (student.dateOfBirth) {
-          document.getElementById('ageDisplay').textContent = `Age: ${calculateAge(student.dateOfBirth)} years`;
-          document.getElementById('ageDisplay').style.display = 'inline-block';
-        }
-        currentEditingStudentId = studentId;
-        document.querySelector('#addStudentForm button[type="submit"]').innerHTML = '<span>Update Student</span>';
-        form.onsubmit = defaultFormSubmit;
-        showSuccessMessage('Student data loaded for editing!', '✏️');
-        document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
-      };
-
-      window.deleteStudent = async function (studentId) {
-        if (confirm(`Delete student ${studentId}?`)) {
-          try {
-            await deleteStudentFromFirebase(studentId);
-            showSuccessMessage('Student deleted successfully!');
-            if (isStudentListVisible) loadStudentsFromFirebase();
-          } catch (error) {
-            alert('Delete failed: ' + error.message);
-          }
-        }
-      };
-
-      window.exportStudentData = function () {
-        if (filteredStudents.length === 0) { alert('No data to export.'); return; }
-        let csv = "Name,Student ID,Mother's Name,Date of Birth,Age,Class,Student Mobile,Parent Mobile\n";
-        filteredStudents.forEach(s => {
-          csv += `"${s.studentName}","${s.studentId}","${s.motherName || ''}","${formatDate(s.dateOfBirth)}","${s.age || calculateAge(s.dateOfBirth)}","${s.studentClass.replace(/-/g, ' ')}","${s.studentMobile}","${s.parentMobile}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `students_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(a.href);
-        showSuccessMessage('Exported successfully!');
-      };
-
-      // ---------- Hamburger Menu (unchanged) ----------
-      const hamburger = document.getElementById('hamburger');
-      const sideNav = document.getElementById('sideNav');
-      const overlay = document.getElementById('overlay');
-
-      hamburger.addEventListener('click', () => {
-        sideNav.classList.toggle('active');
-        overlay.classList.toggle('active');
-        hamburger.classList.toggle('active');
-        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+      const nextButton = document.createElement('button');
+      nextButton.className = 'pagination-btn';
+      nextButton.innerHTML = 'Next &raquo;';
+      nextButton.disabled = currentPage === totalPages;
+      nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) { currentPage++; renderStudentTable(); updatePagination(); }
       });
-      overlay.addEventListener('click', () => {
+      paginationControls.appendChild(nextButton);
+    }
+
+    function setupSearchAndFilterListeners() {
+      const searchInput = document.getElementById('searchInput');
+      const classFilter = document.getElementById('classFilter');
+      const newSearch = searchInput.cloneNode(true);
+      const newFilter = classFilter.cloneNode(true);
+      searchInput.parentNode.replaceChild(newSearch, searchInput);
+      classFilter.parentNode.replaceChild(newFilter, classFilter);
+
+      document.getElementById('searchInput').addEventListener('input', filterStudents);
+      document.getElementById('classFilter').addEventListener('change', filterStudents);
+    }
+
+    function filterStudents() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const selectedClass = document.getElementById('classFilter').value;
+
+      filteredStudents = allStudents.filter(student => {
+        const matchesSearch =
+          student.studentName.toLowerCase().includes(searchTerm) ||
+          student.studentId.toLowerCase().includes(searchTerm) ||
+          (student.motherName && student.motherName.toLowerCase().includes(searchTerm));
+        const matchesClass = selectedClass === '' || student.studentClass === selectedClass;
+        return matchesSearch && matchesClass;
+      });
+
+      currentPage = 1;
+      renderStudentTable();
+      updatePagination();
+    }
+
+    window.toggleStudentList = function () {
+      const section = document.getElementById('studentListSection');
+      const toggleText = document.getElementById('studentListToggleText');
+      isStudentListVisible = !isStudentListVisible;
+      if (isStudentListVisible) {
+        section.style.display = 'block';
+        toggleText.textContent = 'Hide Students';
+        loadStudentsFromFirebase();
+        section.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        section.style.display = 'none';
+        toggleText.textContent = 'View All Students';
+      }
+    };
+
+    window.editStudent = function (studentId) {
+      const student = allStudents.find(s => s.studentId === studentId);
+      if (!student) return;
+      document.getElementById('studentName').value = student.studentName;
+      document.getElementById('studentId').value = student.studentId;
+      document.getElementById('motherName').value = student.motherName || '';
+      document.getElementById('dateOfBirth').value = student.dateOfBirth || '';
+      document.getElementById('studentClass').value = student.studentClass;
+      document.getElementById('studentMobile').value = student.studentMobile;
+      document.getElementById('parentMobile').value = student.parentMobile;
+      if (student.dateOfBirth) {
+        document.getElementById('ageDisplay').textContent = `Age: ${calculateAge(student.dateOfBirth)} years`;
+        document.getElementById('ageDisplay').style.display = 'inline-block';
+      }
+      currentEditingStudentId = studentId;
+      document.querySelector('#addStudentForm button[type="submit"]').innerHTML = '<span>Update Student</span>';
+      form.onsubmit = defaultFormSubmit;
+      showSuccessMessage('Student data loaded for editing!', '✏️');
+      document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.deleteStudent = async function (studentId) {
+      if (confirm(`Delete student ${studentId}?`)) {
+        try {
+          await deleteStudentFromFirebase(studentId);
+          showSuccessMessage('Student deleted successfully!');
+          if (isStudentListVisible) loadStudentsFromFirebase();
+        } catch (error) {
+          alert('Delete failed: ' + error.message);
+        }
+      }
+    };
+
+    window.exportStudentData = function () {
+      if (filteredStudents.length === 0) { alert('No data to export.'); return; }
+      let csv = "Name,Student ID,Mother's Name,Date of Birth,Age,Class,Student Mobile,Parent Mobile\n";
+      filteredStudents.forEach(s => {
+        csv += `"${s.studentName}","${s.studentId}","${s.motherName || ''}","${formatDate(s.dateOfBirth)}","${s.age || calculateAge(s.dateOfBirth)}","${s.studentClass.replace(/-/g, ' ')}","${s.studentMobile}","${s.parentMobile}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `students_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showSuccessMessage('Exported successfully!');
+    };
+
+    // ---------- Hamburger Menu ----------
+    const hamburger = document.getElementById('hamburger');
+    const sideNav = document.getElementById('sideNav');
+    const overlay = document.getElementById('overlay');
+
+    hamburger.addEventListener('click', () => {
+      sideNav.classList.toggle('active');
+      overlay.classList.toggle('active');
+      hamburger.classList.toggle('active');
+      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+    });
+    overlay.addEventListener('click', () => {
+      sideNav.classList.remove('active');
+      overlay.classList.remove('active');
+      hamburger.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+    document.querySelectorAll('.side-nav a').forEach(link => {
+      link.addEventListener('click', () => {
         sideNav.classList.remove('active');
         overlay.classList.remove('active');
         hamburger.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
-      document.querySelectorAll('.side-nav a').forEach(link => {
-        link.addEventListener('click', () => {
-          sideNav.classList.remove('active');
-          overlay.classList.remove('active');
-          hamburger.classList.remove('active');
-          document.body.style.overflow = 'auto';
-        });
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-          sideNav.classList.remove('active');
-          overlay.classList.remove('active');
-          hamburger.classList.remove('active');
-          document.body.style.overflow = 'auto';
-        }
-      });
-
-      // Pagination & filter functions (same as earlier code, included in full file)
-      // ... (they are present in the complete code above but omitted here for answer brevity)
-    }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
   </script>
 </body>
 

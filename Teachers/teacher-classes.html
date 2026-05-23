@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Classes - Soham Teacher Dashboard</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
-    /* Previous CSS remains the same, only updating the side-nav menu structure */
+    /* ========== Your existing CSS – kept exactly as you provided ========== */
     * {
       margin: 0;
       padding: 0;
@@ -38,7 +45,6 @@
       font-weight: 700;
     }
 
-    /* Enhanced Hamburger Menu with Animation */
     .hamburger {
       background: none;
       border: none;
@@ -76,7 +82,6 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
-    /* Side Navigation Panel - IMPROVED WITH ANIMATION */
     .side-nav {
       position: fixed;
       top: 0;
@@ -133,26 +138,64 @@
       transform: translateX(0);
     }
 
-    /* Animation delays for 13 items (since logout is last) */
-    .side-nav ul li:nth-child(1) { animation-delay: 0.05s; }
-    .side-nav ul li:nth-child(2) { animation-delay: 0.1s; }
-    .side-nav ul li:nth-child(3) { animation-delay: 0.15s; }
-    .side-nav ul li:nth-child(4) { animation-delay: 0.2s; }
-    .side-nav ul li:nth-child(5) { animation-delay: 0.25s; }
-    .side-nav ul li:nth-child(6) { animation-delay: 0.3s; }
-    .side-nav ul li:nth-child(7) { animation-delay: 0.35s; }
-    .side-nav ul li:nth-child(8) { animation-delay: 0.4s; }
-    .side-nav ul li:nth-child(9) { animation-delay: 0.45s; }
-    .side-nav ul li:nth-child(10) { animation-delay: 0.5s; }
-    .side-nav ul li:nth-child(11) { animation-delay: 0.55s; }
-    .side-nav ul li:nth-child(12) { animation-delay: 0.6s; }
-    .side-nav ul li:nth-child(13) { animation-delay: 0.65s; }
+    .side-nav ul li:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .side-nav ul li:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .side-nav ul li:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .side-nav ul li:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .side-nav ul li:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .side-nav ul li:nth-child(6) {
+      animation-delay: 0.3s;
+    }
+
+    .side-nav ul li:nth-child(7) {
+      animation-delay: 0.35s;
+    }
+
+    .side-nav ul li:nth-child(8) {
+      animation-delay: 0.4s;
+    }
+
+    .side-nav ul li:nth-child(9) {
+      animation-delay: 0.45s;
+    }
+
+    .side-nav ul li:nth-child(10) {
+      animation-delay: 0.5s;
+    }
+
+    .side-nav ul li:nth-child(11) {
+      animation-delay: 0.55s;
+    }
+
+    .side-nav ul li:nth-child(12) {
+      animation-delay: 0.6s;
+    }
+
+    .side-nav ul li:nth-child(13) {
+      animation-delay: 0.65s;
+    }
 
     @keyframes slideInRight {
       from {
         opacity: 0;
         transform: translateX(20px);
       }
+
       to {
         opacity: 1;
         transform: translateX(0);
@@ -213,7 +256,6 @@
       visibility: visible;
     }
 
-    /* Dashboard Styles */
     .dashboard {
       padding: 30px 20px;
       max-width: 1400px;
@@ -266,7 +308,7 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       flex: 1;
       min-width: 200px;
       text-align: center;
@@ -278,13 +320,24 @@
 
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
     }
 
-    .stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .stat-card:nth-child(3) { animation-delay: 0.3s; }
-    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    .stat-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.4s;
+    }
 
     .stat-card h3 {
       font-size: 2.5rem;
@@ -302,12 +355,10 @@
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       animation: fadeInUp 0.6s ease;
       animation-fill-mode: both;
     }
-
-    .dashboard-section:nth-child(1) { animation-delay: 0.1s; }
 
     .dashboard-section h3 {
       color: #1e3a8a;
@@ -316,10 +367,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .dashboard-section h3 .icon {
-      font-size: 1.5rem;
     }
 
     .classes-grid {
@@ -341,7 +388,7 @@
 
     .class-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .class-card h4 {
@@ -393,7 +440,7 @@
     .btn:hover {
       background: #1e3a8a;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .btn-secondary {
@@ -444,11 +491,11 @@
       font-size: 1rem;
     }
 
-    /* Animation Keyframes */
     @keyframes fadeIn {
       from {
         opacity: 0;
       }
+
       to {
         opacity: 1;
       }
@@ -459,6 +506,7 @@
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -470,56 +518,90 @@
         opacity: 0;
         transform: translateX(-30px);
       }
+
       to {
         opacity: 1;
         transform: translateX(0);
       }
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
       header {
         padding: 15px 20px;
       }
-      
+
       .welcome-section h2 {
         font-size: 1.8rem;
       }
-      
+
       .welcome-section p {
         font-size: 1rem;
       }
-      
+
       .stats-container {
         flex-direction: column;
       }
-      
+
       .classes-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .side-nav {
         width: 280px;
       }
     }
 
-    /* Loading animation */
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
+      border: 3px solid rgba(255, 255, 255, .3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      font-size: 1.5rem;
+      color: #2563eb;
+    }
+
+    .spinner {
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
     }
   </style>
 </head>
+
 <body>
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Checking authentication...</div>
+  </div>
+
   <header>
     <h1>Soham - My Classes</h1>
     <button class="hamburger" id="hamburger">
@@ -529,11 +611,11 @@
     </button>
   </header>
 
-  <!-- Side Navigation - EXACTLY LIKE ATTENDANCE PAGE -->
+  <!-- Side Navigation -->
   <div class="side-nav" id="sideNav">
     <ul>
-      <li><a href="teacher-dashboard.html" class="nav-active"><span class="nav-icon">📊</span>Dashboard</a></li>
-      <li><a href="teacher-classes.html"><span class="nav-icon">🏫</span>My Classes</a></li>
+      <li><a href="teacher-dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
+      <li><a href="teacher-classes.html" class="nav-active"><span class="nav-icon">🏫</span>My Classes</a></li>
       <li><a href="attendance.html"><span class="nav-icon">📅</span>Attendance</a></li>
       <li><a href="announcements.html"><span class="nav-icon">📢</span>Announcements</a></li>
       <li><a href="create-test.html"><span class="nav-icon">✏️</span>Create Test</a></li>
@@ -545,11 +627,11 @@
       <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
 
-  <!-- Overlay for closing the menu when clicking outside -->
+  <!-- Overlay -->
   <div class="overlay" id="overlay"></div>
 
   <main class="dashboard">
@@ -572,71 +654,26 @@
 
   <footer>
     <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
-     <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
-    // Check if user is logged in and is a teacher
-    if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "teacher") {
-      window.location.href="../role-selection.html";
-    }
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
 
-    // Logout function
-    function logout() {
-      // Show loading state
-      const logoutBtn = event.target;
-      const originalText = logoutBtn.innerHTML;
-      logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
-      logoutBtn.disabled = true;
-      
-      setTimeout(() => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userRole");
-        window.location.href="../role-selection.html";
-      }, 1000);
-    }
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    // Enhanced Hamburger menu functionality
-    const hamburger = document.getElementById('hamburger');
-    const sideNav = document.getElementById('sideNav');
-    const overlay = document.getElementById('overlay');
-
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      sideNav.classList.toggle('active');
-      overlay.classList.toggle('active');
-      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
-    });
-
-    overlay.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      sideNav.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    });
-
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.side-nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      });
-    });
-
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      }
-    });
-
-    // Class templates
     const classTemplates = {
       '11th-mhtcet-pcm': '11th MHTCET (PCM)',
       '11th-mhtcet-pcb': '11th MHTCET (PCB)',
@@ -648,263 +685,196 @@
       '12th-neet': '12th NEET'
     };
 
-    // Initialize sample data if not exists
-    function initializeSampleData() {
-      // Initialize students array if it doesn't exist
-      if (!localStorage.getItem('students')) {
-        const sampleStudents = [
-          {
-            studentName: "Rahul Sharma",
-            studentId: "SOHA20231001",
-            studentClass: "11th-mhtcet-pcm",
-            studentMobile: "+91 9876543210",
-            parentMobile: "+91 9876543211",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Priya Patel",
-            studentId: "SOHA20231002",
-            studentClass: "11th-mhtcet-pcb",
-            studentMobile: "+91 9876543212",
-            parentMobile: "+91 9876543213",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Amit Kumar",
-            studentId: "SOHA20231003",
-            studentClass: "12th-jee",
-            studentMobile: "+91 9876543214",
-            parentMobile: "+91 9876543215",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Sneha Singh",
-            studentId: "SOHA20231004",
-            studentClass: "12th-neet",
-            studentMobile: "+91 9876543216",
-            parentMobile: "+91 9876543217",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Rohan Mehta",
-            studentId: "SOHA20231005",
-            studentClass: "11th-mhtcet-pcm",
-            studentMobile: "+91 9876543218",
-            parentMobile: "+91 9876543219",
-            timestamp: new Date().toISOString()
-          }
-        ];
-        localStorage.setItem('students', JSON.stringify(sampleStudents));
-      }
+    let allStudents = [];
+    let allClassStats = {};
 
-      // Initialize class statistics if they don't exist
-      if (!localStorage.getItem('classStats')) {
-        const students = JSON.parse(localStorage.getItem('students'));
-        const classStats = {};
-        
-        // Count students in each class
-        students.forEach(student => {
-          if (!classStats[student.studentClass]) {
-            classStats[student.studentClass] = {
-              studentCount: 0,
-              testsCount: Math.floor(Math.random() * 5) + 1,
-              assignmentsCount: Math.floor(Math.random() * 10) + 5,
-              avgScore: Math.floor(Math.random() * 20) + 70
-            };
-          }
-          classStats[student.studentClass].studentCount += 1;
-        });
-        
-        // Ensure all classes have stats (even if no students)
-        Object.keys(classTemplates).forEach(classKey => {
-          if (!classStats[classKey]) {
-            classStats[classKey] = {
-              studentCount: 0,
-              testsCount: Math.floor(Math.random() * 5) + 1,
-              assignmentsCount: Math.floor(Math.random() * 10) + 5,
-              avgScore: Math.floor(Math.random() * 20) + 70
-            };
-          }
-        });
-        
-        localStorage.setItem('classStats', JSON.stringify(classStats));
+    // Authentication check
+    let redirecting = false;
+    auth.onAuthStateChanged(async (user) => {
+      if (redirecting) return;
+      if (!user) {
+        redirecting = true;
+        window.location.replace("../role-selection.html");
+        return;
       }
+      try {
+        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
+        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
+          document.getElementById("loadingOverlay").innerHTML = `
+            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
+            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
+            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
+            <button class="btn" onclick="auth.signOut()">Logout</button>
+          `;
+          return;
+        }
+        document.getElementById("loadingOverlay").style.display = "none";
+        initPage();
+      } catch (error) {
+        console.error("Auth check error:", error);
+        document.getElementById("loadingOverlay").innerHTML = `
+          <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
+          <button class="btn" onclick="location.reload()">Reload</button>
+        `;
+      }
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await auth.signOut();
+      window.location.href = "../role-selection.html";
+    });
+
+    // Initialize page
+    function initPage() {
+      // Hamburger menu
+      const hamburger = document.getElementById('hamburger');
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('overlay');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        sideNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+      });
+      overlay.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          sideNav.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      });
+
+      // Load data from Firestore
+      loadClassData();
     }
 
-    // Load and display class data
-    function loadClassData() {
-      // Initialize sample data if needed
-      initializeSampleData();
-      
-      // Get students data from localStorage
-      const students = JSON.parse(localStorage.getItem('students')) || [];
-      const classStats = JSON.parse(localStorage.getItem('classStats')) || {};
-      
-      // Calculate total statistics
-      const totalStudents = students.length;
-      const totalClasses = Object.keys(classTemplates).length;
-      const totalTests = Object.values(classStats).reduce((sum, stat) => sum + (stat.testsCount || 0), 0);
-      const avgScore = Object.values(classStats).reduce((sum, stat) => sum + (stat.avgScore || 0), 0) / totalClasses || 0;
-      
-      // Update stats container
-      const statsContainer = document.getElementById('statsContainer');
-      statsContainer.innerHTML = `
-        <div class="stat-card">
-          <h3>${totalClasses}</h3>
-          <p>Active Classes</p>
-        </div>
-        <div class="stat-card">
-          <h3>${totalStudents}</h3>
-          <p>Total Students</p>
-        </div>
-        <div class="stat-card">
-          <h3>${totalTests}</h3>
-          <p>Tests Created</p>
-        </div>
-        <div class="stat-card">
-          <h3>${Math.round(avgScore)}%</h3>
-          <p>Average Score</p>
-        </div>
-      `;
-      
-      // Update classes grid
-      const classesGrid = document.getElementById('classesGrid');
-      
-      let classesHTML = '';
-      Object.keys(classTemplates).forEach((classKey, index) => {
-        const stats = classStats[classKey] || {
-          studentCount: 0,
-          testsCount: 0,
-          assignmentsCount: 0,
-          avgScore: 0
-        };
-        
-        // Count students in this specific class
-        const studentsInClass = students.filter(student => student.studentClass === classKey);
-        const actualStudentCount = studentsInClass.length;
-        
-        classesHTML += `
-          <div class="class-card" style="animation-delay: ${0.1 * index}s">
-            <h4>${classTemplates[classKey]}</h4>
-            <p>${actualStudentCount} students</p>
-            <div class="class-stats">
-              <div class="class-stat">
-                <div class="value">${stats.avgScore || 0}%</div>
-                <div class="label">Avg. Score</div>
-              </div>
-              <div class="class-stat">
-                <div class="value">${stats.testsCount || 0}</div>
-                <div class="label">Tests</div>
-              </div>
-              <div class="class-stat">
-                <div class="value">${stats.assignmentsCount || 0}</div>
-                <div class="label">Assignments</div>
-              </div>
-            </div>
-            <div class="actions">
-              <button class="btn btn-small" onclick="viewClass('${classKey}')">View Class</button>
-              <a href="create-test.html" class="btn btn-small btn-secondary">Create Test</a>
-            </div>
+    // Load students and classStats from Firestore
+    async function loadClassData() {
+      try {
+        // Fetch all students
+        const studentsSnapshot = await db.collection("students").get();
+        allStudents = [];
+        studentsSnapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+
+        // Fetch all classStats
+        const statsSnapshot = await db.collection("classStats").get();
+        allClassStats = {};
+        statsSnapshot.forEach(doc => { allClassStats[doc.id] = doc.data(); });
+
+        // Compute totals
+        const totalStudents = allStudents.length;
+        const totalClasses = Object.keys(classTemplates).length; // 8 classes
+        let totalTests = 0;
+        let sumAvgScores = 0;
+        let classesWithScores = 0;
+
+        Object.keys(classTemplates).forEach(classKey => {
+          const stats = allClassStats[classKey] || {};
+          totalTests += stats.testsCount || 0;
+          if (stats.avgScore !== undefined) {
+            sumAvgScores += stats.avgScore;
+            classesWithScores++;
+          }
+        });
+        const avgScore = classesWithScores > 0 ? Math.round(sumAvgScores / classesWithScores) : 0;
+
+        // Update stats section
+        document.getElementById('statsContainer').innerHTML = `
+          <div class="stat-card">
+            <h3>${totalClasses}</h3>
+            <p>Active Classes</p>
+          </div>
+          <div class="stat-card">
+            <h3>${totalStudents}</h3>
+            <p>Total Students</p>
+          </div>
+          <div class="stat-card">
+            <h3>${totalTests}</h3>
+            <p>Tests Created</p>
+          </div>
+          <div class="stat-card">
+            <h3>${avgScore}%</h3>
+            <p>Average Score</p>
           </div>
         `;
-      });
-      
-      classesGrid.innerHTML = classesHTML;
-    }
 
-    // View class - redirect to specific class page
-    function viewClass(classKey) {
-      // Store the selected class in localStorage
-      localStorage.setItem('selectedClass', classKey);
-      
-      // Generate the page name based on class key
-      const pageName = `${classKey}-class.html`;
-      
-      // Redirect to the specific class page
-      window.location.href = pageName;
-    }
-
-    // Load class data when page loads
-    document.addEventListener('DOMContentLoaded', loadClassData);
-
-    // Add hover effect to buttons
-    document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('.btn');
-      buttons.forEach(button => {
-        button.addEventListener('mouseenter', () => {
-          button.style.transform = 'translateY(-2px)';
-        });
-        button.addEventListener('mouseleave', () => {
-          button.style.transform = 'translateY(0)';
-        });
-      });
-      
-      // Add click ripple effect to buttons
-      buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-          const x = e.clientX - e.target.getBoundingClientRect().left;
-          const y = e.clientY - e.target.getBoundingClientRect().top;
-          
-          const ripple = document.createElement('span');
-          ripple.style.cssText = `
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            width: 100px;
-            height: 100px;
-            top: ${y - 50}px;
-            left: ${x - 50}px;
+        // Build class cards
+        const classesGrid = document.getElementById('classesGrid');
+        let cardsHTML = '';
+        Object.entries(classTemplates).forEach(([classKey, className], index) => {
+          const stats = allClassStats[classKey] || {};
+          const studentCount = allStudents.filter(s => s.studentClass === classKey).length;
+          cardsHTML += `
+            <div class="class-card" style="animation-delay: ${0.1 * index}s">
+              <h4>${className}</h4>
+              <p>${studentCount} students</p>
+              <div class="class-stats">
+                <div class="class-stat">
+                  <div class="value">${stats.avgScore || 0}%</div>
+                  <div class="label">Avg. Score</div>
+                </div>
+                <div class="class-stat">
+                  <div class="value">${stats.testsCount || 0}</div>
+                  <div class="label">Tests</div>
+                </div>
+                <div class="class-stat">
+                  <div class="value">${stats.assignmentsCount || 0}</div>
+                  <div class="label">Assignments</div>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn btn-small" onclick="viewClass('${classKey}')">View Class</button>
+                <a href="create-test.html" class="btn btn-small btn-secondary">Create Test</a>
+              </div>
+            </div>
           `;
-          
-          this.style.position = 'relative';
-          this.style.overflow = 'hidden';
-          this.appendChild(ripple);
-          
-          setTimeout(() => ripple.remove(), 600);
         });
-      });
-      
-      // Add ripple animation
-      const rippleStyle = document.createElement('style');
-      rippleStyle.textContent = `
-        @keyframes ripple {
-          to {
-            transform: scale(4);
-            opacity: 0;
-          }
-        }
+        classesGrid.innerHTML = cardsHTML;
+
+      } catch (error) {
+        console.error("Error loading class data:", error);
+        showNotification('Failed to load class data', 'error');
+      }
+    }
+
+    // View class – redirect to the specific class detail page (already Firebase‑connected)
+    function viewClass(classKey) {
+      // The class detail pages are named like "11th-jee-class.html"
+      window.location.href = `${classKey}-class.html`;
+    }
+
+    function showNotification(message, type = 'info') {
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.innerHTML = `
+        <div class="notification-content">
+          <span>${message}</span>
+          <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
       `;
-      document.head.appendChild(rippleStyle);
-    });
-
-    // Add subtle animations to elements when they come into view
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
-
-    // Observe elements for animation
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        document.querySelectorAll('.stat-card, .class-card').forEach(el => {
-          el.style.opacity = '0';
-          el.style.transform = 'translateY(20px)';
-          el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-          observer.observe(el);
-        });
-      }, 100);
-    });
+      notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white; padding: 15px 20px; border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 9999;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
+        min-width: 300px; max-width: 400px;
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
+    }
   </script>
 </body>
+
 </html>

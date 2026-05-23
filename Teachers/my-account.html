@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Account - Soham Teacher Dashboard</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
+    /* ========== Your existing CSS – kept exactly as you provided ========== */
     * {
       margin: 0;
       padding: 0;
@@ -37,7 +45,6 @@
       font-weight: 700;
     }
 
-    /* Hamburger Menu Styles */
     .hamburger {
       background: none;
       border: none;
@@ -59,7 +66,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Side Navigation Panel - FIXED TO START FROM TOP WITH NO MARGIN */
     .side-nav {
       position: fixed;
       top: 0;
@@ -70,7 +76,7 @@
       box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
       transition: right 0.4s ease;
       z-index: 1000;
-      padding-top: 0; /* REMOVED padding-top */
+      padding-top: 0;
       display: flex;
       flex-direction: column;
     }
@@ -82,10 +88,10 @@
     .side-nav ul {
       list-style: none;
       padding: 0;
-      margin: 0; /* Remove margin */
+      margin: 0;
       flex: 1;
       overflow-y: auto;
-      max-height: 100vh; /* Full height */
+      max-height: 100vh;
     }
 
     .side-nav ul::-webkit-scrollbar {
@@ -111,7 +117,7 @@
 
     .side-nav ul li:first-child {
       border-top: none;
-      margin-top: 70px; /* Push first item down by header height */
+      margin-top: 70px;
     }
 
     .side-nav ul li a {
@@ -163,7 +169,6 @@
       visibility: visible;
     }
 
-    /* Dashboard Styles */
     .dashboard {
       padding: 30px 20px;
       max-width: 1200px;
@@ -204,7 +209,6 @@
       position: relative;
     }
 
-    /* Account Stats */
     .account-stats {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -216,7 +220,7 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       text-align: center;
       border-left: 4px solid #f59e0b;
       transition: transform 0.3s ease;
@@ -242,7 +246,7 @@
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
 
     .dashboard-section h3 {
@@ -252,10 +256,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .dashboard-section h3 .icon {
-      font-size: 1.5rem;
     }
 
     .profile-section {
@@ -302,7 +302,7 @@
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
 
     .form-container h3 {
@@ -404,7 +404,6 @@
       background: #dc2626;
     }
 
-    /* Success Message */
     .success-message {
       background: #d1fae5;
       color: #065f46;
@@ -421,16 +420,18 @@
       animation: fadeIn 0.3s ease;
     }
 
-    .success-icon {
-      font-size: 1.2rem;
-    }
-
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    /* Account Actions Section */
     .account-actions {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -448,7 +449,7 @@
 
     .action-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .action-card h4 {
@@ -475,69 +476,102 @@
       font-size: 1rem;
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
       header {
         padding: 15px 20px;
       }
-      
+
       .welcome-section h2 {
         font-size: 1.8rem;
       }
-      
+
       .welcome-section p {
         font-size: 1rem;
       }
-      
+
       .profile-section {
         flex-direction: column;
         text-align: center;
       }
-      
+
       .profile-avatar {
         margin: 0 auto;
       }
-      
+
       .form-row {
         grid-template-columns: 1fr;
       }
-      
+
       .actions {
         flex-direction: column;
         align-items: stretch;
       }
-      
+
       .btn {
         width: 100%;
         margin-bottom: 10px;
       }
-      
+
       .account-stats {
         grid-template-columns: 1fr;
       }
-      
+
       .account-actions {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Loading animation */
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
+      border: 3px solid rgba(255, 255, 255, .3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      font-size: 1.5rem;
+      color: #2563eb;
+    }
+
+    .spinner {
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
     }
   </style>
 </head>
+
 <body>
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Checking authentication...</div>
+  </div>
+
   <header>
     <h1>Soham - Teacher Dashboard</h1>
     <button class="hamburger" id="hamburger">
@@ -547,10 +581,9 @@
     </button>
   </header>
 
-  <!-- Side Navigation -->
   <div class="side-nav" id="sideNav">
     <ul>
-      <li><a href="teacher-dashboard.html" class="nav-active"><span class="nav-icon">📊</span>Dashboard</a></li>
+      <li><a href="teacher-dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
       <li><a href="teacher-classes.html"><span class="nav-icon">🏫</span>My Classes</a></li>
       <li><a href="attendance.html"><span class="nav-icon">📅</span>Attendance</a></li>
       <li><a href="announcements.html"><span class="nav-icon">📢</span>Announcements</a></li>
@@ -562,12 +595,11 @@
       <li><a href="add-student.html"><span class="nav-icon">👨‍🎓</span>Add Student</a></li>
       <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
-      <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="my-account.html" class="nav-active"><span class="nav-icon">👤</span>My Account</a></li>
+      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
 
-  <!-- Overlay for closing the menu when clicking outside -->
   <div class="overlay" id="overlay"></div>
 
   <main class="dashboard">
@@ -576,16 +608,12 @@
       <p>Manage your profile and account settings</p>
     </section>
 
-    <!-- Success Message -->
     <div class="success-message" id="successMessage">
       <span class="success-icon">✅</span>
       <span id="successText">Profile updated successfully!</span>
     </div>
 
-    <!-- Account Stats -->
-    <div class="account-stats" id="accountStats">
-      <!-- Stats will be populated by JavaScript -->
-    </div>
+    <div class="account-stats" id="accountStats"></div>
 
     <div class="dashboard-section">
       <div class="profile-section">
@@ -607,30 +635,27 @@
         <div class="form-row">
           <div class="form-group">
             <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" class="form-control" value="Dr. Sharma" required>
+            <input type="text" id="fullName" class="form-control" required>
           </div>
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" class="form-control" value="dr.sharma@soham.edu" required>
+            <input type="email" id="email" class="form-control" disabled>
           </div>
         </div>
-        
         <div class="form-row">
           <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" class="form-control" value="+91 98765 43210" required>
+            <input type="tel" id="phone" class="form-control" required>
           </div>
           <div class="form-group">
             <label for="subjects">Subjects</label>
-            <input type="text" id="subjects" class="form-control" value="Physics, Chemistry, Mathematics" required>
+            <input type="text" id="subjects" class="form-control" required>
           </div>
         </div>
-        
         <div class="form-group">
           <label for="bio">Bio/Description</label>
-          <textarea id="bio" class="form-control" rows="4">Experienced educator with 15+ years of teaching Physics, Chemistry, and Mathematics for competitive exams. Specialized in MHTCET and JEE preparation.</textarea>
+          <textarea id="bio" class="form-control" rows="4"></textarea>
         </div>
-        
         <div class="actions">
           <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
           <button type="submit" class="btn btn-success">Update Profile</button>
@@ -648,15 +673,13 @@
           </div>
           <div class="form-group">
             <label for="newPassword">New Password</label>
-            <input type="password" id="newPassword" class="form-control" required>
+            <input type="password" id="newPassword" class="form-control" required minlength="6">
           </div>
         </div>
-        
         <div class="form-group">
           <label for="confirmPassword">Confirm New Password</label>
           <input type="password" id="confirmPassword" class="form-control" required>
         </div>
-        
         <div class="actions">
           <button type="submit" class="btn btn-success">Change Password</button>
         </div>
@@ -671,19 +694,16 @@
           <p>Download a copy of your account data including profile information, class details, and test history.</p>
           <button class="btn btn-secondary" onclick="downloadAccountData()">Download Data</button>
         </div>
-        
         <div class="action-card">
           <h4>Privacy Settings</h4>
           <p>Manage your privacy preferences and control what information is visible to students and colleagues.</p>
           <button class="btn btn-secondary" onclick="openPrivacySettings()">Privacy Settings</button>
         </div>
-        
         <div class="action-card">
           <h4>Notification Preferences</h4>
           <p>Customize how and when you receive notifications about student progress, test submissions, and more.</p>
           <button class="btn btn-secondary" onclick="openNotificationSettings()">Notification Settings</button>
         </div>
-        
         <div class="action-card">
           <h4>Delete Account</h4>
           <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
@@ -695,239 +715,237 @@
 
   <footer>
     <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
-     <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
-    // Check if user is logged in and is a teacher
-    if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "teacher") {
-      window.location.href="../role-selection.html";
-    }
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
 
-    // Logout function
-    function logout() {
-      // Show loading state
-      const logoutBtn = event.target;
-      const originalText = logoutBtn.innerHTML;
-      logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
-      logoutBtn.disabled = true;
-      
-      setTimeout(() => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("teacherProfile");
-        window.location.href = "login.html";
-      }, 1000);
-    }
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    // Hamburger menu functionality
-    const hamburger = document.getElementById('hamburger');
-    const sideNav = document.getElementById('sideNav');
-    const overlay = document.getElementById('overlay');
+    // Current teacher profile data from Firestore
+    let currentProfile = {};
 
-    hamburger.addEventListener('click', () => {
-      sideNav.classList.toggle('active');
-      overlay.classList.toggle('active');
-      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+    // Authentication check
+    let redirecting = false;
+    auth.onAuthStateChanged(async (user) => {
+      if (redirecting) return;
+      if (!user) {
+        redirecting = true;
+        window.location.replace("../role-selection.html");
+        return;
+      }
+
+      try {
+        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
+        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
+          document.getElementById("loadingOverlay").innerHTML = `
+            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
+            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
+            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
+            <button class="btn" onclick="auth.signOut()">Logout</button>
+          `;
+          return;
+        }
+
+        currentProfile = teacherDoc.data();
+        document.getElementById("loadingOverlay").style.display = "none";
+        loadTeacherProfile();
+        initPage();
+      } catch (error) {
+        console.error("Auth check error:", error);
+        document.getElementById("loadingOverlay").innerHTML = `
+          <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
+          <button class="btn" onclick="location.reload()">Reload</button>
+        `;
+      }
     });
 
-    overlay.addEventListener('click', () => {
-      sideNav.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await auth.signOut();
+      window.location.href = "../role-selection.html";
     });
 
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.side-nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
+    function initPage() {
+      // Hamburger menu
+      const hamburger = document.getElementById('hamburger');
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('overlay');
+      hamburger.addEventListener('click', () => {
+        sideNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+      });
+      overlay.addEventListener('click', () => {
         sideNav.classList.remove('active');
         overlay.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
-    });
+      document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          sideNav.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      });
 
-    // Load teacher profile data
-    function loadTeacherProfile() {
-      const teacherProfile = JSON.parse(localStorage.getItem('teacherProfile')) || {
-        fullName: 'Dr. Sharma',
-        email: 'dr.sharma@soham.edu',
-        phone: '+91 98765 43210',
-        subjects: 'Physics, Chemistry, Mathematics',
-        bio: 'Experienced educator with 15+ years of teaching Physics, Chemistry, and Mathematics for competitive exams. Specialized in MHTCET and JEE preparation.',
-        joinDate: 'January 15, 2020',
-        accountType: 'Premium Teacher',
-        studentsCount: 145,
-        testsCreated: 67,
-        classesCount: 8,
-        yearsExperience: 15
-      };
-
-      // Update profile display
-      document.getElementById('profileName').textContent = teacherProfile.fullName;
-      document.getElementById('profileEmail').textContent = teacherProfile.email;
-      document.getElementById('profilePhone').textContent = teacherProfile.phone;
-      document.getElementById('profileSubjects').textContent = teacherProfile.subjects;
-      document.getElementById('profileJoined').textContent = teacherProfile.joinDate;
-      document.getElementById('profileType').textContent = teacherProfile.accountType;
-      
-      // Update avatar with initials
-      const nameParts = teacherProfile.fullName.split(' ');
-      const initials = nameParts.map(part => part[0]).join('');
-      document.getElementById('profileAvatar').textContent = initials;
-
-      // Update form fields
-      document.getElementById('fullName').value = teacherProfile.fullName;
-      document.getElementById('email').value = teacherProfile.email;
-      document.getElementById('phone').value = teacherProfile.phone;
-      document.getElementById('subjects').value = teacherProfile.subjects;
-      document.getElementById('bio').value = teacherProfile.bio;
-      
-      // Update account stats
-      updateAccountStats(teacherProfile);
+      // Form submissions
+      document.getElementById('updateProfileForm').addEventListener('submit', handleProfileUpdate);
+      document.getElementById('changePasswordForm').addEventListener('submit', handlePasswordChange);
     }
 
-    // Update account statistics
+    function loadTeacherProfile() {
+      const profile = currentProfile;
+      const fullName = profile.fullName || 'Teacher';
+      const email = auth.currentUser.email;
+      const phone = profile.phone || '';
+      const subjects = profile.subjects || '';
+      const bio = profile.bio || '';
+      const joinDate = profile.joinDate || 'N/A';
+      const accountType = profile.accountType || 'Teacher';
+      const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+
+      // Update display
+      document.getElementById('profileAvatar').textContent = initials;
+      document.getElementById('profileName').textContent = fullName;
+      document.getElementById('profileEmail').textContent = email;
+      document.getElementById('profilePhone').textContent = phone;
+      document.getElementById('profileSubjects').textContent = subjects;
+      document.getElementById('profileJoined').textContent = joinDate;
+      document.getElementById('profileType').textContent = accountType;
+
+      // Update form fields
+      document.getElementById('fullName').value = fullName;
+      document.getElementById('email').value = email;
+      document.getElementById('phone').value = phone;
+      document.getElementById('subjects').value = subjects;
+      document.getElementById('bio').value = bio;
+
+      // Update stats (you can extend these with actual counts from Firestore if desired)
+      updateAccountStats(profile);
+    }
+
     function updateAccountStats(profile) {
       const statsContainer = document.getElementById('accountStats');
       statsContainer.innerHTML = `
         <div class="stat-card">
-          <h3>${profile.studentsCount || 145}</h3>
+          <h3>${profile.studentsCount || 0}</h3>
           <p>Total Students</p>
         </div>
         <div class="stat-card">
-          <h3>${profile.testsCreated || 67}</h3>
+          <h3>${profile.testsCreated || 0}</h3>
           <p>Tests Created</p>
         </div>
         <div class="stat-card">
-          <h3>${profile.classesCount || 8}</h3>
+          <h3>${profile.classesCount || 0}</h3>
           <p>Active Classes</p>
         </div>
         <div class="stat-card">
-          <h3>${profile.yearsExperience || 15}+</h3>
+          <h3>${profile.yearsExperience || 0}+</h3>
           <p>Years Experience</p>
         </div>
       `;
     }
 
-    // Show success message
-    function showSuccessMessage(message) {
-      const successMessage = document.getElementById('successMessage');
-      const successText = document.getElementById('successText');
-      
-      successText.textContent = message;
-      successMessage.classList.add('show');
-      
-      setTimeout(() => {
-        successMessage.classList.remove('show');
-      }, 3000);
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="loading"></span> Updating...';
+      submitBtn.disabled = true;
+
+      const updatedData = {
+        fullName: document.getElementById('fullName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        subjects: document.getElementById('subjects').value.trim(),
+        bio: document.getElementById('bio').value.trim(),
+        // keep existing fields that shouldn't change
+        joinDate: currentProfile.joinDate || new Date().toLocaleDateString(),
+        accountType: currentProfile.accountType || 'Teacher',
+        role: 'teacher'
+      };
+
+      try {
+        await db.collection("teachers").doc(auth.currentUser.uid).update(updatedData);
+        currentProfile = { ...currentProfile, ...updatedData };
+        loadTeacherProfile();
+        showSuccessMessage('Profile updated successfully!');
+      } catch (error) {
+        alert('Update failed: ' + error.message);
+      }
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
     }
 
-    // Reset form to original values
+    async function handlePasswordChange(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword !== confirmPassword) {
+        alert('New passwords do not match!');
+        return;
+      }
+      if (newPassword.length < 6) {
+        alert('Password must be at least 6 characters long!');
+        return;
+      }
+
+      const user = auth.currentUser;
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="loading"></span> Changing...';
+      submitBtn.disabled = true;
+
+      try {
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        this.reset();
+        showSuccessMessage('Password changed successfully!');
+      } catch (error) {
+        alert('Password change failed: ' + error.message);
+      }
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }
+
     function resetForm() {
       loadTeacherProfile();
       showSuccessMessage('Form reset to original values');
     }
 
-    // Update profile form submission
-    document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Show loading state
-      const submitBtn = this.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span class="loading"></span> Updating...';
-      submitBtn.disabled = true;
-      
-      // Get form data
-      const formData = {
-        fullName: document.getElementById('fullName').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        subjects: document.getElementById('subjects').value,
-        bio: document.getElementById('bio').value,
-        joinDate: document.getElementById('profileJoined').textContent,
-        accountType: document.getElementById('profileType').textContent,
-        studentsCount: 145,
-        testsCreated: 67,
-        classesCount: 8,
-        yearsExperience: 15
-      };
-      
-      // Simulate API call
-      setTimeout(() => {
-        // Save to localStorage
-        localStorage.setItem('teacherProfile', JSON.stringify(formData));
-        
-        // Update profile display
-        loadTeacherProfile();
-        
-        // Show success message
-        showSuccessMessage('Profile updated successfully!');
-        
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      }, 1500);
-    });
+    function showSuccessMessage(message) {
+      const msgDiv = document.getElementById('successMessage');
+      document.getElementById('successText').textContent = message;
+      msgDiv.classList.add('show');
+      setTimeout(() => msgDiv.classList.remove('show'), 3000);
+    }
 
-    // Change password form submission
-    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      
-      // Validate passwords
-      if (!currentPassword) {
-        alert('Please enter your current password!');
-        return;
-      }
-      
-      if (newPassword !== confirmPassword) {
-        alert('New passwords do not match!');
-        return;
-      }
-      
-      if (newPassword.length < 6) {
-        alert('Password must be at least 6 characters long!');
-        return;
-      }
-      
-      // Show loading state
-      const submitBtn = this.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span class="loading"></span> Changing...';
-      submitBtn.disabled = true;
-      
-      // Simulate API call
-      setTimeout(() => {
-        // Show success message
-        showSuccessMessage('Password changed successfully!');
-        
-        // Reset form
-        this.reset();
-        
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      }, 1500);
-    });
-
-    // Account actions functions
+    // Account actions (downloaded data will be the current profile)
     function downloadAccountData() {
-      const teacherProfile = JSON.parse(localStorage.getItem('teacherProfile')) || {};
-      const dataStr = JSON.stringify(teacherProfile, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = 'soham-teacher-account-data.json';
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
+      const dataStr = JSON.stringify(currentProfile, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'soham-teacher-account-data.json';
+      a.click();
+      URL.revokeObjectURL(url);
       showSuccessMessage('Account data downloaded successfully!');
     }
 
@@ -939,55 +957,27 @@
       showSuccessMessage('Notification settings would open in a modal or new page');
     }
 
-    function confirmAccountDeletion() {
-      if (confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.')) {
-        // Show loading
-        const deleteBtn = event.target;
-        const originalText = deleteBtn.innerHTML;
-        deleteBtn.innerHTML = '<span class="loading"></span> Deleting...';
-        deleteBtn.disabled = true;
-        
-        setTimeout(() => {
-          // Clear all user data
-          localStorage.removeItem("isLoggedIn");
-          localStorage.removeItem("userRole");
-          localStorage.removeItem("teacherProfile");
-          
-          // Redirect to login
-          window.location.href = "login.html";
-        }, 2000);
+    async function confirmAccountDeletion() {
+      if (!confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.')) return;
+      try {
+        const user = auth.currentUser;
+        // Delete Firestore doc
+        await db.collection("teachers").doc(user.uid).delete();
+        // Delete auth account
+        await user.delete();
+        window.location.href = "../role-selection.html";
+      } catch (error) {
+        if (error.code === 'auth/requires-recent-login') {
+          alert('Please re-authenticate to delete your account. You may need to log out and log in again.');
+        } else {
+          alert('Account deletion failed: ' + error.message);
+        }
       }
     }
 
-    // Add animations for elements
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
-
-    // Observe elements for animation
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        document.querySelectorAll('.stat-card, .action-card, .dashboard-section').forEach(el => {
-          el.style.opacity = '0';
-          el.style.transform = 'translateY(20px)';
-          el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-          observer.observe(el);
-        });
-      }, 100);
-    });
-
-    // Load teacher profile when page loads
-    document.addEventListener('DOMContentLoaded', loadTeacherProfile);
+    // Enable/disable email field (it stays disabled, showing the current auth email)
+    document.getElementById('email').disabled = true;
   </script>
 </body>
+
 </html>

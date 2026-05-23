@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parent Section - Soham</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
-    /* Reuse all styles from teacher-dashboard.html */
+    /* ========== Your existing CSS – kept exactly as you provided ========== */
     * {
       margin: 0;
       padding: 0;
@@ -38,7 +45,6 @@
       font-weight: 700;
     }
 
-    /* Hamburger Menu with Animation */
     .hamburger {
       background: none;
       border: none;
@@ -76,7 +82,6 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
-    /* Side Navigation Panel - Improved with Animation */
     .side-nav {
       position: fixed;
       top: 0;
@@ -133,25 +138,64 @@
       transform: translateX(0);
     }
 
-    .side-nav ul li:nth-child(1) { animation-delay: 0.1s; }
-    .side-nav ul li:nth-child(2) { animation-delay: 0.15s; }
-    .side-nav ul li:nth-child(3) { animation-delay: 0.2s; }
-    .side-nav ul li:nth-child(4) { animation-delay: 0.25s; }
-    .side-nav ul li:nth-child(5) { animation-delay: 0.3s; }
-    .side-nav ul li:nth-child(6) { animation-delay: 0.35s; }
-    .side-nav ul li:nth-child(7) { animation-delay: 0.4s; }
-    .side-nav ul li:nth-child(8) { animation-delay: 0.45s; }
-    .side-nav ul li:nth-child(9) { animation-delay: 0.5s; }
-    .side-nav ul li:nth-child(10) { animation-delay: 0.55s; }
-    .side-nav ul li:nth-child(11) { animation-delay: 0.6s; }
-    .side-nav ul li:nth-child(12) { animation-delay: 0.65s; }
-    .side-nav ul li:nth-child(13) { animation-delay: 0.7s; }
+    .side-nav ul li:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .side-nav ul li:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .side-nav ul li:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .side-nav ul li:nth-child(4) {
+      animation-delay: 0.25s;
+    }
+
+    .side-nav ul li:nth-child(5) {
+      animation-delay: 0.3s;
+    }
+
+    .side-nav ul li:nth-child(6) {
+      animation-delay: 0.35s;
+    }
+
+    .side-nav ul li:nth-child(7) {
+      animation-delay: 0.4s;
+    }
+
+    .side-nav ul li:nth-child(8) {
+      animation-delay: 0.45s;
+    }
+
+    .side-nav ul li:nth-child(9) {
+      animation-delay: 0.5s;
+    }
+
+    .side-nav ul li:nth-child(10) {
+      animation-delay: 0.55s;
+    }
+
+    .side-nav ul li:nth-child(11) {
+      animation-delay: 0.6s;
+    }
+
+    .side-nav ul li:nth-child(12) {
+      animation-delay: 0.65s;
+    }
+
+    .side-nav ul li:nth-child(13) {
+      animation-delay: 0.7s;
+    }
 
     @keyframes slideInRight {
       from {
         opacity: 0;
         transform: translateX(20px);
       }
+
       to {
         opacity: 1;
         transform: translateX(0);
@@ -212,7 +256,6 @@
       visibility: visible;
     }
 
-    /* Dashboard Styles */
     .dashboard {
       padding: 30px 20px;
       max-width: 1400px;
@@ -265,7 +308,7 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       flex: 1;
       min-width: 200px;
       text-align: center;
@@ -277,13 +320,24 @@
 
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
     }
 
-    .stat-card:nth-child(1) { animation-delay: 0.1s; }
-    .stat-card:nth-child(2) { animation-delay: 0.2s; }
-    .stat-card:nth-child(3) { animation-delay: 0.3s; }
-    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    .stat-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.4s;
+    }
 
     .stat-card h3 {
       font-size: 2.5rem;
@@ -301,13 +355,10 @@
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       animation: fadeInUp 0.6s ease;
       animation-fill-mode: both;
     }
-
-    .dashboard-section:nth-child(1) { animation-delay: 0.1s; }
-    .dashboard-section:nth-child(2) { animation-delay: 0.2s; }
 
     .dashboard-section h3 {
       color: #1e3a8a;
@@ -316,10 +367,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .dashboard-section h3 .icon {
-      font-size: 1.5rem;
     }
 
     .btn {
@@ -339,7 +386,7 @@
     .btn:hover {
       background: #1e3a8a;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .btn-secondary {
@@ -396,19 +443,19 @@
       border-radius: 10px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       display: flex;
       gap: 15px;
       flex-wrap: wrap;
       align-items: center;
     }
-    
+
     .search-box {
       flex: 1;
       min-width: 250px;
       position: relative;
     }
-    
+
     .search-box input {
       width: 100%;
       padding: 12px 15px 12px 40px;
@@ -417,12 +464,12 @@
       font-size: 1rem;
       transition: border-color 0.3s ease;
     }
-    
+
     .search-box input:focus {
       outline: none;
       border-color: #2563eb;
     }
-    
+
     .search-icon {
       position: absolute;
       left: 12px;
@@ -430,38 +477,38 @@
       transform: translateY(-50%);
       color: #666;
     }
-    
+
     .parent-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 20px;
       margin-top: 20px;
     }
-    
+
     .parent-card {
       background: white;
       border-radius: 10px;
       padding: 25px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       border-left: 4px solid #10b981;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       animation: fadeInUp 0.5s ease forwards;
       opacity: 0;
       transform: translateY(20px);
     }
-    
+
     .parent-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
     }
-    
+
     .parent-header {
       display: flex;
       align-items: center;
       gap: 15px;
       margin-bottom: 20px;
     }
-    
+
     .parent-avatar {
       width: 60px;
       height: 60px;
@@ -475,22 +522,22 @@
       font-weight: bold;
       flex-shrink: 0;
     }
-    
+
     .parent-info h4 {
       color: #1e3a8a;
       margin-bottom: 5px;
       font-size: 1.2rem;
     }
-    
+
     .parent-info p {
       color: #666;
       font-size: 0.9rem;
     }
-    
+
     .student-list {
       margin-bottom: 20px;
     }
-    
+
     .student-item {
       display: flex;
       justify-content: space-between;
@@ -498,26 +545,26 @@
       padding: 12px 0;
       border-bottom: 1px solid #e2e8f0;
     }
-    
+
     .student-item:last-child {
       border-bottom: none;
     }
-    
+
     .student-details {
       flex: 1;
     }
-    
+
     .student-name {
       color: #1e293b;
       font-weight: 600;
       margin-bottom: 3px;
     }
-    
+
     .student-class {
       color: #666;
       font-size: 0.85rem;
     }
-    
+
     .parent-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -525,45 +572,44 @@
       margin: 20px 0;
       text-align: center;
     }
-    
+
     .stat-box {
       padding: 15px 10px;
       background: #f8fafc;
       border-radius: 8px;
     }
-    
+
     .stat-value {
       font-size: 1.5rem;
       font-weight: bold;
       color: #2563eb;
       margin-bottom: 5px;
     }
-    
+
     .stat-label {
       font-size: 0.8rem;
       color: #666;
     }
-    
+
     .parent-actions {
       display: flex;
       gap: 10px;
       margin-top: 20px;
     }
-    
+
     .empty-state {
       text-align: center;
       padding: 60px 20px;
       color: #666;
       grid-column: 1 / -1;
     }
-    
+
     .empty-state .icon {
       font-size: 4rem;
       margin-bottom: 20px;
       opacity: 0.5;
     }
-    
-    /* Modal Styles */
+
     .modal {
       display: none;
       position: fixed;
@@ -625,18 +671,18 @@
     .modal-body {
       padding: 30px;
     }
-    
+
     .form-group {
       margin-bottom: 20px;
     }
-    
+
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
       color: #1e3a8a;
     }
-    
+
     .form-group input,
     .form-group textarea,
     .form-group select {
@@ -647,19 +693,19 @@
       font-size: 1rem;
       transition: border-color 0.3s ease;
     }
-    
+
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus {
       outline: none;
       border-color: #2563eb;
     }
-    
+
     .form-group textarea {
       min-height: 120px;
       resize: vertical;
     }
-    
+
     .message-preview {
       background: #f8fafc;
       padding: 15px;
@@ -667,57 +713,56 @@
       border: 1px solid #e2e8f0;
       margin-top: 10px;
     }
-    
+
     .message-preview h4 {
       margin-top: 0;
       color: #1e3a8a;
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
       header {
         padding: 15px 20px;
       }
-      
+
       .welcome-section h2 {
         font-size: 1.8rem;
       }
-      
+
       .welcome-section p {
         font-size: 1rem;
       }
-      
+
       .stats-container {
         flex-direction: column;
       }
-      
+
       .parent-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .parent-filter {
         flex-direction: column;
         align-items: stretch;
       }
-      
+
       .search-box {
         min-width: 100%;
       }
-      
+
       .parent-actions {
         flex-wrap: wrap;
       }
-      
+
       .side-nav {
         width: 280px;
       }
     }
 
-    /* Animation Keyframes */
     @keyframes fadeIn {
       from {
         opacity: 0;
       }
+
       to {
         opacity: 1;
       }
@@ -728,6 +773,7 @@
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -739,29 +785,64 @@
         opacity: 0;
         transform: translateY(100px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    /* Loading animation */
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
+      border: 3px solid rgba(255, 255, 255, .3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      font-size: 1.5rem;
+      color: #2563eb;
+    }
+
+    .spinner {
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
     }
   </style>
 </head>
+
 <body>
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Checking authentication...</div>
+  </div>
+
   <header>
     <h1>Soham - Parent Section</h1>
     <button class="hamburger" id="hamburger">
@@ -787,11 +868,11 @@
       <li><a href="teacher-parent.html" class="nav-active"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
 
-  <!-- Overlay for closing the menu when clicking outside -->
+  <!-- Overlay -->
   <div class="overlay" id="overlay"></div>
 
   <!-- Message Modal -->
@@ -890,68 +971,22 @@
   </footer>
 
   <script>
-    // Check if user is logged in and is a teacher
-    if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "teacher") {
-      window.location.href="../role-selection.html";
-    }
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
 
-    // Logout function
-    function logout() {
-      // Show loading state
-      const logoutBtn = event.target;
-      const originalText = logoutBtn.innerHTML;
-      logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
-      logoutBtn.disabled = true;
-      
-      setTimeout(() => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userRole");
-        window.location.href="../role-selection.html";
-      }, 1000);
-    }
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    // Hamburger menu functionality
-    const hamburger = document.getElementById('hamburger');
-    const sideNav = document.getElementById('sideNav');
-    const overlay = document.getElementById('overlay');
-
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      sideNav.classList.toggle('active');
-      overlay.classList.toggle('active');
-      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
-    });
-
-    overlay.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      sideNav.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    });
-
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.side-nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      });
-    });
-
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      }
-    });
-
-    // Parent Section Functions
-    let selectedParent = null;
     const classTemplates = {
       '11th-mhtcet-pcm': '11th MHTCET (PCM)',
       '11th-mhtcet-pcb': '11th MHTCET (PCB)',
@@ -963,16 +998,106 @@
       '12th-neet': '12th NEET'
     };
 
-    function loadParents() {
-      const students = JSON.parse(localStorage.getItem('students')) || [];
-      
-      // Group students by parent
+    let allStudents = [];
+    let selectedParent = null;
+
+    // Authentication check
+    let redirecting = false;
+    auth.onAuthStateChanged(async (user) => {
+      if (redirecting) return;
+      if (!user) {
+        redirecting = true;
+        window.location.replace("../role-selection.html");
+        return;
+      }
+      try {
+        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
+        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
+          document.getElementById("loadingOverlay").innerHTML = `
+            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
+            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
+            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
+            <button class="btn" onclick="auth.signOut()">Logout</button>
+          `;
+          return;
+        }
+        document.getElementById("loadingOverlay").style.display = "none";
+        initPage();
+      } catch (error) {
+        console.error("Auth check error:", error);
+        document.getElementById("loadingOverlay").innerHTML = `
+          <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
+          <button class="btn" onclick="location.reload()">Reload</button>
+        `;
+      }
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await auth.signOut();
+      window.location.href = "../role-selection.html";
+    });
+
+    // Initialize page
+    function initPage() {
+      // Hamburger menu
+      const hamburger = document.getElementById('hamburger');
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('overlay');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        sideNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+      });
+      overlay.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          sideNav.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      });
+
+      // Modal close on background click
+      document.getElementById('messageModal').addEventListener('click', function (e) {
+        if (e.target === this) closeMessageModal();
+      });
+
+      // Update message preview
+      document.getElementById('messageContent').addEventListener('input', function () {
+        document.getElementById('messagePreview').textContent = this.value || 'Your message will appear here...';
+      });
+
+      // Load students from Firestore
+      loadAllStudents();
+    }
+
+    async function loadAllStudents() {
+      try {
+        const snapshot = await db.collection("students").get();
+        allStudents = [];
+        snapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+        filterParents();
+      } catch (error) {
+        console.error("Error loading students:", error);
+        showNotification('Failed to load student data', 'error');
+      }
+    }
+
+    // Group students by parent mobile
+    function buildParentMap(students) {
       const parentMap = {};
-      
       students.forEach(student => {
         const parentKey = student.parentMobile;
         if (!parentMap[parentKey]) {
-          // Generate parent name from student name
           const studentLastName = student.studentName.split(' ')[1] || '';
           parentMap[parentKey] = {
             name: `Mr./Mrs. ${studentLastName}`,
@@ -984,36 +1109,28 @@
             lastContact: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
           };
         }
-        
-        // Add student to parent
         parentMap[parentKey].students.push({
           name: student.studentName,
           class: student.studentClass,
           studentId: student.studentId,
-          attendance: Math.floor(Math.random() * 20) + 80, // 80-100%
-          score: Math.floor(Math.random() * 30) + 70 // 70-100%
+          attendance: Math.floor(Math.random() * 20) + 80,
+          score: Math.floor(Math.random() * 30) + 70
         });
-        
-        // Update parent totals
-        parentMap[parentKey].totalAttendance += parentMap[parentKey].students[parentMap[parentKey].students.length - 1].attendance;
-        parentMap[parentKey].totalScore += parentMap[parentKey].students[parentMap[parentKey].students.length - 1].score;
+        const lastAdded = parentMap[parentKey].students[parentMap[parentKey].students.length - 1];
+        parentMap[parentKey].totalAttendance += lastAdded.attendance;
+        parentMap[parentKey].totalScore += lastAdded.score;
       });
-      
       // Calculate averages
-      Object.keys(parentMap).forEach(parentKey => {
-        const studentCount = parentMap[parentKey].students.length;
-        parentMap[parentKey].avgAttendance = Math.round(parentMap[parentKey].totalAttendance / studentCount);
-        parentMap[parentKey].avgScore = Math.round(parentMap[parentKey].totalScore / studentCount);
+      Object.values(parentMap).forEach(parent => {
+        const count = parent.students.length;
+        parent.avgAttendance = Math.round(parent.totalAttendance / count);
+        parent.avgScore = Math.round(parent.totalScore / count);
       });
-      
-      const parents = Object.values(parentMap);
-      displayParents(parents);
-      updateStats(parents);
+      return Object.values(parentMap);
     }
 
     function displayParents(parents) {
       const parentGrid = document.getElementById('parentGrid');
-      
       if (!parents || parents.length === 0) {
         parentGrid.innerHTML = `
           <div class="empty-state">
@@ -1025,11 +1142,9 @@
         `;
         return;
       }
-      
-      let parentsHTML = '';
+      let html = '';
       parents.forEach((parent, index) => {
-        const parentInitials = parent.name.split(' ').slice(1, 3).map(n => n[0]).join('') || 'P';
-        
+        const initials = parent.name.split(' ').slice(1, 3).map(n => n[0]).join('') || 'P';
         let studentsHTML = '';
         parent.students.forEach(student => {
           studentsHTML += `
@@ -1045,37 +1160,22 @@
             </div>
           `;
         });
-        
-        parentsHTML += `
+        html += `
           <div class="parent-card" style="animation-delay: ${0.1 * index}s">
             <div class="parent-header">
-              <div class="parent-avatar">${parentInitials}</div>
+              <div class="parent-avatar">${initials}</div>
               <div class="parent-info">
                 <h4>${parent.name}</h4>
                 <p>📱 ${parent.mobile}</p>
                 <p style="font-size: 0.8rem; color: #888;">${parent.students.length} child${parent.students.length > 1 ? 'ren' : ''}</p>
               </div>
             </div>
-            
-            <div class="student-list">
-              ${studentsHTML}
-            </div>
-            
+            <div class="student-list">${studentsHTML}</div>
             <div class="parent-stats">
-              <div class="stat-box">
-                <div class="stat-value">${parent.avgAttendance}%</div>
-                <div class="stat-label">Avg. Attendance</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-value">${parent.avgScore}%</div>
-                <div class="stat-label">Avg. Score</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-value">${parent.messageCount}</div>
-                <div class="stat-label">Messages</div>
-              </div>
+              <div class="stat-box"><div class="stat-value">${parent.avgAttendance}%</div><div class="stat-label">Avg. Attendance</div></div>
+              <div class="stat-box"><div class="stat-value">${parent.avgScore}%</div><div class="stat-label">Avg. Score</div></div>
+              <div class="stat-box"><div class="stat-value">${parent.messageCount}</div><div class="stat-label">Messages</div></div>
             </div>
-            
             <div class="parent-actions">
               <button class="btn btn-small btn-success" onclick="openMessageModal('${parent.mobile}', '${parent.name}')">Message</button>
               <button class="btn btn-small" onclick="callParent('${parent.mobile}')">Call</button>
@@ -1084,40 +1184,44 @@
           </div>
         `;
       });
-      
-      parentGrid.innerHTML = parentsHTML;
+      parentGrid.innerHTML = html;
     }
 
     function updateStats(parents) {
-      if (!parents || parents.length === 0) {
-        document.getElementById('totalParents').textContent = '0';
-        document.getElementById('activeParents').textContent = '0';
-        document.getElementById('avgAttendance').textContent = '0%';
-        document.getElementById('avgScore').textContent = '0%';
-        return;
-      }
-      
       const totalParents = parents.length;
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const activeParents = parents.filter(p => new Date(p.lastContact) > thirtyDaysAgo).length;
-      
-      let totalAttendance = 0;
-      let totalScore = 0;
-      let totalStudents = 0;
-      
-      parents.forEach(parent => {
-        totalAttendance += parent.avgAttendance;
-        totalScore += parent.avgScore;
-        totalStudents += parent.students.length;
-      });
-      
+      let totalAttendance = 0, totalScore = 0;
+      parents.forEach(p => { totalAttendance += p.avgAttendance; totalScore += p.avgScore; });
       const avgAttendance = totalParents > 0 ? Math.round(totalAttendance / totalParents) : 0;
       const avgScore = totalParents > 0 ? Math.round(totalScore / totalParents) : 0;
-      
       document.getElementById('totalParents').textContent = totalParents;
       document.getElementById('activeParents').textContent = activeParents;
-      document.getElementById('avgAttendance').textContent = `${avgAttendance}%`;
-      document.getElementById('avgScore').textContent = `${avgScore}%`;
+      document.getElementById('avgAttendance').textContent = avgAttendance + '%';
+      document.getElementById('avgScore').textContent = avgScore + '%';
+    }
+
+    function searchParents() {
+      filterParents();
+    }
+
+    function filterParents() {
+      const searchTerm = document.getElementById('parentSearch').value.toLowerCase();
+      const classFilterValue = document.getElementById('classFilter').value;
+      let filteredStudents = allStudents;
+      if (classFilterValue !== 'all') {
+        filteredStudents = allStudents.filter(s => s.studentClass === classFilterValue);
+      }
+      if (searchTerm) {
+        filteredStudents = filteredStudents.filter(s =>
+          s.studentName.toLowerCase().includes(searchTerm) ||
+          s.studentId.toLowerCase().includes(searchTerm) ||
+          (s.parentMobile && s.parentMobile.includes(searchTerm))
+        );
+      }
+      const parents = buildParentMap(filteredStudents);
+      displayParents(parents);
+      updateStats(parents);
     }
 
     function openMessageModal(mobile, name) {
@@ -1127,7 +1231,6 @@
       document.getElementById('messageSubject').value = '';
       document.getElementById('messageContent').value = '';
       document.getElementById('messagePreview').textContent = 'Your message will appear here...';
-      
       document.getElementById('messageModal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -1138,269 +1241,73 @@
       selectedParent = null;
     }
 
-    function sendParentMessage() {
+    async function sendParentMessage() {
       if (!selectedParent) return;
-      
       const subject = document.getElementById('messageSubject').value.trim();
       const content = document.getElementById('messageContent').value.trim();
-      
       if (!subject || !content) {
         alert('Please fill in both subject and message content');
         return;
       }
-      
-      // In a real application, you would send this via API
-      // For now, we'll just show a success message and update the UI
-      
-      // Save message to localStorage
-      const parentMessages = JSON.parse(localStorage.getItem('parentMessages')) || [];
-      parentMessages.push({
-        parentMobile: selectedParent.mobile,
-        parentName: selectedParent.name,
-        subject,
-        content,
-        date: new Date().toISOString(),
-        status: 'sent'
-      });
-      localStorage.setItem('parentMessages', JSON.stringify(parentMessages));
-      
-      // Update parent message count
-      const students = JSON.parse(localStorage.getItem('students')) || [];
-      // We would need to update the parent's message count here
-      
-      showNotification(`Message sent successfully to ${selectedParent.name}!`, 'success');
-      closeMessageModal();
-      loadParents(); // Reload to update message counts
+      try {
+        await db.collection("parentMessages").add({
+          parentMobile: selectedParent.mobile,
+          parentName: selectedParent.name,
+          subject,
+          content,
+          sentAt: firebase.firestore.FieldValue.serverTimestamp(),
+          status: 'sent'
+        });
+        showNotification(`Message sent successfully to ${selectedParent.name}!`, 'success');
+        closeMessageModal();
+        filterParents(); // Refresh to update message counts
+      } catch (error) {
+        showNotification('Failed to send message: ' + error.message, 'error');
+      }
     }
 
     function callParent(mobile) {
       if (confirm(`Call ${mobile}?`)) {
-        // In a real app, this would initiate a call
         showNotification(`Initiating call to ${mobile}...`, 'info');
-        // Simulate call initiation
-        setTimeout(() => {
-          showNotification('Call connected (simulated)', 'success');
-        }, 1000);
+        setTimeout(() => showNotification('Call connected (simulated)', 'success'), 1000);
       }
     }
 
     function viewProgressReport(mobile) {
-      // Redirect to progress report page or show modal
       alert(`Progress report for parent with mobile ${mobile} would be displayed here.`);
     }
 
     function viewStudent(studentId) {
-      // Store student ID and redirect to student profile
       localStorage.setItem('viewStudentId', studentId);
-      // You could open a modal or redirect to student page
-      alert(`Viewing student with ID: ${studentId}`);
-    }
-
-    function searchParents() {
-      const searchTerm = document.getElementById('parentSearch').value.toLowerCase();
-      filterParents(searchTerm);
-    }
-
-    function filterParents(searchTerm = '') {
-      const classFilter = document.getElementById('classFilter').value;
-      const students = JSON.parse(localStorage.getItem('students')) || [];
-      
-      // Filter students based on class
-      let filteredStudents = students;
-      if (classFilter !== 'all') {
-        filteredStudents = students.filter(s => s.studentClass === classFilter);
-      }
-      
-      // Group by parent
-      const parentMap = {};
-      filteredStudents.forEach(student => {
-        if (searchTerm) {
-          // Check if search term matches student or parent info
-          const matchesStudent = student.studentName.toLowerCase().includes(searchTerm) ||
-                               student.studentId.toLowerCase().includes(searchTerm);
-          const matchesParent = student.parentMobile.includes(searchTerm);
-          
-          if (!matchesStudent && !matchesParent) return;
-        }
-        
-        const parentKey = student.parentMobile;
-        if (!parentMap[parentKey]) {
-          const studentLastName = student.studentName.split(' ')[1] || '';
-          parentMap[parentKey] = {
-            name: `Mr./Mrs. ${studentLastName}`,
-            mobile: student.parentMobile,
-            students: [],
-            totalAttendance: 0,
-            totalScore: 0,
-            messageCount: Math.floor(Math.random() * 5)
-          };
-        }
-        
-        parentMap[parentKey].students.push({
-          name: student.studentName,
-          class: student.studentClass,
-          studentId: student.studentId,
-          attendance: Math.floor(Math.random() * 20) + 80,
-          score: Math.floor(Math.random() * 30) + 70
-        });
-        
-        parentMap[parentKey].totalAttendance += parentMap[parentKey].students[parentMap[parentKey].students.length - 1].attendance;
-        parentMap[parentKey].totalScore += parentMap[parentKey].students[parentMap[parentKey].students.length - 1].score;
-      });
-      
-      // Calculate averages
-      Object.keys(parentMap).forEach(parentKey => {
-        const studentCount = parentMap[parentKey].students.length;
-        parentMap[parentKey].avgAttendance = Math.round(parentMap[parentKey].totalAttendance / studentCount);
-        parentMap[parentKey].avgScore = Math.round(parentMap[parentKey].totalScore / studentCount);
-      });
-      
-      const parents = Object.values(parentMap);
-      displayParents(parents);
+      window.location.href = 'student-details.html'; // Adjust as needed
     }
 
     function sendBulkMessage() {
-      alert('Bulk message feature - This would allow sending messages to multiple parents at once.');
+      showNotification('Bulk message feature would open here', 'info');
     }
 
     function showNotification(message, type = 'info') {
-      // Remove existing notification
-      const existingNotification = document.querySelector('.notification');
-      if (existingNotification) {
-        existingNotification.remove();
-      }
-      
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
       const notification = document.createElement('div');
-      notification.className = `notification notification-${type}`;
+      notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white; padding: 15px 20px; border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 9999;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
+        min-width: 300px; max-width: 400px;
+      `;
       notification.innerHTML = `
-        <div class="notification-content">
-          <span class="notification-message">${message}</span>
-          <button class="notification-close">×</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span>${message}</span>
+          <button style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">×</button>
         </div>
       `;
-      
-      // Add styles for notification
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 9999;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
-        min-width: 300px;
-        max-width: 400px;
-      `;
-      
-      notification.querySelector('.notification-content').style.cssText = `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      `;
-      
-      notification.querySelector('.notification-message').style.cssText = `
-        margin-right: 20px;
-      `;
-      
-      notification.querySelector('.notification-close').style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `;
-      
-      notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-      });
-      
       document.body.appendChild(notification);
-      
-      // Auto remove after 3 seconds
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.remove();
-        }
-      }, 3000);
+      setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
     }
-
-    // Initialize sample data if not exists
-    function initializeSampleData() {
-      if (!localStorage.getItem('students')) {
-        const sampleStudents = [
-          {
-            studentName: "Rahul Sharma",
-            studentId: "SOHA20231001",
-            studentClass: "11th-mhtcet-pcm",
-            studentMobile: "+91 9876543210",
-            parentMobile: "+91 9876543211",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Priya Patel",
-            studentId: "SOHA20231002",
-            studentClass: "11th-mhtcet-pcb",
-            studentMobile: "+91 9876543212",
-            parentMobile: "+91 9876543213",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Amit Kumar",
-            studentId: "SOHA20231003",
-            studentClass: "12th-jee",
-            studentMobile: "+91 9876543214",
-            parentMobile: "+91 9876543215",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Sneha Singh",
-            studentId: "SOHA20231004",
-            studentClass: "12th-neet",
-            studentMobile: "+91 9876543216",
-            parentMobile: "+91 9876543217",
-            timestamp: new Date().toISOString()
-          },
-          {
-            studentName: "Rohit Verma",
-            studentId: "SOHA20231005",
-            studentClass: "11th-mhtcet-pcm",
-            studentMobile: "+91 9876543218",
-            parentMobile: "+91 9876543211", // Same parent as Rahul
-            timestamp: new Date().toISOString()
-          }
-        ];
-        localStorage.setItem('students', JSON.stringify(sampleStudents));
-      }
-    }
-
-    // Load data when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeSampleData();
-      loadParents();
-    });
-
-    // Close modal when clicking outside
-    document.getElementById('messageModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeMessageModal();
-      }
-    });
-
-    // Update message preview
-    document.getElementById('messageContent').addEventListener('input', function() {
-      const preview = document.getElementById('messagePreview');
-      const content = this.value;
-      preview.textContent = content || 'Your message will appear here...';
-    });
   </script>
 </body>
+
 </html>

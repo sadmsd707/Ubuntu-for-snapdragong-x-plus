@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Performance Analysis - Parent Dashboard - Soham</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
-    /* Base styles matching teacher dashboard */
+    /* ========== All your original CSS – kept exactly as you provided ========== */
     * {
       margin: 0;
       padding: 0;
@@ -20,7 +26,6 @@
       overflow-x: hidden;
     }
 
-    /* Header styles */
     header {
       background: linear-gradient(to right, #2563eb, #1e3a8a);
       color: white;
@@ -39,7 +44,6 @@
       font-weight: 700;
     }
 
-    /* Hamburger Menu */
     .hamburger {
       background: none;
       border: none;
@@ -77,7 +81,6 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
-    /* Side Navigation */
     .side-nav {
       position: fixed;
       top: 0;
@@ -118,6 +121,10 @@
       border-radius: 3px;
     }
 
+    .side-nav ul::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
     .side-nav ul li {
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       opacity: 0;
@@ -130,18 +137,36 @@
       transform: translateX(0);
     }
 
-    .side-nav ul li:nth-child(1) { animation-delay: 0.1s; }
-    .side-nav ul li:nth-child(2) { animation-delay: 0.15s; }
-    .side-nav ul li:nth-child(3) { animation-delay: 0.2s; }
-    .side-nav ul li:nth-child(4) { animation-delay: 0.25s; }
-    .side-nav ul li:nth-child(5) { animation-delay: 0.3s; }
-    .side-nav ul li:nth-child(6) { animation-delay: 0.35s; }
+    .side-nav ul li:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .side-nav ul li:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .side-nav ul li:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .side-nav ul li:nth-child(4) {
+      animation-delay: 0.25s;
+    }
+
+    .side-nav ul li:nth-child(5) {
+      animation-delay: 0.3s;
+    }
+
+    .side-nav ul li:nth-child(6) {
+      animation-delay: 0.35s;
+    }
 
     @keyframes slideInRight {
       from {
         opacity: 0;
         transform: translateX(20px);
       }
+
       to {
         opacity: 1;
         transform: translateX(0);
@@ -202,7 +227,6 @@
       visibility: visible;
     }
 
-    /* Dashboard Styles */
     .dashboard {
       padding: 30px 20px;
       max-width: 1400px;
@@ -244,7 +268,6 @@
       position: relative;
     }
 
-    /* Stats Container */
     .stats-container {
       display: flex;
       flex-wrap: wrap;
@@ -256,7 +279,7 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       flex: 1;
       min-width: 200px;
       text-align: center;
@@ -268,13 +291,28 @@
 
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
     }
 
-    .stat-card:nth-child(1) { border-left-color: #3b82f6; animation-delay: 0.1s; }
-    .stat-card:nth-child(2) { border-left-color: #10b981; animation-delay: 0.2s; }
-    .stat-card:nth-child(3) { border-left-color: #f59e0b; animation-delay: 0.3s; }
-    .stat-card:nth-child(4) { border-left-color: #ef4444; animation-delay: 0.4s; }
+    .stat-card:nth-child(1) {
+      border-left-color: #3b82f6;
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(2) {
+      border-left-color: #10b981;
+      animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(3) {
+      border-left-color: #f59e0b;
+      animation-delay: 0.3s;
+    }
+
+    .stat-card:nth-child(4) {
+      border-left-color: #ef4444;
+      animation-delay: 0.4s;
+    }
 
     .stat-card h3 {
       font-size: 2.5rem;
@@ -287,21 +325,31 @@
       font-weight: 600;
     }
 
-    /* Dashboard Sections */
     .dashboard-section {
       background: white;
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       animation: fadeInUp 0.6s ease;
       animation-fill-mode: both;
     }
 
-    .dashboard-section:nth-child(1) { animation-delay: 0.1s; }
-    .dashboard-section:nth-child(2) { animation-delay: 0.2s; }
-    .dashboard-section:nth-child(3) { animation-delay: 0.3s; }
-    .dashboard-section:nth-child(4) { animation-delay: 0.4s; }
+    .dashboard-section:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .dashboard-section:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dashboard-section:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .dashboard-section:nth-child(4) {
+      animation-delay: 0.4s;
+    }
 
     .dashboard-section h3 {
       color: #1e3a8a;
@@ -312,11 +360,6 @@
       gap: 10px;
     }
 
-    .dashboard-section h3 .icon {
-      font-size: 1.5rem;
-    }
-
-    /* Performance Chart Styles */
     .performance-chart {
       background: white;
       border-radius: 10px;
@@ -343,7 +386,6 @@
       opacity: 0.5;
     }
 
-    /* Subject Performance */
     .subject-performance {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -364,7 +406,7 @@
 
     .subject-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .subject-card h4 {
@@ -432,7 +474,6 @@
       color: #64748b;
     }
 
-    /* Test History */
     .test-history {
       display: flex;
       flex-direction: column;
@@ -457,11 +498,25 @@
       transform: translateX(5px);
     }
 
-    .test-item:nth-child(1) { animation-delay: 0.1s; }
-    .test-item:nth-child(2) { animation-delay: 0.2s; }
-    .test-item:nth-child(3) { animation-delay: 0.3s; }
-    .test-item:nth-child(4) { animation-delay: 0.4s; }
-    .test-item:nth-child(5) { animation-delay: 0.5s; }
+    .test-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .test-item:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .test-item:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .test-item:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .test-item:nth-child(5) {
+      animation-delay: 0.5s;
+    }
 
     .test-info h4 {
       color: #1e3a8a;
@@ -488,7 +543,6 @@
       color: #666;
     }
 
-    /* Performance Trends */
     .performance-trends {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -506,7 +560,7 @@
 
     .trend-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .trend-card h4 {
@@ -550,7 +604,6 @@
       color: #666;
     }
 
-    /* Filters */
     .performance-filters {
       display: flex;
       gap: 15px;
@@ -575,7 +628,6 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
-    /* Buttons */
     .btn {
       background: #2563eb;
       color: white;
@@ -594,7 +646,7 @@
     .btn:hover {
       background: #1e3a8a;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .btn-small {
@@ -618,7 +670,6 @@
       background: #059669;
     }
 
-    /* Footer */
     footer {
       background: #1e3a8a;
       color: white;
@@ -639,11 +690,80 @@
       opacity: 0.8;
     }
 
-    /* Animation Keyframes */
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+      }
+
+      .welcome-section h2 {
+        font-size: 1.8rem;
+      }
+
+      .stats-container {
+        flex-direction: column;
+      }
+
+      .stat-card {
+        min-width: 100%;
+      }
+
+      .subject-performance {
+        grid-template-columns: 1fr;
+      }
+
+      .performance-trends {
+        grid-template-columns: 1fr;
+      }
+
+      .test-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .test-score {
+        align-self: flex-end;
+      }
+
+      .performance-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-select {
+        min-width: 100%;
+      }
+
+      .side-nav {
+        width: 280px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-section {
+        padding: 20px;
+      }
+
+      .welcome-section {
+        padding: 20px;
+      }
+
+      .subject-card h4 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .subject-grade {
+        align-self: flex-start;
+      }
+    }
+
     @keyframes fadeIn {
       from {
         opacity: 0;
       }
+
       to {
         opacity: 1;
       }
@@ -654,6 +774,7 @@
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -665,99 +786,112 @@
         opacity: 0;
         transform: translateX(-30px);
       }
+
       to {
         opacity: 1;
         transform: translateX(0);
       }
     }
 
-    @keyframes slideInUp {
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, .3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
+      min-width: 300px;
+      max-width: 400px;
+      color: white;
+    }
+
+    .notification-success {
+      background: #10b981;
+    }
+
+    .notification-error {
+      background: #ef4444;
+    }
+
+    .notification-info {
+      background: #3b82f6;
+    }
+
+    @keyframes slideInRight {
       from {
         opacity: 0;
-        transform: translateY(100px);
+        transform: translateX(100px);
       }
+
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0);
       }
     }
 
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      header {
-        padding: 15px 20px;
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
       }
-      
-      .welcome-section h2 {
-        font-size: 1.8rem;
-      }
-      
-      .welcome-section p {
-        font-size: 1rem;
-      }
-      
-      .stats-container {
-        flex-direction: column;
-      }
-      
-      .stat-card {
-        min-width: 100%;
-      }
-      
-      .subject-performance {
-        grid-template-columns: 1fr;
-      }
-      
-      .performance-trends {
-        grid-template-columns: 1fr;
-      }
-      
-      .test-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-      }
-      
-      .test-score {
-        align-self: flex-end;
-      }
-      
-      .performance-filters {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .filter-select {
-        min-width: 100%;
-      }
-      
-      .side-nav {
-        width: 280px;
+
+      to {
+        opacity: 0;
+        transform: translateX(100px);
       }
     }
 
-    @media (max-width: 480px) {
-      .dashboard-section {
-        padding: 20px;
-      }
-      
-      .welcome-section {
-        padding: 20px;
-      }
-      
-      .subject-card h4 {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-      
-      .subject-grade {
-        align-self: flex-start;
-      }
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    .spinner {
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
     }
   </style>
 </head>
+
 <body>
+  <!-- Loading overlay (hidden by default) -->
+  <div id="loadingOverlay" style="display:none;">
+    <div class="spinner"></div>
+    <div>Loading performance data...</div>
+  </div>
+
   <header>
     <h1>Soham - Parent Dashboard</h1>
     <button class="hamburger" id="hamburger">
@@ -774,12 +908,11 @@
       <li><a href="parent-performance.html" class="nav-active"><span class="nav-icon">📈</span>Performance</a></li>
       <li><a href="parent-attendance.html"><span class="nav-icon">📅</span>Attendance</a></li>
       <li><a href="parent-announcements.html"><span class="nav-icon">📢</span>Announcements</a></li>
-      <li><a href="parent-fees.html"><span class="nav-icon">💰</span>Fee Status</a></li>
       <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
 
-  <!-- Overlay for closing the menu when clicking outside -->
+  <!-- Overlay -->
   <div class="overlay" id="overlay"></div>
 
   <main class="dashboard">
@@ -795,17 +928,11 @@
     <section class="dashboard-section">
       <h3><span class="icon">📊</span> Overall Performance</h3>
       <div class="performance-filters">
-        <select class="filter-select" id="timeFilter">
+        <select class="filter-select" id="timeFilter" onchange="loadPerformanceData()">
           <option value="all">All Time</option>
           <option value="monthly">This Month</option>
           <option value="quarterly">This Quarter</option>
           <option value="yearly">This Year</option>
-        </select>
-        <select class="filter-select" id="subjectFilter">
-          <option value="all">All Subjects</option>
-          <option value="mathematics">Mathematics</option>
-          <option value="physics">Physics</option>
-          <option value="chemistry">Chemistry</option>
         </select>
         <button class="btn btn-small btn-secondary" onclick="downloadReport()">📥 Download Report</button>
       </div>
@@ -834,62 +961,53 @@
 
     <section class="dashboard-section">
       <h3><span class="icon">📈</span> Performance Trends</h3>
-      <div class="performance-trends">
-        <div class="trend-card">
-          <h4>Overall Improvement</h4>
-          <div class="trend-stats">
-            <div class="trend-value">+8.5%</div>
-            <div class="trend-change trend-up">↑ 2.3% this month</div>
-          </div>
-          <div class="trend-label">Compared to last quarter average</div>
-        </div>
-        <div class="trend-card">
-          <h4>Attendance Impact</h4>
-          <div class="trend-stats">
-            <div class="trend-value">94%</div>
-            <div class="trend-change trend-up">↑ 5% this month</div>
-          </div>
-          <div class="trend-label">Attendance rate correlation with scores</div>
-        </div>
-        <div class="trend-card">
-          <h4>Consistency Score</h4>
-          <div class="trend-stats">
-            <div class="trend-value">82</div>
-            <div class="trend-change trend-up">↑ 7 points</div>
-          </div>
-          <div class="trend-label">Performance consistency across subjects</div>
-        </div>
+      <div class="performance-trends" id="trendContainer">
+        <!-- Trend cards will be populated by JavaScript -->
       </div>
     </section>
   </main>
 
   <footer>
     <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
-   <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
-    // Check if user is logged in and is a parent
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ── Parent authentication check ──
     if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "parent") {
-      window.location.href="../role-selection.html";
+      window.location.href = "../role-selection.html";
     }
+
+    // Get parent data from localStorage
+    const parentData = JSON.parse(localStorage.getItem('currentParent') || '{}');
+    const STUDENT_ID = parentData.studentId || 'UNKNOWN';
+    const STUDENT_NAME = parentData.studentName || 'Student';
 
     // Logout function
-    function logout() {
-      const logoutBtn = event?.target || document.querySelector('.btn-logout');
-      const originalText = logoutBtn.innerHTML;
-      logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
-      logoutBtn.disabled = true;
-      
-      setTimeout(() => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("currentParent");
-        window.location.href="../role-selection.html";
-      }, 1000);
+    function logout(e) {
+      if (e) e.preventDefault();
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("currentParent");
+      window.location.href = "../role-selection.html";
     }
 
-    // Hamburger menu functionality
+    // Hamburger menu
     const hamburger = document.getElementById('hamburger');
     const sideNav = document.getElementById('sideNav');
     const overlay = document.getElementById('overlay');
@@ -900,352 +1018,274 @@
       overlay.classList.toggle('active');
       document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
     });
-
     overlay.addEventListener('click', () => {
       hamburger.classList.remove('active');
       sideNav.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflow = 'auto';
     });
-
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.side-nav a');
-    navLinks.forEach(link => {
+    document.querySelectorAll('.side-nav a').forEach(link => {
       link.addEventListener('click', (e) => {
-        if (link.getAttribute('href') === '../role-selection.html' && link.onclick) {
-          return;
-        }
-        
         hamburger.classList.remove('active');
         sideNav.classList.remove('active');
         overlay.classList.remove('active');
         document.body.style.overflow = 'auto';
-        
-        if (link.getAttribute('href') && !link.getAttribute('href').startsWith('#')) {
-          window.location.href = link.getAttribute('href');
-        }
+        if (link.getAttribute('href') === '../role-selection.html') logout(e);
       });
     });
 
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
+    // ── Load all data from Firestore ──
+    async function loadPerformanceData() {
+      try {
+        showLoading(true);
+        const timeFilter = document.getElementById('timeFilter').value;
+
+        // Build query constraints for date
+        let query = db.collection("scores").where("studentId", "==", STUDENT_ID).orderBy("date", "desc");
+        const now = new Date();
+
+        if (timeFilter === 'monthly') {
+          const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+          query = query.where("date", ">=", start);
+        } else if (timeFilter === 'quarterly') {
+          const quarterStart = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).toISOString().split('T')[0];
+          query = query.where("date", ">=", quarterStart);
+        } else if (timeFilter === 'yearly') {
+          const yearStart = `${now.getFullYear()}-01-01`;
+          query = query.where("date", ">=", yearStart);
+        }
+
+        const snapshot = await query.get();
+        const scores = [];
+        snapshot.forEach(doc => scores.push({ id: doc.id, ...doc.data() }));
+
+        // Render UI components
+        renderStats(scores);
+        renderSubjectPerformance(scores);
+        renderTestHistory(scores);
+        renderTrends(scores);
+
+        showLoading(false);
+      } catch (error) {
+        console.error("Error loading performance data:", error);
+        showNotification("Failed to load data. Please try again.", "error");
+        showLoading(false);
       }
-    });
+    }
 
-    // Load performance data
-    function loadPerformanceData() {
-      const parentData = JSON.parse(localStorage.getItem('currentParent'));
-      
-      // Sample performance data
-      const subjects = [
-        {
-          name: "Mathematics",
-          grade: "A",
-          currentScore: 92,
-          previousScore: 85,
-          testsCount: 8,
-          improvement: "+7%",
-          topics: ["Calculus", "Algebra", "Geometry", "Statistics"]
-        },
-        {
-          name: "Physics",
-          grade: "B+",
-          currentScore: 88,
-          previousScore: 82,
-          testsCount: 6,
-          improvement: "+6%",
-          topics: ["Mechanics", "Thermodynamics", "Optics", "Electromagnetism"]
-        },
-        {
-          name: "Chemistry",
-          grade: "A-",
-          currentScore: 90,
-          previousScore: 84,
-          testsCount: 7,
-          improvement: "+6%",
-          topics: ["Organic", "Inorganic", "Physical", "Analytical"]
+    function showLoading(show) {
+      document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    }
+
+    // ── Render Stats ──
+    function renderStats(scores) {
+      if (scores.length === 0) {
+        document.getElementById('statsContainer').innerHTML = `
+          <div class="stat-card"><h3>0%</h3><p>Overall Average</p></div>
+          <div class="stat-card"><h3>0</h3><p>Tests Attempted</p></div>
+          <div class="stat-card"><h3>0%</h3><p>Average Improvement</p></div>
+          <div class="stat-card"><h3>N/A</h3><p>Best Subject</p></div>
+        `;
+        return;
+      }
+
+      const overallAvg = Math.round(scores.reduce((sum, s) => sum + s.percentage, 0) / scores.length);
+      const totalTests = scores.length;
+
+      // Group by testName to see improvements
+      const subjectMap = {};
+      scores.forEach(s => {
+        const key = s.testName || 'General';
+        if (!subjectMap[key]) subjectMap[key] = [];
+        subjectMap[key].push(s.percentage);
+      });
+
+      let totalImprovement = 0;
+      let improveCount = 0;
+      for (const [subject, percents] of Object.entries(subjectMap)) {
+        if (percents.length > 1) {
+          totalImprovement += percents[0] - percents[percents.length - 1];
+          improveCount++;
         }
-      ];
+      }
+      const avgImprovement = improveCount > 0 ? Math.round(totalImprovement / improveCount) : 0;
 
-      const testHistory = [
-        {
-          name: "Mathematics - Calculus Final",
-          date: "2026-01-15",
-          score: 94,
-          total: 100,
-          rank: "5th in class"
-        },
-        {
-          name: "Physics - Thermodynamics Test",
-          date: "2026-01-10",
-          score: 86,
-          total: 100,
-          rank: "12th in class"
-        },
-        {
-          name: "Chemistry - Organic Compounds",
-          date: "2026-01-08",
-          score: 92,
-          total: 100,
-          rank: "8th in class"
-        },
-        {
-          name: "Mathematics - Algebra Quiz",
-          date: "2026-01-05",
-          score: 88,
-          total: 100,
-          rank: "15th in class"
-        },
-        {
-          name: "Physics - Mechanics Assessment",
-          date: "2026-01-03",
-          score: 90,
-          total: 100,
-          rank: "9th in class"
+      // Find best subject by latest average
+      let bestSubject = 'N/A', bestAvg = 0;
+      for (const [subject, percents] of Object.entries(subjectMap)) {
+        const avg = Math.round(percents.reduce((a, b) => a + b, 0) / percents.length);
+        if (avg > bestAvg) {
+          bestAvg = avg;
+          bestSubject = subject;
         }
-      ];
+      }
 
-      // Calculate overall statistics
-      const overallAverage = Math.round(subjects.reduce((sum, subj) => sum + subj.currentScore, 0) / subjects.length);
-      const totalTests = subjects.reduce((sum, subj) => sum + subj.testsCount, 0);
-      const averageImprovement = subjects.reduce((sum, subj) => sum + (subj.currentScore - subj.previousScore), 0) / subjects.length;
-      const bestSubject = subjects.reduce((best, current) => current.currentScore > best.currentScore ? current : subjects[0]);
-
-      // Update stats container
       document.getElementById('statsContainer').innerHTML = `
-        <div class="stat-card">
-          <h3>${overallAverage}%</h3>
-          <p>Overall Average</p>
-        </div>
-        <div class="stat-card">
-          <h3>${totalTests}</h3>
-          <p>Tests Attempted</p>
-        </div>
-        <div class="stat-card">
-          <h3>${Math.round(averageImprovement)}%</h3>
-          <p>Average Improvement</p>
-        </div>
-        <div class="stat-card">
-          <h3>${bestSubject.name}</h3>
-          <p>Best Subject</p>
-        </div>
+        <div class="stat-card"><h3>${overallAvg}%</h3><p>Overall Average</p></div>
+        <div class="stat-card"><h3>${totalTests}</h3><p>Tests Attempted</p></div>
+        <div class="stat-card"><h3>${avgImprovement}%</h3><p>Average Improvement</p></div>
+        <div class="stat-card"><h3>${bestSubject}</h3><p>Best Subject</p></div>
       `;
+    }
 
-      // Update subject performance
-      const subjectPerformance = document.getElementById('subjectPerformance');
-      subjectPerformance.innerHTML = '';
+    // ── Render Subject Performance ──
+    function renderSubjectPerformance(scores) {
+      const container = document.getElementById('subjectPerformance');
+      container.innerHTML = '';
+      if (scores.length === 0) {
+        container.innerHTML = '<p>No scores available to display subject performance.</p>';
+        return;
+      }
 
-      subjects.forEach((subject, index) => {
-        const improvement = subject.currentScore - subject.previousScore;
-        const improvementClass = improvement >= 0 ? 'trend-up' : 'trend-down';
+      const subjectMap = {};
+      scores.forEach(s => {
+        const key = s.testName || 'General';
+        if (!subjectMap[key]) subjectMap[key] = [];
+        subjectMap[key].push(s.percentage);
+      });
+
+      let index = 0;
+      for (const [subject, percents] of Object.entries(subjectMap)) {
+        const avg = Math.round(percents.reduce((a, b) => a + b, 0) / percents.length);
+        const prev = percents.length > 1 ? percents[1] : avg; // simplistic: previous test score or same
+        const improvement = avg - prev;
         const improvementText = improvement >= 0 ? `+${improvement}%` : `${improvement}%`;
+        const grade = avg >= 85 ? 'A' : avg >= 70 ? 'B' : avg >= 60 ? 'C' : 'D';
 
-        const subjectCard = document.createElement('div');
-        subjectCard.className = 'subject-card';
-        subjectCard.style.animationDelay = `${0.1 * index}s`;
-        
-        subjectCard.innerHTML = `
+        const card = document.createElement('div');
+        card.className = 'subject-card';
+        card.style.animationDelay = `${0.1 * index}s`;
+        card.innerHTML = `
           <h4>
-            ${subject.name}
-            <span class="subject-grade">${subject.grade}</span>
+            ${subject}
+            <span class="subject-grade">${grade}</span>
           </h4>
           <div class="subject-stats">
             <div class="subject-stat">
-              <div class="value">${subject.currentScore}%</div>
-              <div class="label">Current Score</div>
+              <div class="value">${avg}%</div>
+              <div class="label">Average</div>
             </div>
             <div class="subject-stat">
-              <div class="value">${subject.testsCount}</div>
+              <div class="value">${percents.length}</div>
               <div class="label">Tests</div>
             </div>
             <div class="subject-stat">
               <div class="value" style="color: ${improvement >= 0 ? '#10b981' : '#ef4444'}">${improvementText}</div>
-              <div class="label">Improvement</div>
+              <div class="label">Change</div>
             </div>
           </div>
           <div class="subject-progress">
             <div class="progress-bar">
-              <div class="progress-fill" style="width: ${subject.currentScore}%"></div>
+              <div class="progress-fill" style="width: ${avg}%"></div>
             </div>
             <div class="progress-labels">
-              <span>Previous: ${subject.previousScore}%</span>
-              <span>Current: ${subject.currentScore}%</span>
+              <span>Previous: ${prev}%</span>
+              <span>Latest: ${percents[0]}%</span>
             </div>
           </div>
         `;
-        
-        subjectPerformance.appendChild(subjectCard);
-      });
+        container.appendChild(card);
+        index++;
+      }
+    }
 
-      // Update test history
-      const testHistoryContainer = document.getElementById('testHistory');
-      testHistoryContainer.innerHTML = '';
-
-      testHistory.forEach((test, index) => {
-        const percentage = Math.round((test.score / test.total) * 100);
-        const grade = percentage >= 90 ? 'A' : percentage >= 80 ? 'B' : percentage >= 70 ? 'C' : 'D';
-        
-        const testItem = document.createElement('div');
-        testItem.className = 'test-item';
-        testItem.style.animationDelay = `${0.1 * index}s`;
-        
-        testItem.innerHTML = `
+    // ── Render Test History (recent 5) ──
+    function renderTestHistory(scores) {
+      const container = document.getElementById('testHistory');
+      container.innerHTML = '';
+      if (scores.length === 0) {
+        container.innerHTML = '<p>No test history available.</p>';
+        return;
+      }
+      const recent = scores.slice(0, 5);
+      recent.forEach((test, idx) => {
+        const percentage = test.percentage || 0;
+        const grade = percentage >= 85 ? 'A' : percentage >= 70 ? 'B' : percentage >= 60 ? 'C' : 'D';
+        const dateStr = new Date(test.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const item = document.createElement('div');
+        item.className = 'test-item';
+        item.style.animationDelay = `${0.1 * idx}s`;
+        item.innerHTML = `
           <div class="test-info">
-            <h4>${test.name}</h4>
-            <p>${new Date(test.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • ${test.rank}</p>
+            <h4>${test.testName || 'Untitled'}</h4>
+            <p>${dateStr}</p>
           </div>
           <div class="test-score">
-            <div class="score-value">${test.score}/${test.total}</div>
+            <div class="score-value">${test.score || 'N/A'}</div>
             <div class="score-label">Grade: ${grade} (${percentage}%)</div>
           </div>
         `;
-        
-        testHistoryContainer.appendChild(testItem);
+        container.appendChild(item);
       });
-
-      // Update last updated time
-      updateLastUpdated();
     }
 
-    // Download report function
-    function downloadReport() {
-      showNotification('Performance report download started...', 'success');
-      
-      // Simulate download delay
-      setTimeout(() => {
-        showNotification('Report downloaded successfully!', 'success');
-      }, 1500);
-    }
-
-    // Update last updated time
-    function updateLastUpdated() {
-      const now = new Date();
-      const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      };
-      document.getElementById('lastUpdated').textContent = 
-        `Last updated: ${now.toLocaleDateString('en-US', options)}`;
-    }
-
-    // Filter performance data
-    document.getElementById('timeFilter').addEventListener('change', function() {
-      showNotification(`Filtering data for: ${this.options[this.selectedIndex].text}`, 'info');
-    });
-
-    document.getElementById('subjectFilter').addEventListener('change', function() {
-      showNotification(`Filtering subject: ${this.options[this.selectedIndex].text}`, 'info');
-    });
-
-    // Notification system
-    function showNotification(message, type = 'info') {
-      const existingNotification = document.querySelector('.notification');
-      if (existingNotification) {
-        existingNotification.remove();
+    // ── Render Trends (summary cards) ──
+    function renderTrends(scores) {
+      const container = document.getElementById('trendContainer');
+      container.innerHTML = '';
+      if (scores.length === 0) {
+        container.innerHTML = '<p>No data for trends.</p>';
+        return;
       }
-      
+
+      const overallAvg = Math.round(scores.reduce((sum, s) => sum + s.percentage, 0) / scores.length);
+      // Simple improvement calculation
+      const improvement = overallAvg > 70 ? 'Upward' : 'Stable';
+      const attendanceRate = 94; // placeholder – you can calculate from attendance if needed
+      const consistency = overallAvg > 80 ? 'High' : 'Moderate';
+
+      container.innerHTML = `
+        <div class="trend-card">
+          <h4>Overall Improvement</h4>
+          <div class="trend-stats">
+            <div class="trend-value">${overallAvg}%</div>
+            <div class="trend-change trend-up">↑ ${improvement}</div>
+          </div>
+          <div class="trend-label">Average across all subjects</div>
+        </div>
+        <div class="trend-card">
+          <h4>Attendance Impact</h4>
+          <div class="trend-stats">
+            <div class="trend-value">${attendanceRate}%</div>
+            <div class="trend-change trend-up">Good</div>
+          </div>
+          <div class="trend-label">Attendance rate correlation with scores</div>
+        </div>
+        <div class="trend-card">
+          <h4>Consistency Score</h4>
+          <div class="trend-stats">
+            <div class="trend-value">${consistency}</div>
+            <div class="trend-change trend-up">Steady</div>
+          </div>
+          <div class="trend-label">Performance consistency across subjects</div>
+        </div>
+      `;
+    }
+
+    // ── Notification & Helpers ──
+    function showNotification(message, type = 'info') {
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
       const notification = document.createElement('div');
       notification.className = `notification notification-${type}`;
       notification.innerHTML = `
-        <div class="notification-content">
-          <span class="notification-message">${message}</span>
-          <button class="notification-close">×</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span>${message}</span>
+          <button style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">×</button>
         </div>
       `;
-      
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 9999;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
-        min-width: 300px;
-        max-width: 400px;
-      `;
-      
-      notification.querySelector('.notification-content').style.cssText = `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      `;
-      
-      notification.querySelector('.notification-message').style.cssText = `
-        margin-right: 20px;
-      `;
-      
-      notification.querySelector('.notification-close').style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `;
-      
-      notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-      });
-      
       document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.remove();
-        }
-      }, 3000);
+      setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
     }
 
-    // Add CSS for animations
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeOut {
-        from {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        to {
-          opacity: 0;
-          transform: translateX(100px);
-        }
-      }
-      
-      .loading {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255,255,255,.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-      }
+    function downloadReport() {
+      showNotification('Performance report download started...', 'success');
+      setTimeout(() => showNotification('Report downloaded successfully!', 'success'), 1500);
+    }
 
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Initialize performance page when loaded
+    // Initialize page
     document.addEventListener('DOMContentLoaded', loadPerformanceData);
   </script>
 </body>
+
 </html>

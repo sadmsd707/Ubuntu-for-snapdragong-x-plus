@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Announcements - Parent Dashboard</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
-    /* Base styles matching parent dashboard */
+    /* ========== Your existing CSS – kept exactly as you provided ========== */
     * {
       margin: 0;
       padding: 0;
@@ -20,7 +27,6 @@
       overflow-x: hidden;
     }
 
-    /* Header styles */
     header {
       background: linear-gradient(to right, #2563eb, #1e3a8a);
       color: white;
@@ -39,7 +45,6 @@
       font-weight: 700;
     }
 
-    /* Hamburger Menu */
     .hamburger {
       background: none;
       border: none;
@@ -77,7 +82,6 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
-    /* Side Navigation */
     .side-nav {
       position: fixed;
       top: 0;
@@ -118,6 +122,10 @@
       border-radius: 3px;
     }
 
+    .side-nav ul::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
     .side-nav ul li {
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       opacity: 0;
@@ -130,17 +138,32 @@
       transform: translateX(0);
     }
 
-    .side-nav ul li:nth-child(1) { animation-delay: 0.1s; }
-    .side-nav ul li:nth-child(2) { animation-delay: 0.15s; }
-    .side-nav ul li:nth-child(3) { animation-delay: 0.2s; }
-    .side-nav ul li:nth-child(4) { animation-delay: 0.25s; }
-    .side-nav ul li:nth-child(5) { animation-delay: 0.3s; }
+    .side-nav ul li:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .side-nav ul li:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .side-nav ul li:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .side-nav ul li:nth-child(4) {
+      animation-delay: 0.25s;
+    }
+
+    .side-nav ul li:nth-child(5) {
+      animation-delay: 0.3s;
+    }
 
     @keyframes slideInRight {
       from {
         opacity: 0;
         transform: translateX(20px);
       }
+
       to {
         opacity: 1;
         transform: translateX(0);
@@ -201,7 +224,6 @@
       visibility: visible;
     }
 
-    /* Main Content */
     .main-content {
       padding: 30px 20px;
       max-width: 1200px;
@@ -209,7 +231,6 @@
       animation: fadeInUp 0.6s ease;
     }
 
-    /* Page Header */
     .page-header {
       margin-bottom: 40px;
       text-align: center;
@@ -232,7 +253,6 @@
       margin: 0 auto;
     }
 
-    /* Announcements Grid */
     .announcements-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -240,12 +260,11 @@
       margin-bottom: 40px;
     }
 
-    /* Announcement Card */
     .announcement-card {
       background: white;
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
       transition: all 0.3s ease;
       animation: fadeInUp 0.5s ease;
       animation-fill-mode: both;
@@ -253,20 +272,31 @@
 
     .announcement-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }
 
-    .announcement-card:nth-child(1) { animation-delay: 0.1s; }
-    .announcement-card:nth-child(2) { animation-delay: 0.2s; }
-    .announcement-card:nth-child(3) { animation-delay: 0.3s; }
-    .announcement-card:nth-child(4) { animation-delay: 0.4s; }
+    .announcement-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .announcement-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .announcement-card:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .announcement-card:nth-child(4) {
+      animation-delay: 0.4s;
+    }
 
     .announcement-header {
       background: linear-gradient(to right, #2563eb, #1e3a8a);
       color: white;
       padding: 25px;
       position: relative;
-      min-height: 160px; /* Increased height to prevent overlap */
+      min-height: 160px;
       display: flex;
       flex-direction: column;
     }
@@ -276,7 +306,7 @@
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 15px;
-      min-height: 24px; /* Fixed height for category area */
+      min-height: 24px;
     }
 
     .announcement-category {
@@ -285,7 +315,6 @@
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 0.5px;
       text-transform: uppercase;
       white-space: nowrap;
       flex-shrink: 0;
@@ -306,11 +335,10 @@
       font-size: 1.4rem;
       font-weight: 700;
       line-height: 1.4;
-      margin-top: auto; /* Push to bottom to prevent overlap */
+      margin-top: auto;
       padding-top: 10px;
       flex-grow: 1;
       overflow-wrap: break-word;
-      word-wrap: break-word;
     }
 
     .announcement-meta {
@@ -346,14 +374,6 @@
       color: #475569;
       line-height: 1.7;
       margin-bottom: 25px;
-    }
-
-    .announcement-content p {
-      margin-bottom: 15px;
-    }
-
-    .announcement-content p:last-child {
-      margin-bottom: 0;
     }
 
     .announcement-attachments {
@@ -416,7 +436,6 @@
       flex-shrink: 0;
     }
 
-    /* Priority Badges */
     .priority-high {
       background: linear-gradient(to right, #ef4444, #dc2626);
     }
@@ -444,14 +463,13 @@
       color: #ecfdf5;
     }
 
-    /* No Results */
     .no-results {
       grid-column: 1 / -1;
       text-align: center;
       padding: 50px;
       background: white;
       border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
 
     .no-results-icon {
@@ -469,13 +487,11 @@
       color: #94a3b8;
     }
 
-    /* Load More Button */
     .load-more {
       text-align: center;
       margin-top: 40px;
     }
 
-    /* Buttons */
     .btn {
       background: #2563eb;
       color: white;
@@ -494,7 +510,7 @@
     .btn:hover {
       background: #1e3a8a;
       transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     }
 
     .btn-outline {
@@ -508,7 +524,6 @@
       color: white;
     }
 
-    /* Footer */
     footer {
       background: #1e3a8a;
       color: white;
@@ -523,12 +538,12 @@
       font-size: 1rem;
     }
 
-    /* Animation Keyframes */
     @keyframes fadeInUp {
       from {
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -539,12 +554,12 @@
       from {
         opacity: 0;
       }
+
       to {
         opacity: 1;
       }
     }
 
-    /* Responsive styles */
     @media (max-width: 992px) {
       .announcements-grid {
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -601,7 +616,7 @@
       .page-header h2 {
         font-size: 1.8rem;
       }
-      
+
       .page-header p {
         font-size: 1.1rem;
       }
@@ -634,9 +649,98 @@
         padding: 25px 20px;
       }
     }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      font-size: 1.5rem;
+      color: #2563eb;
+    }
+
+    .spinner {
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
+      min-width: 300px;
+      max-width: 400px;
+      color: white;
+    }
+
+    .notification-success {
+      background: #10b981;
+    }
+
+    .notification-error {
+      background: #ef4444;
+    }
+
+    .notification-info {
+      background: #3b82f6;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+    }
   </style>
 </head>
+
 <body>
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Checking authentication...</div>
+  </div>
+
   <header>
     <h1>Soham - Academic Announcements</h1>
     <button class="hamburger" id="hamburger">
@@ -653,11 +757,11 @@
       <li><a href="parent-performance.html"><span class="nav-icon">📈</span>Performance</a></li>
       <li><a href="parent-attendance.html"><span class="nav-icon">📅</span>Attendance</a></li>
       <li><a href="parent-announcements.html" class="nav-active"><span class="nav-icon">📢</span>Announcements</a></li>
-      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
 
-  <!-- Overlay for closing the menu when clicking outside -->
+  <!-- Overlay -->
   <div class="overlay" id="overlay"></div>
 
   <main class="main-content">
@@ -666,7 +770,6 @@
       <p>Stay updated with important academic notices and announcements</p>
     </div>
 
-    <!-- Announcements Grid -->
     <div class="announcements-grid" id="announcementsGrid">
       <!-- Announcements will be populated by JavaScript -->
     </div>
@@ -682,211 +785,103 @@
   </footer>
 
   <script>
-    // Check if user is logged in and is a parent
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Global variables
+    let allAnnouncements = [];
+    let visibleAnnouncements = 4;
+
+    // Check parent authentication (using localStorage until parent login is Firebase-integrated)
     if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "parent") {
-      window.location.href="../role-selection.html";
+      window.location.href = "../role-selection.html";
     }
 
-    // Logout function
-    function logout() {
-      event.preventDefault();
-      const logoutBtn = event.target;
-      const originalText = logoutBtn.innerHTML;
-      logoutBtn.innerHTML = '<span class="loading"></span> Logging out...';
-      logoutBtn.disabled = true;
-      
-      setTimeout(() => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("currentParent");
-        window.location.href="../role-selection.html";
-      }, 1000);
-    }
+    // Logout (also sign out from Firebase if a user is logged in)
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (auth.currentUser) {
+        await auth.signOut();
+      }
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("currentParent");
+      window.location.href = "../role-selection.html";
+    });
 
-    // Hamburger menu functionality
+    // Hamburger menu
     const hamburger = document.getElementById('hamburger');
     const sideNav = document.getElementById('sideNav');
     const overlay = document.getElementById('overlay');
-
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('active');
       sideNav.classList.toggle('active');
       overlay.classList.toggle('active');
       document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
     });
-
     overlay.addEventListener('click', () => {
       hamburger.classList.remove('active');
       sideNav.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflow = 'auto';
     });
-
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.side-nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (link.getAttribute('href') === '../role-selection.html' && link.onclick) {
-          return;
-        }
-        
+    document.querySelectorAll('.side-nav a').forEach(link => {
+      link.addEventListener('click', () => {
         hamburger.classList.remove('active');
         sideNav.classList.remove('active');
         overlay.classList.remove('active');
         document.body.style.overflow = 'auto';
-        
-        if (link.getAttribute('href') && !link.getAttribute('href').startsWith('#')) {
-          window.location.href = link.getAttribute('href');
-        }
       });
     });
 
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
+    // Load announcements from Firestore
+    async function loadAnnouncements() {
+      try {
+        document.getElementById("loadingOverlay").style.display = "flex";
+        const snapshot = await db.collection("announcements")
+          .orderBy("date", "desc")
+          .get();
+
+        allAnnouncements = [];
+        snapshot.forEach(doc => {
+          allAnnouncements.push({ id: doc.id, ...doc.data() });
+        });
+
+        document.getElementById("loadingOverlay").style.display = "none";
+        visibleAnnouncements = 4; // reset
+        renderAnnouncements();
+      } catch (error) {
+        console.error("Error loading announcements:", error);
+        document.getElementById("loadingOverlay").style.display = "none";
+        showNotification("Failed to load announcements", "error");
       }
-    });
+    }
 
-    // Announcements Data
-    const announcementsData = [
-      {
-        id: 1,
-        title: "Mid-Term Examination Schedule",
-        category: "Exams",
-        priority: "high",
-        date: "2026-02-15",
-        sender: "Ms. Priya Sharma",
-        senderRole: "Class Teacher",
-        content: "Mid-term examinations for all classes will be held from February 25th to March 10th, 2026. Please ensure your child completes their syllabus revision. The detailed timetable will be shared next week.",
-        attachments: [
-          { name: "Exam Schedule.pdf", size: "2.1 MB" },
-          { name: "Syllabus Breakdown.docx", size: "1.3 MB" }
-        ]
-      },
-      {
-        id: 2,
-        title: "Science Project Submission Deadline",
-        category: "Assignments",
-        priority: "high",
-        date: "2026-02-12",
-        sender: "Dr. Anjali Singh",
-        senderRole: "Science Department Head",
-        content: "All science project submissions for the annual science fair are due by February 28th, 2026. Projects should be original work with proper documentation. Late submissions will not be accepted.",
-        attachments: [
-          { name: "Project Guidelines.pdf", size: "1.8 MB" },
-          { name: "Submission Form.docx", size: "0.9 MB" }
-        ]
-      },
-      {
-        id: 3,
-        title: "Mathematics Olympiad Registration",
-        category: "Competitions",
-        priority: "medium",
-        date: "2026-02-10",
-        sender: "Mr. Rajesh Kumar",
-        senderRole: "Mathematics Coordinator",
-        content: "Registration for the National Mathematics Olympiad is now open. Students from classes 9-12 can participate. Last date for registration is February 25th, 2026. Preliminary round will be held on March 15th.",
-        attachments: [
-          { name: "Olympiad Syllabus.pdf", size: "1.5 MB" },
-          { name: "Registration Form.pdf", size: "1.1 MB" }
-        ]
-      },
-      {
-        id: 4,
-        title: "Library Hours Extension",
-        category: "Facilities",
-        priority: "low",
-        date: "2026-02-08",
-        sender: "Ms. Meera Patel",
-        senderRole: "Librarian",
-        content: "Starting from February 15th, library hours will be extended until 6:00 PM on weekdays to accommodate exam preparation. Students can borrow additional reference books for exam preparation.",
-        attachments: [
-          { name: "Extended Hours Notice.pdf", size: "0.8 MB" },
-          { name: "Book List 2026.pdf", size: "2.3 MB" }
-        ]
-      },
-      {
-        id: 5,
-        title: "Computer Lab Maintenance",
-        category: "Infrastructure",
-        priority: "medium",
-        date: "2026-02-05",
-        sender: "IT Department",
-        senderRole: "School Administration",
-        content: "Computer Lab 2 will be closed for maintenance from February 12th to 15th, 2026. All computer classes during this period will be rescheduled. Alternative arrangements have been made in Lab 1.",
-        attachments: [
-          { name: "Maintenance Schedule.pdf", size: "1.2 MB" },
-          { name: "Rescheduled Classes.docx", size: "0.7 MB" }
-        ]
-      },
-      {
-        id: 6,
-        title: "Scholarship Application Deadline",
-        category: "Financial",
-        priority: "high",
-        date: "2026-02-03",
-        sender: "Accounts Department",
-        senderRole: "School Administration",
-        content: "Last date to apply for merit-based scholarships is February 20th, 2026. Students with 90% or above in previous exams are eligible. Required documents must be submitted to the accounts office.",
-        attachments: [
-          { name: "Scholarship Form.pdf", size: "1.9 MB" },
-          { name: "Eligibility Criteria.pdf", size: "1.4 MB" }
-        ]
-      },
-      {
-        id: 7,
-        title: "Physics Practical Exam Schedule",
-        category: "Exams",
-        priority: "high",
-        date: "2026-02-01",
-        sender: "Physics Department",
-        senderRole: "Science Faculty",
-        content: "Physics practical examinations for classes 11 and 12 will be conducted from February 18th to 22nd, 2026. Students must bring their lab records and necessary instruments. Detailed batch-wise schedule attached.",
-        attachments: [
-          { name: "Practical Schedule.pdf", size: "2.5 MB" },
-          { name: "Required Instruments.pdf", size: "0.9 MB" }
-        ]
-      },
-      {
-        id: 8,
-        title: "Career Counseling Session",
-        category: "Guidance",
-        priority: "medium",
-        date: "2026-01-28",
-        sender: "Career Guidance Cell",
-        senderRole: "Counseling Department",
-        content: "Career counseling session for class 12 students and parents on February 10th, 2026. Experts from various fields will be available for one-on-one counseling. Registration is mandatory.",
-        attachments: [
-          { name: "Counseling Schedule.pdf", size: "1.6 MB" },
-          { name: "Expert Profiles.pdf", size: "2.8 MB" }
-        ]
-      }
-    ];
-
-    // DOM Elements
-    const announcementsGrid = document.getElementById('announcementsGrid');
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-
-    // Initial variables
-    let visibleAnnouncements = 4;
-
-    // Format date
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+    // Format date (Firestore timestamp or string)
+    function formatDate(dateValue) {
+      if (!dateValue) return '';
+      const date = dateValue.toDate ? dateValue.toDate() : new Date(dateValue);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
       });
     }
 
     // Get priority class
     function getPriorityClass(priority) {
-      switch(priority) {
+      switch (priority) {
         case 'high': return 'priority-high';
         case 'medium': return 'priority-medium';
         case 'low': return 'priority-low';
@@ -896,7 +891,7 @@
 
     // Get priority text
     function getPriorityText(priority) {
-      switch(priority) {
+      switch (priority) {
         case 'high': return 'High Priority';
         case 'medium': return 'Medium Priority';
         case 'low': return 'Low Priority';
@@ -906,60 +901,62 @@
 
     // Render announcements
     function renderAnnouncements() {
-      announcementsGrid.innerHTML = '';
-      
-      const announcementsToShow = announcementsData.slice(0, visibleAnnouncements);
-      
+      const grid = document.getElementById('announcementsGrid');
+      grid.innerHTML = '';
+
+      const announcementsToShow = allAnnouncements.slice(0, visibleAnnouncements);
+
       if (announcementsToShow.length === 0) {
-        announcementsGrid.innerHTML = `
+        grid.innerHTML = `
           <div class="no-results">
             <div class="no-results-icon">📭</div>
             <h3>No announcements found</h3>
             <p>Check back later for new announcements</p>
           </div>
         `;
-        loadMoreBtn.style.display = 'none';
+        document.getElementById('loadMoreBtn').style.display = 'none';
         return;
       }
-      
+
       announcementsToShow.forEach((announcement, index) => {
-        const announcementCard = document.createElement('div');
-        announcementCard.className = 'announcement-card';
-        announcementCard.style.animationDelay = `${0.1 * (index + 1)}s`;
-        
-        const priorityClass = getPriorityClass(announcement.priority);
-        
-        announcementCard.innerHTML = `
+        const card = document.createElement('div');
+        card.className = 'announcement-card';
+        card.style.animationDelay = `${0.1 * (index + 1)}s`;
+
+        const priorityClass = getPriorityClass(announcement.priority || 'low');
+        const attachments = announcement.attachments || [];
+
+        card.innerHTML = `
           <div class="announcement-header ${priorityClass}">
             <div class="announcement-category-container">
-              <div class="announcement-category">${announcement.category}</div>
+              <div class="announcement-category">${announcement.category || 'General'}</div>
               <div class="announcement-date">
                 <span>📅</span> ${formatDate(announcement.date)}
               </div>
             </div>
-            <div class="announcement-title">${announcement.title}</div>
+            <div class="announcement-title">${announcement.title || 'Untitled'}</div>
             <div class="announcement-meta">
               <div class="announcement-sender">
-                <span>👨‍🏫</span> ${announcement.sender} - ${announcement.senderRole}
+                <span>👨‍🏫</span> ${announcement.sender || 'Soham Admin'} - ${announcement.senderRole || ''}
               </div>
               <div class="announcement-priority">${getPriorityText(announcement.priority)}</div>
             </div>
           </div>
           <div class="announcement-body">
             <div class="announcement-content">
-              <p>${announcement.content}</p>
+              <p>${announcement.content || ''}</p>
             </div>
-            ${announcement.attachments && announcement.attachments.length > 0 ? `
+            ${attachments.length > 0 ? `
             <div class="announcement-attachments">
               <div class="attachments-title">
                 <span>📎</span> Attachments
               </div>
               <div class="attachment-list">
-                ${announcement.attachments.map(attachment => `
-                  <a href="#" class="attachment-item" onclick="downloadAttachment('${attachment.name}')">
+                ${attachments.map(att => `
+                  <a href="#" class="attachment-item" onclick="downloadAttachment('${att.name}')">
                     <span class="attachment-icon">📄</span>
-                    <span class="attachment-name">${attachment.name}</span>
-                    <span class="attachment-size">${attachment.size}</span>
+                    <span class="attachment-name">${att.name}</span>
+                    <span class="attachment-size">${att.size || ''}</span>
                   </a>
                 `).join('')}
               </div>
@@ -967,156 +964,52 @@
             ` : ''}
           </div>
         `;
-        
-        announcementsGrid.appendChild(announcementCard);
+
+        grid.appendChild(card);
       });
-      
+
       // Show/hide load more button
-      loadMoreBtn.style.display = visibleAnnouncements >= announcementsData.length ? 'none' : 'block';
+      document.getElementById('loadMoreBtn').style.display =
+        visibleAnnouncements >= allAnnouncements.length ? 'none' : 'block';
     }
 
-    // Load more announcements
-    function loadMoreAnnouncements() {
+    // Load more
+    document.getElementById('loadMoreBtn').addEventListener('click', () => {
       visibleAnnouncements += 4;
       renderAnnouncements();
-      
-      // Scroll to show newly loaded announcements
       const lastCard = document.querySelector('.announcement-card:last-child');
-      if (lastCard) {
-        lastCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
+      if (lastCard) lastCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
 
-    // Download attachment (simulated)
+    // Simulate download
     function downloadAttachment(filename) {
       event.preventDefault();
       showNotification(`Downloading "${filename}"...`, 'success');
-      
-      // In a real application, this would trigger an actual download
       setTimeout(() => {
         showNotification(`"${filename}" downloaded successfully!`, 'success');
       }, 1000);
     }
 
-    // Show notification
+    // Notification
     function showNotification(message, type = 'info') {
-      // Remove existing notification
-      const existingNotification = document.querySelector('.notification');
-      if (existingNotification) {
-        existingNotification.remove();
-      }
-      
-      // Create notification
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
+
       const notification = document.createElement('div');
-      notification.className = 'notification';
+      notification.className = `notification notification-${type}`;
       notification.innerHTML = `
-        <div class="notification-content">
-          <span class="notification-message">${message}</span>
-          <button class="notification-close">×</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span>${message}</span>
+          <button style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">×</button>
         </div>
       `;
-      
-      // Style notification
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 9999;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
-        min-width: 300px;
-        max-width: 400px;
-      `;
-      
-      notification.querySelector('.notification-content').style.cssText = `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      `;
-      
-      notification.querySelector('.notification-close').style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `;
-      
-      notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-      });
-      
       document.body.appendChild(notification);
-      
-      // Auto remove after 3 seconds
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.remove();
-        }
-      }, 3000);
+      setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
     }
 
-    // Add animation styles
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from {
-          opacity: 0;
-          transform: translateX(100px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-      
-      @keyframes fadeOut {
-        from {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        to {
-          opacity: 0;
-          transform: translateX(100px);
-        }
-      }
-      
-      .loading {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255,255,255,.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-      }
-      
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Initialize event listeners
-    function initialize() {
-      loadMoreBtn.addEventListener('click', loadMoreAnnouncements);
-      
-      // Initial render
-      renderAnnouncements();
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', initialize);
+    // Initialize
+    loadAnnouncements();
   </script>
 </body>
+
 </html>

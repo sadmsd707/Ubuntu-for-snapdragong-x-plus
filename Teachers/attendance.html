@@ -4,453 +4,149 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Attendance Management - Soham</title>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <!-- jsPDF for PDF export -->
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- jsPDF for PDF Generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
-    /* ========== All original CSS (unchanged) ========== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+    body { background:#f5f7fa; color:#333; line-height:1.6; overflow-x:hidden; }
+    header { background:linear-gradient(to right,#2563eb,#1e3a8a); color:white; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 10px rgba(0,0,0,0.1); position:relative; z-index:100; height:70px; }
+    header h1 { font-size:1.8rem; font-weight:700; }
 
-    body {
-      background: #f5f7fa;
-      color: #333;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+    .hamburger { background:none; border:none; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; width:30px; height:21px; padding:0; z-index:1001; position:relative; }
+    .hamburger span { display:block; height:3px; width:100%; background-color:white; border-radius:3px; transition:all 0.3s cubic-bezier(0.68,-0.55,0.265,1.55); transform-origin:center; }
+    .hamburger.active span:nth-child(1) { transform:translateY(9px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity:0; transform:translateX(-20px); }
+    .hamburger.active span:nth-child(3) { transform:translateY(-9px) rotate(-45deg); }
 
-    header {
-      background: linear-gradient(to right, #2563eb, #1e3a8a);
-      color: white;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 100;
-      height: 70px;
-    }
+    .side-nav { position:fixed; top:0; right:-300px; width:300px; height:100vh; background:linear-gradient(to bottom,#2563eb,#1e3a8a); box-shadow:-5px 0 15px rgba(0,0,0,0.1); transition:right 0.4s cubic-bezier(0.68,-0.55,0.265,1.55); z-index:1000; display:flex; flex-direction:column; }
+    .side-nav.active { right:0; }
+    .side-nav ul { list-style:none; padding:0; margin:0; flex:1; overflow-y:auto; max-height:100vh; }
+    .side-nav ul li { border-bottom:1px solid rgba(255,255,255,0.1); opacity:0; transform:translateX(20px); animation:slideInRight 0.5s forwards; }
+    .side-nav.active ul li { opacity:1; transform:translateX(0); }
+    .side-nav ul li:nth-child(1) { animation-delay:0.1s; }
+    .side-nav ul li:nth-child(2) { animation-delay:0.15s; }
+    .side-nav ul li:nth-child(3) { animation-delay:0.2s; }
+    .side-nav ul li:nth-child(4) { animation-delay:0.25s; }
+    .side-nav ul li:nth-child(5) { animation-delay:0.3s; }
+    .side-nav ul li:nth-child(6) { animation-delay:0.35s; }
+    .side-nav ul li:nth-child(7) { animation-delay:0.4s; }
+    .side-nav ul li:nth-child(8) { animation-delay:0.45s; }
+    .side-nav ul li:nth-child(9) { animation-delay:0.5s; }
+    .side-nav ul li:nth-child(10) { animation-delay:0.55s; }
+    .side-nav ul li:nth-child(11) { animation-delay:0.6s; }
+    .side-nav ul li:nth-child(12) { animation-delay:0.65s; }
+    .side-nav ul li:nth-child(13) { animation-delay:0.7s; }
+    .side-nav ul li:nth-child(14) { animation-delay:0.75s; }
 
-    header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
+    @keyframes slideInRight { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+    .side-nav ul li:first-child { border-top:none; margin-top:70px; }
+    .side-nav ul li a { display:block; color:white; text-decoration:none; padding:15px 30px; font-size:1.1rem; transition:all 0.3s ease; display:flex; align-items:center; gap:10px; background:transparent; margin:0; }
+    .side-nav ul li a:hover { background-color:rgba(255,255,255,0.1); padding-left:40px; transform:translateX(5px); }
+    .nav-icon { font-size:1.2rem; width:20px; text-align:center; }
+    .nav-active { background-color:rgba(255,255,255,0.2); border-left:4px solid white; }
 
-    .hamburger {
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 30px;
-      height: 21px;
-      padding: 0;
-      z-index: 1001;
-      position: relative;
-    }
+    .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:999; opacity:0; visibility:hidden; transition:all 0.3s ease; }
+    .overlay.active { opacity:1; visibility:visible; }
 
-    .hamburger span {
-      display: block;
-      height: 3px;
-      width: 100%;
-      background-color: white;
-      border-radius: 3px;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      transform-origin: center;
-    }
+    .dashboard { padding:30px 20px; max-width:1400px; margin:auto; }
+    .welcome-section { background:linear-gradient(to right,#2563eb,#1e3a8a); color:white; padding:30px; border-radius:15px; margin-bottom:30px; box-shadow:0 5px 15px rgba(0,0,0,0.1); position:relative; overflow:hidden; animation:fadeInUp 0.6s ease; }
+    .welcome-section::before { content:""; position:absolute; top:-50%; right:-50%; width:100%; height:200%; background:rgba(255,255,255,0.1); transform:rotate(30deg); }
+    .welcome-section h2 { font-size:2.2rem; margin-bottom:10px; position:relative; }
+    .welcome-section p { font-size:1.2rem; opacity:0.9; position:relative; }
 
-    .hamburger.active span:nth-child(1) {
-      transform: translateY(9px) rotate(45deg);
-    }
+    .dashboard-section { background:white; border-radius:15px; padding:30px; margin-bottom:30px; box-shadow:0 5px 15px rgba(0,0,0,0.05); animation:fadeInUp 0.6s ease; animation-fill-mode:both; }
+    .dashboard-section h3 { color:#1e3a8a; margin-bottom:20px; font-size:1.8rem; display:flex; align-items:center; gap:10px; }
 
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
+    .btn { background:#2563eb; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:600; transition:all 0.3s ease; display:inline-block; text-decoration:none; text-align:center; }
+    .btn:hover { background:#1e3a8a; transform:translateY(-2px); box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+    .btn-secondary { background:#f59e0b; }
+    .btn-secondary:hover { background:#d97706; }
+    .btn-success { background:#10b981; }
+    .btn-success:hover { background:#059669; }
+    .btn-danger { background:#ef4444; }
+    .btn-danger:hover { background:#dc2626; }
+    .btn-small { padding:8px 15px; font-size:0.9rem; }
 
-    .hamburger.active span:nth-child(3) {
-      transform: translateY(-9px) rotate(-45deg);
-    }
+    .attendance-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:15px; }
+    .attendance-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .attendance-filter { display:flex; gap:10px; margin-bottom:20px; align-items:center; flex-wrap:wrap; animation:fadeInUp 0.5s ease; }
+    .filter-group { display:flex; gap:10px; align-items:center; }
+    .filter-group label { font-weight:600; color:#475569; }
+    select, input[type="date"], input[type="month"] { padding:8px 12px; border:1px solid #d1d5db; border-radius:5px; background:white; font-size:0.9rem; transition:all 0.3s ease; }
+    select:focus, input[type="date"]:focus, input[type="month"]:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
 
-    .side-nav {
-      position: fixed;
-      top: 0;
-      right: -300px;
-      width: 300px;
-      height: 100vh;
-      background: linear-gradient(to bottom, #2563eb, #1e3a8a);
-      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-      transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-    }
+    .attendance-table-container { overflow-x:auto; margin-top:20px; }
+    .attendance-table { width:100%; border-collapse:collapse; margin-top:10px; }
+    .attendance-table th, .attendance-table td { padding:12px 15px; text-align:left; border-bottom:1px solid #e2e8f0; }
+    .attendance-table th { background-color:#f8fafc; color:#1e3a8a; font-weight:600; position:sticky; top:0; }
+    .attendance-status { display:inline-block; padding:5px 10px; border-radius:20px; font-size:0.8rem; font-weight:600; }
+    .status-present { background-color:#d1fae5; color:#065f46; }
+    .status-absent { background-color:#fee2e2; color:#991b1b; }
+    .status-late { background-color:#fef3c7; color:#92400e; }
+    .status-not-marked { background-color:#f3f4f6; color:#6b7280; }
 
-    .side-nav.active {
-      right: 0;
-    }
+    .attendance-summary { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:15px; margin-bottom:25px; }
+    .summary-card { background:white; padding:20px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); text-align:center; border-top:4px solid #2563eb; animation:fadeInUp 0.5s ease; animation-fill-mode:both; transition:all 0.3s ease; }
+    .summary-card:hover { transform:translateY(-5px); box-shadow:0 5px 20px rgba(0,0,0,0.12); }
+    .summary-card.present { border-top-color:#10b981; }
+    .summary-card.absent { border-top-color:#ef4444; }
+    .summary-card.late { border-top-color:#f59e0b; }
+    .summary-card.rate { border-top-color:#8b5cf6; }
+    .summary-card h4 { font-size:1.8rem; color:#1e3a8a; margin-bottom:5px; }
+    .summary-card p { color:#555; font-weight:600; }
 
-    .side-nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      flex: 1;
-      overflow-y: auto;
-      max-height: 100vh;
-    }
+    .attendance-calendar { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:20px; }
+    .calendar-header { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:10px; text-align:center; font-weight:600; color:#475569; }
+    .calendar-day { aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:5px; font-weight:600; cursor:pointer; padding:5px; transition:all 0.3s ease; }
+    .calendar-day.empty { background:transparent; cursor:default; }
+    .calendar-day.present { background-color:#d1fae5; color:#065f46; }
+    .calendar-day.absent { background-color:#fee2e2; color:#991b1b; }
+    .calendar-day.late { background-color:#fef3c7; color:#92400e; }
+    .calendar-day:hover:not(.empty) { transform:scale(1.1); box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+    .calendar-day .date { font-size:1rem; }
+    .calendar-day .status { font-size:0.7rem; margin-top:2px; }
 
-    .side-nav ul::-webkit-scrollbar {
-      width: 5px;
-    }
+    .attendance-modal .student-list { max-height:400px; overflow-y:auto; margin-top:20px; }
+    .attendance-modal .student-item { display:flex; justify-content:space-between; align-items:center; padding:15px; background:#f8fafc; border-radius:8px; margin-bottom:10px; transition:all 0.3s ease; }
+    .attendance-modal .student-info h4 { color:#1e3a8a; margin-bottom:5px; }
+    .attendance-modal .student-info p { color:#666; font-size:0.9rem; }
+    .attendance-modal .status-selector { display:flex; gap:10px; }
+    .status-option { padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:600; transition:all 0.3s ease; border:2px solid transparent; opacity:0.7; }
+    .status-option:hover { opacity:0.9; transform:translateY(-2px); }
+    .status-option.selected { opacity:1; transform:scale(1.05); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
+    .status-option.present { background-color:#d1fae5; color:#065f46; }
+    .status-option.present.selected { border:2px solid #10b981; background-color:#a7f3d0; }
+    .status-option.absent { background-color:#fee2e2; color:#991b1b; }
+    .status-option.absent.selected { border:2px solid #ef4444; background-color:#fecaca; }
+    .status-option.late { background-color:#fef3c7; color:#92400e; }
+    .status-option.late.selected { border:2px solid #f59e0b; background-color:#fde68a; }
 
-    .side-nav ul::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-    }
+    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center; animation:fadeIn 0.3s ease; }
+    .modal.active { display:flex; }
+    .modal-content { background:white; border-radius:15px; width:90%; max-width:800px; max-height:90vh; overflow-y:auto; box-shadow:0 10px 30px rgba(0,0,0,0.2); animation:slideInUp 0.4s cubic-bezier(0.68,-0.55,0.265,1.55); }
+    .modal-header { background:#2563eb; color:white; padding:20px; border-radius:15px 15px 0 0; display:flex; justify-content:space-between; align-items:center; }
+    .modal-header h3 { margin:0; font-size:1.5rem; }
+    .close-modal { background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; padding:5px; transition:transform 0.3s ease; }
+    .close-modal:hover { transform:rotate(90deg); }
+    .modal-body { padding:30px; }
 
-    .side-nav ul::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 3px;
-    }
+    footer { background:#1e3a8a; color:white; text-align:center; padding:30px; margin-top:50px; animation:fadeInUp 0.6s ease; }
 
-    .side-nav ul::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideInUp { from { opacity:0; transform:translateY(100px); } to { opacity:1; transform:translateY(0); } }
 
-    .side-nav ul li {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      opacity: 0;
-      transform: translateX(20px);
-      animation: slideInRight 0.5s forwards;
-    }
-
-    .side-nav.active ul li {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .side-nav ul li:nth-child(1) { animation-delay: 0.1s; }
-    .side-nav ul li:nth-child(2) { animation-delay: 0.15s; }
-    .side-nav ul li:nth-child(3) { animation-delay: 0.2s; }
-    .side-nav ul li:nth-child(4) { animation-delay: 0.25s; }
-    .side-nav ul li:nth-child(5) { animation-delay: 0.3s; }
-    .side-nav ul li:nth-child(6) { animation-delay: 0.35s; }
-    .side-nav ul li:nth-child(7) { animation-delay: 0.4s; }
-    .side-nav ul li:nth-child(8) { animation-delay: 0.45s; }
-    .side-nav ul li:nth-child(9) { animation-delay: 0.5s; }
-    .side-nav ul li:nth-child(10) { animation-delay: 0.55s; }
-    .side-nav ul li:nth-child(11) { animation-delay: 0.6s; }
-    .side-nav ul li:nth-child(12) { animation-delay: 0.65s; }
-    .side-nav ul li:nth-child(13) { animation-delay: 0.7s; }
-    .side-nav ul li:nth-child(14) { animation-delay: 0.75s; }
-
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .side-nav ul li:first-child {
-      border-top: none;
-      margin-top: 70px;
-    }
-
-    .side-nav ul li a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: transparent;
-      margin: 0;
-    }
-
-    .side-nav ul li a:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding-left: 40px;
-      transform: translateX(5px);
-    }
-
-    .nav-icon {
-      font-size: 1.2rem;
-      width: 20px;
-      text-align: center;
-    }
-
-    .nav-active {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-left: 4px solid white;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .dashboard {
-      padding: 30px 20px;
-      max-width: 1400px;
-      margin: auto;
-    }
-
-    .welcome-section {
-      background: linear-gradient(to right, #2563eb, #1e3a8a);
-      color: white;
-      padding: 30px;
-      border-radius: 15px;
-      margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
-      animation: fadeInUp 0.6s ease;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .welcome-section::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 200%;
-      background: rgba(255, 255, 255, 0.1);
-      transform: rotate(30deg);
-    }
-
-    .welcome-section h2 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-      position: relative;
-    }
-
-    .welcome-section p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      position: relative;
-    }
-
-    .dashboard-section {
-      background: white;
-      border-radius: 15px;
-      padding: 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      animation: fadeInUp 0.6s ease;
-      animation-fill-mode: both;
-    }
-
-    .dashboard-section:nth-child(1) { animation-delay: 0.1s; }
-    .dashboard-section:nth-child(2) { animation-delay: 0.2s; }
-    .dashboard-section:nth-child(3) { animation-delay: 0.3s; }
-    .dashboard-section:nth-child(4) { animation-delay: 0.4s; }
-
-    .dashboard-section h3 {
-      color: #1e3a8a;
-      margin-bottom: 20px;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .dashboard-section h3 .icon {
-      font-size: 1.5rem;
-    }
-
-    .btn {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: inline-block;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .btn:hover {
-      background: #1e3a8a;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .btn-secondary { background: #f59e0b; }
-    .btn-secondary:hover { background: #d97706; }
-
-    .btn-success { background: #10b981; }
-    .btn-success:hover { background: #059669; }
-
-    .btn-danger { background: #ef4444; }
-    .btn-danger:hover { background: #dc2626; }
-
-    .btn-small {
-      padding: 8px 15px;
-      font-size: 0.9rem;
-    }
-
-    .attendance-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .attendance-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .attendance-filter {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .filter-group {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .filter-group label {
-      font-weight: 600;
-      color: #475569;
-    }
-
-    select, input[type="date"], input[type="month"] {
-      padding: 8px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 5px;
-      background: white;
-      font-size: 0.9rem;
-    }
-
-    select:focus, input[type="date"]:focus, input[type="month"]:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .attendance-table-container {
-      overflow-x: auto;
-      margin-top: 20px;
-    }
-
-    .attendance-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    .attendance-table th,
-    .attendance-table td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    .attendance-table th {
-      background-color: #f8fafc;
-      color: #1e3a8a;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-    }
-
-    .attendance-status {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .status-present { background-color: #d1fae5; color: #065f46; }
-    .status-absent { background-color: #fee2e2; color: #991b1b; }
-    .status-late { background-color: #fef3c7; color: #92400e; }
-    .status-not-marked { background-color: #f3f4f6; color: #6b7280; }
-
-    .attendance-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .summary-card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      text-align: center;
-      border-top: 4px solid #2563eb;
-      transition: all 0.3s ease;
-    }
-
-    .summary-card.present { border-top-color: #10b981; }
-    .summary-card.absent { border-top-color: #ef4444; }
-    .summary-card.late { border-top-color: #f59e0b; }
-    .summary-card.rate { border-top-color: #8b5cf6; }
-
-    .summary-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
-    }
-
-    .summary-card h4 {
-      font-size: 1.8rem;
-      color: #1e3a8a;
-      margin-bottom: 5px;
-    }
-
-    .summary-card p {
-      color: #555;
-      font-weight: 600;
-    }
-
-    /* rest of CSS ... (calendar, modal, etc. unchanged) */
-    /* For brevity, I'm not repeating the entire CSS here, but it must be present exactly as in the original */
-    /* The full CSS block from your file should be included */
-    /* ... */
+    .notification { position:fixed; top:20px; right:20px; background:#10b981; color:white; padding:15px 20px; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.2); z-index:9999; animation:slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards; min-width:300px; max-width:400px; }
+    .notification-content { display:flex; justify-content:space-between; align-items:center; }
+    .notification-close { background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; padding:0; width:20px; height:20px; display:flex; align-items:center; justify-content:center; }
+    @keyframes slideInRight { from { opacity:0; transform:translateX(100px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes fadeOut { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(100px); } }
   </style>
 </head>
 <body>
@@ -459,6 +155,7 @@
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </header>
 
+  <!-- Side Navigation -->
   <div class="side-nav" id="sideNav">
     <ul>
       <li><a href="teacher-dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
@@ -474,38 +171,19 @@
       <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
   <div class="overlay" id="overlay"></div>
 
-  <!-- Modal: Mark Attendance -->
+  <!-- Mark Attendance Modal -->
   <div class="modal attendance-modal" id="attendanceModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3>Mark Attendance</h3>
-        <button class="close-modal" onclick="closeAttendanceModal()">×</button>
-      </div>
+      <div class="modal-header"><h3>Mark Attendance</h3><button class="close-modal" onclick="closeAttendanceModal()">×</button></div>
       <div class="modal-body">
         <div class="attendance-filter">
-          <div class="filter-group">
-            <label for="attendanceClass">Class:</label>
-            <select id="attendanceClass" class="btn btn-small">
-              <option value="all">All Classes</option>
-              <option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option>
-              <option value="11th-mhtcet-pcb">11th MHTCET (PCB)</option>
-              <option value="11th-jee">11th JEE</option>
-              <option value="11th-neet">11th NEET</option>
-              <option value="12th-mhtcet-pcm">12th MHTCET (PCM)</option>
-              <option value="12th-mhtcet-pcb">12th MHTCET (PCB)</option>
-              <option value="12th-jee">12th JEE</option>
-              <option value="12th-neet">12th NEET</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label for="attendanceDate">Date:</label>
-            <input type="date" id="attendanceDate" class="btn btn-small" value="">
-          </div>
+          <div class="filter-group"><label for="attendanceClass">Class:</label><select id="attendanceClass" class="btn btn-small"><option value="all">All Classes</option><option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option><option value="11th-mhtcet-pcb">11th MHTCET (PCB)</option><option value="11th-jee">11th JEE</option><option value="11th-neet">11th NEET</option><option value="12th-mhtcet-pcm">12th MHTCET (PCM)</option><option value="12th-mhtcet-pcb">12th MHTCET (PCB)</option><option value="12th-jee">12th JEE</option><option value="12th-neet">12th NEET</option></select></div>
+          <div class="filter-group"><label for="attendanceDate">Date:</label><input type="date" id="attendanceDate" class="btn btn-small"></div>
           <button class="btn btn-success" onclick="saveAttendance()">Save Attendance</button>
         </div>
         <div class="student-list" id="attendanceStudentList"></div>
@@ -513,9 +191,27 @@
     </div>
   </div>
 
-  <!-- Modal: Export PDF -->
+  <!-- Export Options Modal -->
   <div class="modal" id="exportModal">
-    <!-- ... same export modal HTML ... -->
+    <div class="modal-content">
+      <div class="modal-header"><h3>Export Attendance Report</h3><button class="close-modal" onclick="closeExportModal()">×</button></div>
+      <div class="modal-body">
+        <div class="export-options" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px;">
+          <div class="export-option" onclick="exportDailyPDF()" style="background:#f8fafc; padding:20px; border-radius:10px; cursor:pointer; border:2px solid #e2e8f0; display:flex; align-items:center; gap:15px; transition:all 0.3s ease;">
+            <div style="font-size:2.5rem;">📅</div>
+            <div><h4>Daily Report</h4><p>Export today's attendance with student details</p></div>
+          </div>
+          <div class="export-option" onclick="showNotification('Weekly report coming soon','info')" style="background:#f8fafc; padding:20px; border-radius:10px; cursor:pointer; border:2px solid #e2e8f0; display:flex; align-items:center; gap:15px; transition:all 0.3s ease;">
+            <div style="font-size:2.5rem;">📊</div>
+            <div><h4>Weekly Summary</h4><p>Export weekly attendance summary</p></div>
+          </div>
+          <div class="export-option" onclick="showNotification('Monthly report coming soon','info')" style="background:#f8fafc; padding:20px; border-radius:10px; cursor:pointer; border:2px solid #e2e8f0; display:flex; align-items:center; gap:15px; transition:all 0.3s ease;">
+            <div style="font-size:2.5rem;">📈</div>
+            <div><h4>Monthly Report</h4><p>Export comprehensive monthly attendance report</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <main class="dashboard">
@@ -528,9 +224,9 @@
       <div class="attendance-header">
         <h3><span class="icon">📅</span> Attendance Overview</h3>
         <div class="attendance-actions">
-          <button class="btn btn-success" onclick="markAttendance()"> Mark Attendance</button>
-          <button class="btn btn-secondary" onclick="showExportOptions()"> Export PDF</button>
-          <button class="btn" onclick="viewAttendanceAnalytics()"> Analytics</button>
+          <button class="btn btn-success" onclick="markAttendance()">✓ Mark Attendance</button>
+          <button class="btn btn-secondary" onclick="showExportOptions()">📥 Export PDF</button>
+          <button class="btn" onclick="viewAttendanceAnalytics()">📊 Analytics</button>
         </div>
       </div>
 
@@ -542,28 +238,9 @@
       </div>
 
       <div class="attendance-filter">
-        <div class="filter-group">
-          <label for="classFilter">Class:</label>
-          <select id="classFilter" onchange="filterAttendance()">
-            <option value="all">All Classes</option>
-            <option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option>
-            <!-- ... all classes ... -->
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="dateFilter">Date:</label>
-          <input type="date" id="dateFilter" onchange="filterAttendance()" value="">
-        </div>
-        <div class="filter-group">
-          <label for="statusFilter">Status:</label>
-          <select id="statusFilter" onchange="filterAttendance()">
-            <option value="all">All Status</option>
-            <option value="present">Present</option>
-            <option value="absent">Absent</option>
-            <option value="late">Late</option>
-            <option value="not-marked">Not Marked</option>
-          </select>
-        </div>
+        <div class="filter-group"><label for="classFilter">Class:</label><select id="classFilter" onchange="filterAttendance()"><option value="all">All Classes</option><option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option><option value="11th-mhtcet-pcb">11th MHTCET (PCB)</option><option value="11th-jee">11th JEE</option><option value="11th-neet">11th NEET</option><option value="12th-mhtcet-pcm">12th MHTCET (PCM)</option><option value="12th-mhtcet-pcb">12th MHTCET (PCB)</option><option value="12th-jee">12th JEE</option><option value="12th-neet">12th NEET</option></select></div>
+        <div class="filter-group"><label for="dateFilter">Date:</label><input type="date" id="dateFilter" onchange="filterAttendance()"></div>
+        <div class="filter-group"><label for="statusFilter">Status:</label><select id="statusFilter" onchange="filterAttendance()"><option value="all">All Status</option><option value="present">Present</option><option value="absent">Absent</option><option value="late">Late</option><option value="not-marked">Not Marked</option></select></div>
       </div>
 
       <div class="attendance-table-container">
@@ -572,8 +249,8 @@
           <tbody id="attendanceTableBody"></tbody>
         </table>
       </div>
-      <div id="noAttendanceData" class="empty-state" style="display: none;">
-        <div class="icon">📅</div>
+      <div id="noAttendanceData" class="empty-state" style="display:none; text-align:center; padding:40px;">
+        <div style="font-size:4rem; opacity:0.5;">📅</div>
         <h3>No Attendance Records</h3>
         <button class="btn btn-success" onclick="markAttendance()">Mark Attendance</button>
       </div>
@@ -581,40 +258,17 @@
 
     <section class="dashboard-section">
       <h3><span class="icon">📊</span> Attendance Analytics</h3>
-      <div class="attendance-filter" style="margin-bottom: 20px;">
-        <div class="filter-group">
-          <label for="chartType">Chart Type:</label>
-          <select id="chartType" onchange="updateChart()">
-            <option value="daily">Daily Attendance</option>
-            <option value="weekly">Weekly Trends</option>
-            <option value="monthly">Monthly Summary</option>
-            <option value="classWise">Class-wise Comparison</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="chartPeriod">Period:</label>
-          <select id="chartPeriod" onchange="updateChart()">
-            <option value="7">Last 7 Days</option>
-            <option value="14">Last 14 Days</option>
-            <option value="30">Last 30 Days</option>
-            <option value="90">Last 90 Days</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="chartClass">Class:</label>
-          <select id="chartClass" onchange="updateChart()">
-            <option value="all">All Classes</option>
-            <!-- ... all classes ... -->
-          </select>
-        </div>
+      <div class="attendance-filter" style="margin-bottom:20px;">
+        <div class="filter-group"><label for="chartPeriod">Period:</label><select id="chartPeriod" onchange="updateChart()"><option value="7">Last 7 Days</option><option value="14">Last 14 Days</option><option value="30">Last 30 Days</option></select></div>
+        <div class="filter-group"><label for="chartClass">Class:</label><select id="chartClass" onchange="updateChart()"><option value="all">All Classes</option><option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option><option value="11th-mhtcet-pcb">11th MHTCET (PCB)</option><option value="11th-jee">11th JEE</option><option value="11th-neet">11th NEET</option><option value="12th-mhtcet-pcm">12th MHTCET (PCM)</option><option value="12th-mhtcet-pcb">12th MHTCET (PCB)</option><option value="12th-jee">12th JEE</option><option value="12th-neet">12th NEET</option></select></div>
       </div>
       <div class="attendance-chart-container">
-        <div class="attendance-chart"><canvas id="attendanceChart" style="width: 100%; height: 300px;"></canvas></div>
-        <div class="chart-stats">
-          <div class="chart-stat-card"><h4 id="avgAttendance">0%</h4><p>Average Attendance</p></div>
-          <div class="chart-stat-card"><h4 id="bestDay">-</h4><p>Best Attendance Day</p></div>
-          <div class="chart-stat-card"><h4 id="worstDay">-</h4><p>Lowest Attendance Day</p></div>
-          <div class="chart-stat-card"><h4 id="totalStudents">0</h4><p>Total Students</p></div>
+        <div class="attendance-chart"><canvas id="attendanceChart"></canvas></div>
+        <div class="chart-stats" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-top:20px;">
+          <div class="chart-stat-card" style="background:white; padding:15px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); text-align:center; border-top:4px solid #2563eb;"><h4 id="avgAttendance">0%</h4><p>Average Attendance</p></div>
+          <div class="chart-stat-card" style="background:white; padding:15px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); text-align:center; border-top:4px solid #10b981;"><h4 id="bestDay">-</h4><p>Best Day</p></div>
+          <div class="chart-stat-card" style="background:white; padding:15px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); text-align:center; border-top:4px solid #ef4444;"><h4 id="worstDay">-</h4><p>Worst Day</p></div>
+          <div class="chart-stat-card" style="background:white; padding:15px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); text-align:center; border-top:4px solid #8b5cf6;"><h4 id="totalStudents">0</h4><p>Total Students</p></div>
         </div>
       </div>
     </section>
@@ -622,17 +276,8 @@
     <section class="dashboard-section">
       <h3><span class="icon">📆</span> Monthly Calendar View</h3>
       <div class="attendance-filter">
-        <div class="filter-group">
-          <label for="calendarMonth">Month:</label>
-          <input type="month" id="calendarMonth" onchange="loadCalendarView()" value="">
-        </div>
-        <div class="filter-group">
-          <label for="calendarClass">Class:</label>
-          <select id="calendarClass" onchange="loadCalendarView()">
-            <option value="all">All Classes</option>
-            <!-- ... all classes ... -->
-          </select>
-        </div>
+        <div class="filter-group"><label for="calendarMonth">Month:</label><input type="month" id="calendarMonth" onchange="loadCalendarView()"></div>
+        <div class="filter-group"><label for="calendarClass">Class:</label><select id="calendarClass" onchange="loadCalendarView()"><option value="all">All Classes</option><option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option><option value="11th-mhtcet-pcb">11th MHTCET (PCB)</option><option value="11th-jee">11th JEE</option><option value="11th-neet">11th NEET</option><option value="12th-mhtcet-pcm">12th MHTCET (PCM)</option><option value="12th-mhtcet-pcb">12th MHTCET (PCB)</option><option value="12th-jee">12th JEE</option><option value="12th-neet">12th NEET</option></select></div>
       </div>
       <div class="calendar-header"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
       <div class="attendance-calendar" id="attendanceCalendar"></div>
@@ -641,6 +286,7 @@
 
   <footer>
     <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
+    <p style="margin-top:10px; font-size:0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
@@ -666,7 +312,7 @@
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         localStorage.removeItem("teacherVerification");
-        window.location.href = "role-selection.html";
+        window.location.href = "../role-selection.html";
         return;
       }
       const cached = JSON.parse(localStorage.getItem("teacherVerification"));
@@ -680,26 +326,30 @@
         const docSnap = await db.collection("teachers").doc(user.uid).get();
         if (docSnap.exists && docSnap.data().role === "teacher") {
           teacherData = docSnap.data();
-          localStorage.setItem("teacherVerification", JSON.stringify({ uid: user.uid, date: today, teacherData }));
+          localStorage.setItem("teacherVerification", JSON.stringify({
+            uid: user.uid,
+            date: today,
+            teacherData
+          }));
           initPage();
         } else {
           localStorage.removeItem("teacherVerification");
           auth.signOut();
-          window.location.href = "role-selection.html";
+          window.location.href = "../role-selection.html";
         }
       } catch (err) {
+        console.error(err);
         localStorage.removeItem("teacherVerification");
         auth.signOut();
-        window.location.href = "role-selection.html";
+        window.location.href = "../role-selection.html";
       }
     });
 
     // ============================
-    // Global Variables
+    // Global Data
     // ============================
     let allStudents = [];
-    let attendanceCache = {}; // for quick lookups: { date: { studentId: status, ... } }
-
+    let attendanceCache = {};   // { date: { studentId: { status, timestamp } } }
     const classTemplates = {
       '11th-mhtcet-pcm': '11th MHTCET (PCM)',
       '11th-mhtcet-pcb': '11th MHTCET (PCB)',
@@ -714,14 +364,17 @@
     // ============================
     // Page Initialization
     // ============================
-    function initPage() {
+    async function initPage() {
       document.getElementById('dateFilter').value = new Date().toISOString().split('T')[0];
       document.getElementById('calendarMonth').value = new Date().toISOString().slice(0, 7);
-      loadStudents().then(() => {
-        filterAttendance();
-        loadCalendarView();
-        updateChart();
-      });
+      await loadStudents();
+      filterAttendance();
+      loadCalendarView();
+      updateChart();
+      setupHamburger();
+      // Modal close via backdrop
+      document.getElementById('attendanceModal').addEventListener('click', function(e) { if (e.target === this) closeAttendanceModal(); });
+      document.getElementById('exportModal').addEventListener('click', function(e) { if (e.target === this) closeExportModal(); });
     }
 
     async function loadStudents() {
@@ -731,7 +384,22 @@
     }
 
     // ============================
-    // Attendance Table (Filter)
+    // Attendance Data Helpers
+    // ============================
+    async function getAttendanceForDate(date) {
+      if (attendanceCache[date]) return attendanceCache[date];
+      const snap = await db.collection("attendance").where("date", "==", date).get();
+      const map = {};
+      snap.forEach(doc => {
+        const d = doc.data();
+        map[d.studentId] = d;
+      });
+      attendanceCache[date] = map;
+      return map;
+    }
+
+    // ============================
+    // Attendance Table & Summary
     // ============================
     async function filterAttendance() {
       const classFilter = document.getElementById('classFilter').value;
@@ -739,51 +407,49 @@
       const statusFilter = document.getElementById('statusFilter').value;
       const tableBody = document.getElementById('attendanceTableBody');
       const noData = document.getElementById('noAttendanceData');
-      const table = document.getElementById('attendanceTable');
 
-      let presentCount = 0, absentCount = 0, lateCount = 0;
-      let totalMarked = 0;
-
-      let rows = '';
-      const students = classFilter === 'all' ? allStudents : allStudents.filter(s => s.studentClass === classFilter);
-
-      if (dateFilter) {
-        // Fetch attendance for this date only
-        const date = dateFilter;
-        const records = await getAttendanceForDate(date);
-        students.forEach(student => {
-          const record = records[student.studentId];
-          let status = 'Not Marked', statusClass = 'status-not-marked', time = '-';
-          if (record) {
-            status = record.status.charAt(0).toUpperCase() + record.status.slice(1);
-            statusClass = `status-${record.status}`;
-            time = record.timestamp ? new Date(record.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '-';
-            if (record.status === 'present') presentCount++;
-            else if (record.status === 'absent') absentCount++;
-            else if (record.status === 'late') lateCount++;
-            totalMarked++;
-          }
-          if (statusFilter !== 'all' && record) {
-            if (record.status !== statusFilter) return;
-          }
-          rows += `<tr><td>${student.studentName}</td><td>${student.studentId}</td><td>${classTemplates[student.studentClass] || student.studentClass}</td><td>${new Date(date).toLocaleDateString()}</td><td><span class="attendance-status ${statusClass}">${status}</span></td><td>${time}</td><td><button class="btn btn-small" onclick="editAttendance('${student.studentId}','${date}')">Edit</button></td></tr>`;
-        });
-      } else {
-        // No date filter – show all records? Not practical; we'll show only today's default.
-        // For simplicity we'll use today if dateFilter empty.
-        const date = new Date().toISOString().split('T')[0];
-        const records = await getAttendanceForDate(date);
-        // similar loop...
+      if (!dateFilter) {
+        tableBody.innerHTML = '';
+        noData.style.display = 'none';
+        return;
       }
 
-      if (rows === '') {
-        tableBody.innerHTML = '';
-        noData.style.display = 'block';
-        table.style.display = 'none';
-      } else {
+      const records = await getAttendanceForDate(dateFilter);
+      const students = classFilter === 'all' ? allStudents : allStudents.filter(s => s.studentClass === classFilter);
+      let presentCount = 0, absentCount = 0, lateCount = 0, totalMarked = 0;
+      let rows = '';
+
+      students.forEach((student, index) => {
+        const record = records[student.studentId];
+        let status = 'Not Marked', statusClass = 'status-not-marked', time = '-';
+        if (record) {
+          status = record.status.charAt(0).toUpperCase() + record.status.slice(1);
+          statusClass = `status-${record.status}`;
+          time = record.timestamp ? new Date(record.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
+          if (record.status === 'present') presentCount++;
+          else if (record.status === 'absent') absentCount++;
+          else if (record.status === 'late') lateCount++;
+          totalMarked++;
+        }
+        if (statusFilter !== 'all' && record && record.status !== statusFilter) return;
+
+        rows += `<tr>
+          <td>${student.studentName}</td>
+          <td>${student.studentId}</td>
+          <td>${classTemplates[student.studentClass] || student.studentClass}</td>
+          <td>${new Date(dateFilter).toLocaleDateString()}</td>
+          <td><span class="attendance-status ${statusClass}">${status}</span></td>
+          <td>${time}</td>
+          <td><button class="btn btn-small" onclick="editAttendance('${student.studentId}','${dateFilter}')">Edit</button></td>
+        </tr>`;
+      });
+
+      if (rows) {
         tableBody.innerHTML = rows;
         noData.style.display = 'none';
-        table.style.display = 'table';
+      } else {
+        tableBody.innerHTML = '';
+        noData.style.display = 'block';
       }
 
       document.getElementById('presentCount').textContent = presentCount;
@@ -793,16 +459,47 @@
       document.getElementById('attendanceRate').textContent = `${rate}%`;
     }
 
-    async function getAttendanceForDate(date) {
-      if (attendanceCache[date]) return attendanceCache[date];
-      const snap = await db.collection("attendance").where("date", "==", date).get();
-      const map = {};
-      snap.forEach(doc => {
-        const data = doc.data();
-        map[data.studentId] = data;
-      });
-      attendanceCache[date] = map;
-      return map;
+    // ============================
+    // Calendar View
+    // ============================
+    async function loadCalendarView() {
+      const monthInput = document.getElementById('calendarMonth').value;
+      const classFilter = document.getElementById('calendarClass').value;
+      if (!monthInput) return;
+      const [year, month] = monthInput.split('-');
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const firstDay = new Date(year, month - 1, 1).getDay();
+      const calendar = document.getElementById('attendanceCalendar');
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
+
+      const students = classFilter === 'all' ? allStudents : allStudents.filter(s => s.studentClass === classFilter);
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const records = await getAttendanceForDate(dateStr);
+        let present = 0, absent = 0, late = 0, total = 0;
+        students.forEach(s => {
+          if (records[s.studentId]) {
+            total++;
+            const st = records[s.studentId].status;
+            if (st === 'present') present++;
+            else if (st === 'absent') absent++;
+            else if (st === 'late') late++;
+          }
+        });
+        let dayClass = 'calendar-day';
+        if (total === 0) dayClass += ' empty';
+        else if (absent === 0 && late === 0) dayClass += ' present';
+        else if (present === 0 && late === 0) dayClass += ' absent';
+        else dayClass += ' late';
+        html += `<div class="${dayClass}" onclick="viewDayAttendance('${dateStr}')"><div class="date">${d}</div><div class="status">${total > 0 ? present + '/' + students.length : 'No data'}</div></div>`;
+      }
+      calendar.innerHTML = html;
+    }
+
+    function viewDayAttendance(dateStr) {
+      document.getElementById('dateFilter').value = dateStr;
+      filterAttendance();
     }
 
     // ============================
@@ -813,10 +510,10 @@
     async function markAttendance() {
       const date = new Date().toISOString().split('T')[0];
       document.getElementById('attendanceDate').value = date;
-      document.getElementById('attendanceClass').value = 'all'; // or last selected
-      const students = allStudents;
+      document.getElementById('attendanceClass').value = 'all';
+      const list = document.getElementById('attendanceStudentList');
       let html = '';
-      students.forEach((s, i) => {
+      allStudents.forEach((s, i) => {
         html += `
           <div class="student-item">
             <div class="student-info">
@@ -830,19 +527,17 @@
             </div>
           </div>`;
       });
-      document.getElementById('attendanceStudentList').innerHTML = html;
+      list.innerHTML = html;
       document.getElementById('attendanceModal').classList.add('active');
       document.body.style.overflow = 'hidden';
       tempAttendance = {};
 
-      // Pre-fill existing records for this date
       const existing = await getAttendanceForDate(date);
-      for (const studentId in existing) {
-        const status = existing[studentId].status;
-        tempAttendance[studentId] = status;
-        const options = document.querySelectorAll(`[onclick*="${studentId}"]`);
-        options.forEach(opt => { if (opt.classList.contains(status)) opt.classList.add('selected'); });
-      }
+      Object.keys(existing).forEach(studentId => {
+        tempAttendance[studentId] = existing[studentId].status;
+        const opts = document.querySelectorAll(`[onclick*="${studentId}"]`);
+        opts.forEach(opt => { if (opt.classList.contains(existing[studentId].status)) opt.classList.add('selected'); });
+      });
     }
 
     function selectAttendanceStatus(element, studentId, status) {
@@ -864,7 +559,7 @@
           const docId = `${date}_${s.studentId}`;
           batch.set(db.collection("attendance").doc(docId), {
             studentId: s.studentId,
-            date: date,
+            date,
             status: tempAttendance[s.studentId],
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           });
@@ -874,14 +569,13 @@
       try {
         await batch.commit();
         closeAttendanceModal();
-        // Clear cache for that date
         delete attendanceCache[date];
         filterAttendance();
         loadCalendarView();
         updateChart();
         showNotification('Attendance saved!', 'success');
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
         showNotification('Save failed', 'error');
       }
     }
@@ -893,7 +587,7 @@
     }
 
     // ============================
-    // Edit Attendance (single student)
+    // Edit Single Attendance
     // ============================
     async function editAttendance(studentId, date) {
       document.getElementById('attendanceDate').value = date;
@@ -902,10 +596,7 @@
       if (!student) return;
       document.getElementById('attendanceStudentList').innerHTML = `
         <div class="student-item">
-          <div class="student-info">
-            <h4>${student.studentName}</h4>
-            <p>${classTemplates[student.studentClass] || student.studentClass} • ${student.studentId}</p>
-          </div>
+          <div class="student-info"><h4>${student.studentName}</h4><p>${classTemplates[student.studentClass] || student.studentClass} • ${student.studentId}</p></div>
           <div class="status-selector">
             <div class="status-option present" onclick="selectAttendanceStatus(this,'${studentId}','present')">Present</div>
             <div class="status-option absent" onclick="selectAttendanceStatus(this,'${studentId}','absent')">Absent</div>
@@ -917,56 +608,14 @@
       tempAttendance = {};
       const records = await getAttendanceForDate(date);
       if (records[studentId]) {
-        const status = records[studentId].status;
-        tempAttendance[studentId] = status;
+        tempAttendance[studentId] = records[studentId].status;
         const opts = document.querySelectorAll(`[onclick*="${studentId}"]`);
-        opts.forEach(o => { if (o.classList.contains(status)) o.classList.add('selected'); });
+        opts.forEach(opt => { if (opt.classList.contains(records[studentId].status)) opt.classList.add('selected'); });
       }
     }
 
     // ============================
-    // Calendar View
-    // ============================
-    async function loadCalendarView() {
-      const monthInput = document.getElementById('calendarMonth').value;
-      const classFilter = document.getElementById('calendarClass').value;
-      if (!monthInput) return;
-      const [year, month] = monthInput.split('-');
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const firstDay = new Date(year, month-1, 1).getDay();
-      const calendar = document.getElementById('attendanceCalendar');
-      let html = '';
-      for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const records = await getAttendanceForDate(dateStr);
-        const students = classFilter === 'all' ? allStudents : allStudents.filter(s => s.studentClass === classFilter);
-        let present=0, absent=0, late=0, total=0;
-        students.forEach(s => {
-          if (records[s.studentId]) {
-            total++;
-            if (records[s.studentId].status === 'present') present++;
-            else if (records[s.studentId].status === 'absent') absent++;
-            else if (records[s.studentId].status === 'late') late++;
-          }
-        });
-        let dayClass = 'calendar-day';
-        if (total === 0) dayClass += ' empty';
-        else if (absent === 0 && late === 0) dayClass += ' present';
-        else if (present === 0 && late === 0) dayClass += ' absent';
-        else dayClass += ' late';
-        html += `<div class="${dayClass}" onclick="viewDayAttendance('${dateStr}')"><div class="date">${d}</div><div class="status">${total>0?present+'/'+students.length:'No data'}</div></div>`;
-      }
-      calendar.innerHTML = html;
-    }
-
-    function viewDayAttendance(dateStr) {
-      document.getElementById('dateFilter').value = dateStr;
-      filterAttendance();
-    }
-
-    // ============================
-    // Chart (simplified)
+    // Chart Analytics
     // ============================
     let attendanceChart = null;
 
@@ -976,31 +625,33 @@
       const period = parseInt(document.getElementById('chartPeriod').value);
       const chartClass = document.getElementById('chartClass').value;
       const today = new Date();
-      let labels=[], presentData=[], absentData=[], lateData=[];
-      let bestDay={date:'', rate:0}, worstDay={date:'', rate:100}, totalAttendance=0, totalPossible=0;
+      const labels = [], presentData = [], absentData = [], lateData = [];
+      let bestDay = { date: '', rate: 0 }, worstDay = { date: '', rate: 100 }, totalAttendance = 0, totalPossible = 0;
 
-      for (let i=period-1; i>=0; i--) {
+      const students = chartClass === 'all' ? allStudents : allStudents.filter(s => s.studentClass === chartClass);
+      for (let i = period - 1; i >= 0; i--) {
         const d = new Date();
-        d.setDate(today.getDate()-i);
+        d.setDate(today.getDate() - i);
         const dateStr = d.toISOString().split('T')[0];
-        labels.push(d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}));
         const records = await getAttendanceForDate(dateStr);
-        const students = chartClass==='all'? allStudents : allStudents.filter(s=>s.studentClass===chartClass);
-        let p=0, a=0, l=0, t=0;
-        students.forEach(s=>{
-          if(records[s.studentId]){
+        let p = 0, a = 0, l = 0, t = 0;
+        students.forEach(s => {
+          if (records[s.studentId]) {
             t++;
-            const st=records[s.studentId].status;
-            if(st==='present') p++;
-            else if(st==='absent') a++;
-            else if(st==='late') l++;
+            const st = records[s.studentId].status;
+            if (st === 'present') p++;
+            else if (st === 'absent') a++;
+            else if (st === 'late') l++;
           }
         });
         presentData.push(p); absentData.push(a); lateData.push(l);
-        const rate = t>0? Math.round((p+l)/t*100) : 0;
-        totalAttendance += (p+l); totalPossible += t;
-        if(rate>bestDay.rate){ bestDay={date:labels[labels.length-1], rate};}
-        if(rate<worstDay.rate && t>0){ worstDay={date:labels[labels.length-1], rate};}
+        const rate = t > 0 ? Math.round((p + l) / t * 100) : 0;
+        totalAttendance += (p + l);
+        totalPossible += t;
+        const label = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        labels.push(label);
+        if (rate > bestDay.rate) bestDay = { date: label, rate };
+        if (rate < worstDay.rate && t > 0) worstDay = { date: label, rate };
       }
 
       attendanceChart = new Chart(ctx, {
@@ -1008,22 +659,27 @@
         data: {
           labels,
           datasets: [
-            {label:'Present', data:presentData, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', borderWidth:2, tension:0.4, fill:true},
-            {label:'Absent', data:absentData, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.1)', borderWidth:2, tension:0.4, fill:true},
-            {label:'Late', data:lateData, borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', borderWidth:2, tension:0.4, fill:true}
+            { label: 'Present', data: presentData, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', borderWidth: 2, tension: 0.4, fill: true },
+            { label: 'Absent', data: absentData, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', borderWidth: 2, tension: 0.4, fill: true },
+            { label: 'Late', data: lateData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', borderWidth: 2, tension: 0.4, fill: true }
           ]
         },
-        options: { responsive:true, maintainAspectRatio:false, plugins:{title:{display:true,text:'Daily Attendance Trends'}}, scales:{y:{beginAtZero:true,title:{display:true,text:'Students'}}}}
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { title: { display: true, text: `Attendance Trends (Last ${period} Days)` } },
+          scales: { y: { beginAtZero: true } }
+        }
       });
 
-      document.getElementById('avgAttendance').textContent = totalPossible>0? `${Math.round(totalAttendance/totalPossible*100)}%` : '0%';
+      document.getElementById('avgAttendance').textContent = totalPossible > 0 ? `${Math.round(totalAttendance / totalPossible * 100)}%` : '0%';
       document.getElementById('bestDay').textContent = bestDay.date;
       document.getElementById('worstDay').textContent = worstDay.date;
-      document.getElementById('totalStudents').textContent = (chartClass==='all'? allStudents : allStudents.filter(s=>s.studentClass===chartClass)).length;
+      document.getElementById('totalStudents').textContent = students.length;
     }
 
     // ============================
-    // Export PDF (simplified – only daily)
+    // PDF Export (Daily)
     // ============================
     function showExportOptions() {
       document.getElementById('exportModal').classList.add('active');
@@ -1033,20 +689,25 @@
       document.getElementById('exportModal').classList.remove('active');
       document.body.style.overflow = 'auto';
     }
+
     async function exportDailyPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const date = new Date().toISOString().split('T')[0];
       const records = await getAttendanceForDate(date);
       const students = allStudents;
-      let present=0, absent=0, late=0;
+      let present = 0, absent = 0, late = 0;
       const rows = [];
-      students.forEach(s=>{
+      students.forEach(s => {
         const r = records[s.studentId];
-        if(r){
-          if(r.status==='present') present++; else if(r.status==='absent') absent++; else if(r.status==='late') late++;
-          rows.push([s.studentName, s.studentId, classTemplates[s.studentClass]||s.studentClass, r.status, new Date(r.timestamp.toDate()).toLocaleTimeString()]);
-        } else rows.push([s.studentName, s.studentId, classTemplates[s.studentClass]||s.studentClass, 'Not Marked', '-']);
+        if (r) {
+          if (r.status === 'present') present++;
+          else if (r.status === 'absent') absent++;
+          else if (r.status === 'late') late++;
+          rows.push([s.studentName, s.studentId, classTemplates[s.studentClass] || s.studentClass, r.status, new Date(r.timestamp.toDate()).toLocaleTimeString()]);
+        } else {
+          rows.push([s.studentName, s.studentId, classTemplates[s.studentClass] || s.studentClass, 'Not Marked', '-']);
+        }
       });
       doc.setFontSize(16);
       doc.text(`Daily Attendance Report - ${new Date(date).toLocaleDateString()}`, 14, 20);
@@ -1055,56 +716,63 @@
         body: rows,
         startY: 30
       });
-      doc.text(`Present: ${present}  Absent: ${absent}  Late: ${late}  Rate: ${rows.length>0?Math.round((present+late)/rows.length*100):0}%`, 14, doc.lastAutoTable.finalY+10);
+      const rate = rows.length > 0 ? Math.round((present + late) / rows.length * 100) : 0;
+      doc.text(`Present: ${present}  Absent: ${absent}  Late: ${late}  Rate: ${rate}%`, 14, doc.lastAutoTable.finalY + 10);
       doc.save(`attendance_${date}.pdf`);
       closeExportModal();
-      showNotification('PDF downloaded', 'success');
+      showNotification('PDF downloaded!', 'success');
     }
 
     // ============================
     // Helpers
     // ============================
-    function showNotification(msg, type='info') {
+    function showNotification(message, type = 'info') {
       const existing = document.querySelector('.notification');
-      if(existing) existing.remove();
+      if (existing) existing.remove();
       const el = document.createElement('div');
       el.className = `notification notification-${type}`;
-      el.innerHTML = `<div class="notification-content"><span>${msg}</span><button onclick="this.parentElement.parentElement.remove()">×</button></div>`;
+      el.innerHTML = `<div class="notification-content"><span>${message}</span><button onclick="this.parentElement.parentElement.remove()">×</button></div>`;
       document.body.appendChild(el);
-      setTimeout(()=>{ if(el.parentNode) el.remove(); }, 3000);
+      setTimeout(() => { if (el.parentNode) el.remove(); }, 3000);
+    }
+
+    function viewAttendanceAnalytics() {
+      document.querySelector('.attendance-chart-container').scrollIntoView({ behavior: 'smooth' });
     }
 
     function logout() {
       auth.signOut().then(() => {
         localStorage.removeItem("teacherVerification");
-        window.location.href = "role-selection.html";
+        window.location.href = "../role-selection.html";
       });
     }
 
-    // Hamburger menu (unchanged)
-    const hamburger = document.getElementById('hamburger');
-    const sideNav = document.getElementById('sideNav');
-    const overlay = document.getElementById('overlay');
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      sideNav.classList.toggle('active');
-      overlay.classList.toggle('active');
-      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
-    });
-    overlay.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      sideNav.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    });
-    document.querySelectorAll('.side-nav a').forEach(link => {
-      link.addEventListener('click', () => {
+    function setupHamburger() {
+      const hamburger = document.getElementById('hamburger');
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('overlay');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        sideNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+      });
+      overlay.addEventListener('click', () => {
         hamburger.classList.remove('active');
         sideNav.classList.remove('active');
         overlay.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
-    });
+      document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (link.getAttribute('href') === '../role-selection.html' && link.onclick) return;
+          hamburger.classList.remove('active');
+          sideNav.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      });
+    }
   </script>
 </body>
 </html>

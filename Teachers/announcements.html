@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Announcements - Soham</title>
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
-    /* Clean, professional styles */
+    /* ========== All original CSS (unchanged) ========== */
     * {
       margin: 0;
       padding: 0;
@@ -38,7 +42,6 @@
       font-weight: 700;
     }
 
-    /* Clean Hamburger Menu */
     .hamburger {
       background: none;
       border: none;
@@ -75,7 +78,6 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
-    /* Clean Side Navigation */
     .side-nav {
       position: fixed;
       top: 0;
@@ -178,7 +180,6 @@
       visibility: visible;
     }
 
-    /* Dashboard Styles */
     .dashboard {
       padding: 30px 20px;
       max-width: 1400px;
@@ -592,73 +593,58 @@
       padding: 30px;
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
       header {
         padding: 15px 20px;
       }
-      
       .welcome-section h2 {
         font-size: 1.8rem;
       }
-      
       .welcome-section p {
         font-size: 1rem;
       }
-      
       .stats-container {
         flex-direction: column;
       }
-      
       .announcement-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
       }
-      
       .announcement-footer {
         flex-direction: column;
         gap: 15px;
         align-items: flex-start;
       }
-      
-      .announcement-actions-small {
-        width: 100%;
-        justify-content: space-between;
-      }
-      
       .side-nav {
         width: 280px;
       }
-      
       .recipient-options {
         flex-direction: column;
         gap: 10px;
       }
     }
 
-    /* Minimal Animation Keyframes */
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Notification Styles */
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
     .notification {
       position: fixed;
       top: 20px;
@@ -714,26 +700,6 @@
     .notification-close:hover {
       background: rgba(255, 255, 255, 0.2);
     }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
   </style>
 </head>
 <body>
@@ -746,13 +712,12 @@
     </button>
   </header>
 
-  <!-- Side Navigation -->
   <div class="side-nav" id="sideNav">
     <ul>
-      <li><a href="teacher-dashboard.html" class="nav-active"><span class="nav-icon">📊</span>Dashboard</a></li>
+      <li><a href="teacher-dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
       <li><a href="teacher-classes.html"><span class="nav-icon">🏫</span>My Classes</a></li>
       <li><a href="attendance.html"><span class="nav-icon">📅</span>Attendance</a></li>
-      <li><a href="announcements.html"><span class="nav-icon">📢</span>Announcements</a></li>
+      <li><a href="announcements.html" class="nav-active"><span class="nav-icon">📢</span>Announcements</a></li>
       <li><a href="create-test.html"><span class="nav-icon">✏️</span>Create Test</a></li>
       <li><a href="my-tests.html"><span class="nav-icon">📝</span>My Tests</a></li>
       <li><a href="sitting-arrangement.html"><span class="nav-icon">💺</span>Sitting Arrangement</a></li>
@@ -763,12 +728,10 @@
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
       <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
+    </ul>
   </div>
-
-  <!-- Overlay for closing the menu when clicking outside -->
   <div class="overlay" id="overlay"></div>
 
-  <!-- Edit Announcement Modal -->
   <div class="modal" id="editAnnouncementModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -780,12 +743,10 @@
           <label for="editTitle">Title</label>
           <input type="text" id="editTitle" placeholder="Enter announcement title">
         </div>
-        
         <div class="form-group">
           <label for="editContent">Content</label>
           <textarea id="editContent" rows="6" placeholder="Enter announcement details"></textarea>
         </div>
-        
         <div class="form-group">
           <label>Send To</label>
           <div class="recipient-options">
@@ -799,7 +760,6 @@
             </div>
           </div>
         </div>
-        
         <div class="announcement-actions-small" style="margin-top: 20px;">
           <button class="btn btn-success" onclick="updateAnnouncement()">Update Announcement</button>
           <button class="btn btn-danger" onclick="closeEditModal()">Cancel</button>
@@ -815,22 +775,10 @@
     </section>
 
     <div class="stats-container">
-      <div class="stat-card">
-        <h3 id="totalAnnouncements">0</h3>
-        <p>Total Announcements</p>
-      </div>
-      <div class="stat-card">
-        <h3 id="todayAnnouncements">0</h3>
-        <p>Today's Announcements</p>
-      </div>
-      <div class="stat-card">
-        <h3 id="studentAnnouncements">0</h3>
-        <p>To Students</p>
-      </div>
-      <div class="stat-card">
-        <h3 id="parentAnnouncements">0</h3>
-        <p>To Parents</p>
-      </div>
+      <div class="stat-card"><h3 id="totalAnnouncements">0</h3><p>Total Announcements</p></div>
+      <div class="stat-card"><h3 id="todayAnnouncements">0</h3><p>Today's Announcements</p></div>
+      <div class="stat-card"><h3 id="studentAnnouncements">0</h3><p>To Students</p></div>
+      <div class="stat-card"><h3 id="parentAnnouncements">0</h3><p>To Parents</p></div>
     </div>
 
     <div class="dashboard-section">
@@ -841,19 +789,16 @@
         <button class="btn btn-secondary" onclick="loadAnnouncements()">Refresh List</button>
       </div>
 
-      <!-- Announcement Form -->
       <div class="announcement-form-container" id="announcementForm" style="display: none;">
         <h3>Create New Announcement</h3>
         <div class="form-group">
           <label for="announcementTitle">Title</label>
           <input type="text" id="announcementTitle" placeholder="Enter announcement title">
         </div>
-        
         <div class="form-group">
           <label for="announcementContent">Content</label>
           <textarea id="announcementContent" placeholder="Enter announcement details"></textarea>
         </div>
-        
         <div class="form-group">
           <label>Send To</label>
           <div class="recipient-options">
@@ -867,14 +812,10 @@
             </div>
           </div>
         </div>
-        
         <div class="form-group">
           <label>Select Classes</label>
-          <div class="checkbox-group" id="classCheckboxes">
-            <!-- Class checkboxes will be populated by JavaScript -->
-          </div>
+          <div class="checkbox-group" id="classCheckboxes"></div>
         </div>
-        
         <div class="announcement-actions-small">
           <button class="btn btn-success" onclick="sendAnnouncement()">Send Announcement</button>
           <button class="btn btn-danger" onclick="toggleAnnouncementForm()">Cancel</button>
@@ -884,9 +825,7 @@
 
     <section class="dashboard-section">
       <h3><span class="icon">📢</span> Recent Announcements</h3>
-      <div class="announcement-list" id="announcementList">
-        <!-- Announcements will be populated by JavaScript -->
-      </div>
+      <div class="announcement-list" id="announcementList"></div>
     </section>
   </main>
 
@@ -896,68 +835,64 @@
   </footer>
 
   <script>
-    // Check if user is logged in and is a teacher
-    if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("userRole") !== "teacher") {
-      window.location.href = "../role-selection.html";
-    }
+    // ============================
+    // Firebase Initialization
+    // ============================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Logout function
-    function logout() {
-      // Show loading state
-      const logoutBtn = event.target;
-      const originalText = logoutBtn.innerHTML;
-      logoutBtn.innerHTML = '<span style="display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite;margin-right:8px;"></span> Logging out...';
-      logoutBtn.disabled = true;
-      
-      setTimeout(() => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userRole");
+    // ============================
+    // Daily Teacher Verification
+    // ============================
+    let teacherData = null;
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        localStorage.removeItem("teacherVerification");
         window.location.href = "../role-selection.html";
-      }, 1000);
-    }
-
-    // Hamburger menu functionality
-    const hamburger = document.getElementById('hamburger');
-    const sideNav = document.getElementById('sideNav');
-    const overlay = document.getElementById('overlay');
-
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      sideNav.classList.toggle('active');
-      overlay.classList.toggle('active');
-      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
-    });
-
-    overlay.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      sideNav.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    });
-
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.side-nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      });
-    });
-
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
+        return;
+      }
+      const cached = JSON.parse(localStorage.getItem("teacherVerification"));
+      const today = new Date().toISOString().split('T')[0];
+      if (cached && cached.uid === user.uid && cached.date === today) {
+        teacherData = cached.teacherData || null;
+        initPage();
+        return;
+      }
+      try {
+        const docSnap = await db.collection("teachers").doc(user.uid).get();
+        if (docSnap.exists && docSnap.data().role === "teacher") {
+          teacherData = docSnap.data();
+          localStorage.setItem("teacherVerification", JSON.stringify({
+            uid: user.uid,
+            date: today,
+            teacherData
+          }));
+          initPage();
+        } else {
+          localStorage.removeItem("teacherVerification");
+          auth.signOut();
+          window.location.href = "../role-selection.html";
+        }
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("teacherVerification");
+        auth.signOut();
+        window.location.href = "../role-selection.html";
       }
     });
 
-    // Announcement functions
-    let editingAnnouncementId = null;
+    // ============================
+    // Page Initialization
+    // ============================
     const classTemplates = {
       '11th-mhtcet-pcm': '11th MHTCET (PCM)',
       '11th-mhtcet-pcb': '11th MHTCET (PCB)',
@@ -969,185 +904,150 @@
       '12th-neet': '12th NEET'
     };
 
-    function toggleAnnouncementForm() {
-      const form = document.getElementById('announcementForm');
-      const toggleIcon = document.getElementById('formToggleIcon');
-      const toggleText = document.getElementById('formToggleText');
-      
-      if (form.style.display === 'none') {
-        form.style.display = 'block';
-        toggleIcon.textContent = '➖';
-        toggleText.textContent = 'Hide Form';
-        populateClassCheckboxes();
-      } else {
-        form.style.display = 'none';
-        toggleIcon.textContent = '➕';
-        toggleText.textContent = 'Create New Announcement';
-        clearForm();
-      }
+    let editingAnnouncementId = null;
+
+    async function initPage() {
+      populateClassCheckboxes();
+      await loadAnnouncements();
+      setupHamburger();
+      document.getElementById('editAnnouncementModal').addEventListener('click', function(e) {
+        if (e.target === this) closeEditModal();
+      });
     }
 
     function populateClassCheckboxes() {
-      const checkboxGroup = document.getElementById('classCheckboxes');
-      checkboxGroup.innerHTML = '';
-      
-      Object.keys(classTemplates).forEach(classKey => {
-        checkboxGroup.innerHTML += `
+      const group = document.getElementById('classCheckboxes');
+      group.innerHTML = '';
+      Object.keys(classTemplates).forEach(key => {
+        group.innerHTML += `
           <div class="checkbox-item">
-            <input type="checkbox" id="class_${classKey}" checked>
-            <label for="class_${classKey}">${classTemplates[classKey]}</label>
-          </div>
-        `;
+            <input type="checkbox" id="class_${key}" checked>
+            <label for="class_${key}">${classTemplates[key]}</label>
+          </div>`;
       });
     }
 
-    function clearForm() {
-      document.getElementById('announcementTitle').value = '';
-      document.getElementById('announcementContent').value = '';
-      document.getElementById('toStudents').checked = true;
-      document.getElementById('toParents').checked = false;
-      
-      const checkboxes = document.querySelectorAll('#classCheckboxes input[type="checkbox"]');
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = true;
-      });
-    }
-
-    function sendAnnouncement() {
+    // ============================
+    // Firestore Operations
+    // ============================
+    async function sendAnnouncement() {
       const title = document.getElementById('announcementTitle').value.trim();
       const content = document.getElementById('announcementContent').value.trim();
       const toStudents = document.getElementById('toStudents').checked;
       const toParents = document.getElementById('toParents').checked;
-      
-      if (!title || !content) {
-        showNotification('Please fill in both title and content', 'warning');
-        return;
-      }
-      
-      if (!toStudents && !toParents) {
-        showNotification('Please select at least one recipient type (Students or Parents)', 'warning');
-        return;
-      }
-      
-      // Get selected classes
+
+      if (!title || !content) return showNotification('Please fill in both title and content', 'warning');
+      if (!toStudents && !toParents) return showNotification('Select at least one recipient', 'warning');
+
       const selectedClasses = [];
-      const checkboxes = document.querySelectorAll('#classCheckboxes input[type="checkbox"]:checked');
-      checkboxes.forEach(checkbox => {
-        const classKey = checkbox.id.replace('class_', '');
-        selectedClasses.push(classKey);
+      document.querySelectorAll('#classCheckboxes input[type="checkbox"]:checked').forEach(cb => {
+        selectedClasses.push(cb.id.replace('class_', ''));
       });
-      
-      if (selectedClasses.length === 0) {
-        showNotification('Please select at least one class', 'warning');
-        return;
+      if (selectedClasses.length === 0) return showNotification('Select at least one class', 'warning');
+
+      try {
+        await db.collection("announcements").add({
+          title,
+          content,
+          classes: selectedClasses,
+          toStudents,
+          toParents,
+          date: firebase.firestore.FieldValue.serverTimestamp(),
+          sender: teacherData?.name || 'Dr. Sharma'
+        });
+        toggleAnnouncementForm();
+        clearForm();
+        await loadAnnouncements();
+        showNotification('Announcement sent!', 'success');
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to send announcement', 'error');
       }
-      
-      // Save announcement to localStorage
-      const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-      const newAnnouncement = {
-        id: Date.now(),
-        title,
-        content,
-        classes: selectedClasses,
-        toStudents,
-        toParents,
-        date: new Date().toISOString(),
-        sentBy: 'Dr. Sharma'
-      };
-      
-      announcements.unshift(newAnnouncement);
-      localStorage.setItem('announcements', JSON.stringify(announcements));
-      
-      // Hide form, clear form, and reload
-      toggleAnnouncementForm();
-      loadAnnouncements();
-      updateStats();
-      
-      // Show success message
-      showNotification('Announcement sent successfully!', 'success');
     }
 
-    function loadAnnouncements() {
-      const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-      const announcementList = document.getElementById('announcementList');
-      
+    async function loadAnnouncements() {
+      try {
+        const snap = await db.collection("announcements").orderBy("date", "desc").get();
+        const announcements = [];
+        snap.forEach(doc => announcements.push({ id: doc.id, ...doc.data() }));
+        renderAnnouncements(announcements);
+        updateStats(announcements);
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to load announcements', 'error');
+      }
+    }
+
+    function renderAnnouncements(announcements) {
+      const container = document.getElementById('announcementList');
       if (announcements.length === 0) {
-        announcementList.innerHTML = `
-          <div class="empty-state">
-            <div class="icon">📢</div>
-            <h3>No Announcements Yet</h3>
-            <p>Create your first announcement to communicate with students and parents</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="empty-state"><div class="icon">📢</div><h3>No Announcements Yet</h3><p>Create your first announcement to communicate with students and parents</p></div>`;
         return;
       }
-      
-      let announcementsHTML = '';
-      announcements.forEach((announcement) => {
-        const date = new Date(announcement.date);
-        const formattedDate = date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-        
-        let classesHTML = '';
-        announcement.classes.forEach(classKey => {
-          classesHTML += `<span class="class-tag">${classTemplates[classKey] || classKey}</span>`;
-        });
-        
-        let recipientsHTML = '';
-        if (announcement.toStudents) {
-          recipientsHTML += '<span class="recipient-tag">Students</span>';
-        }
-        if (announcement.toParents) {
-          recipientsHTML += '<span class="recipient-tag parents">Parents</span>';
-        }
-        
-        announcementsHTML += `
+      container.innerHTML = announcements.map(a => {
+        const date = a.date ? new Date(a.date.toDate()).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) : '';
+        const classesHTML = a.classes.map(c => `<span class="class-tag">${classTemplates[c] || c}</span>`).join('');
+        const recipients = [];
+        if (a.toStudents) recipients.push('<span class="recipient-tag">Students</span>');
+        if (a.toParents) recipients.push('<span class="recipient-tag parents">Parents</span>');
+        return `
           <div class="announcement-card">
             <div class="announcement-header">
-              <h3 class="announcement-title">${announcement.title}</h3>
-              <span class="announcement-date">${formattedDate}</span>
+              <h3 class="announcement-title">${a.title}</h3>
+              <span class="announcement-date">${date}</span>
             </div>
-            <div class="announcement-content">
-              ${announcement.content.replace(/\n/g, '<br>')}
-            </div>
-            <div class="announcement-classes">
-              ${classesHTML}
-            </div>
+            <div class="announcement-content">${a.content.replace(/\n/g, '<br>')}</div>
+            <div class="announcement-classes">${classesHTML}</div>
             <div class="announcement-footer">
-              <div class="announcement-recipients">
-                ${recipientsHTML}
-              </div>
+              <div class="announcement-recipients">${recipients.join('')}</div>
               <div class="announcement-actions-small">
-                <button class="btn btn-small" onclick="editAnnouncement(${announcement.id})">Edit</button>
-                <button class="btn btn-small btn-danger" onclick="deleteAnnouncement(${announcement.id})">Delete</button>
+                <button class="btn btn-small" onclick="editAnnouncement('${a.id}')">Edit</button>
+                <button class="btn btn-small btn-danger" onclick="deleteAnnouncement('${a.id}')">Delete</button>
               </div>
             </div>
-          </div>
-        `;
-      });
-      
-      announcementList.innerHTML = announcementsHTML;
+          </div>`;
+      }).join('');
     }
 
-    function editAnnouncement(id) {
-      const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-      const announcement = announcements.find(a => a.id === id);
-      
-      if (!announcement) return;
-      
-      editingAnnouncementId = id;
-      document.getElementById('editTitle').value = announcement.title;
-      document.getElementById('editContent').value = announcement.content;
-      document.getElementById('editToStudents').checked = announcement.toStudents;
-      document.getElementById('editToParents').checked = announcement.toParents;
-      
-      document.getElementById('editAnnouncementModal').classList.add('active');
-      document.body.style.overflow = 'hidden';
+    function updateStats(announcements) {
+      const today = new Date().toISOString().split('T')[0];
+      let total = announcements.length;
+      let todayCount = 0, studentCount = 0, parentCount = 0;
+      announcements.forEach(a => {
+        if (a.date) {
+          const d = new Date(a.date.toDate()).toISOString().split('T')[0];
+          if (d === today) todayCount++;
+        }
+        if (a.toStudents) studentCount++;
+        if (a.toParents) parentCount++;
+      });
+      document.getElementById('totalAnnouncements').textContent = total;
+      document.getElementById('todayAnnouncements').textContent = todayCount;
+      document.getElementById('studentAnnouncements').textContent = studentCount;
+      document.getElementById('parentAnnouncements').textContent = parentCount;
+    }
+
+    // ============================
+    // Edit / Delete
+    // ============================
+    async function editAnnouncement(id) {
+      try {
+        const doc = await db.collection("announcements").doc(id).get();
+        if (!doc.exists) return;
+        const a = doc.data();
+        editingAnnouncementId = id;
+        document.getElementById('editTitle').value = a.title;
+        document.getElementById('editContent').value = a.content;
+        document.getElementById('editToStudents').checked = a.toStudents;
+        document.getElementById('editToParents').checked = a.toParents;
+        document.getElementById('editAnnouncementModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to load announcement', 'error');
+      }
     }
 
     function closeEditModal() {
@@ -1156,152 +1056,108 @@
       editingAnnouncementId = null;
     }
 
-    function updateAnnouncement() {
+    async function updateAnnouncement() {
       if (!editingAnnouncementId) return;
-      
       const title = document.getElementById('editTitle').value.trim();
       const content = document.getElementById('editContent').value.trim();
       const toStudents = document.getElementById('editToStudents').checked;
       const toParents = document.getElementById('editToParents').checked;
-      
-      if (!title || !content) {
-        showNotification('Please fill in both title and content', 'warning');
-        return;
-      }
-      
-      if (!toStudents && !toParents) {
-        showNotification('Please select at least one recipient type (Students or Parents)', 'warning');
-        return;
-      }
-      
-      const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-      const index = announcements.findIndex(a => a.id === editingAnnouncementId);
-      
-      if (index !== -1) {
-        announcements[index].title = title;
-        announcements[index].content = content;
-        announcements[index].toStudents = toStudents;
-        announcements[index].toParents = toParents;
-        
-        localStorage.setItem('announcements', JSON.stringify(announcements));
-        loadAnnouncements();
-        updateStats();
+      if (!title || !content) return showNotification('Fill both fields', 'warning');
+      try {
+        await db.collection("announcements").doc(editingAnnouncementId).update({
+          title, content, toStudents, toParents
+        });
         closeEditModal();
-        
-        showNotification('Announcement updated successfully!', 'success');
+        await loadAnnouncements();
+        showNotification('Announcement updated!', 'success');
+      } catch (err) {
+        console.error(err);
+        showNotification('Update failed', 'error');
       }
     }
 
-    function deleteAnnouncement(id) {
-      if (confirm('Are you sure you want to delete this announcement?')) {
-        const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-        const filtered = announcements.filter(a => a.id !== id);
-        localStorage.setItem('announcements', JSON.stringify(filtered));
-        loadAnnouncements();
-        updateStats();
-        
-        showNotification('Announcement deleted successfully!', 'success');
+    async function deleteAnnouncement(id) {
+      if (!confirm('Delete this announcement?')) return;
+      try {
+        await db.collection("announcements").doc(id).delete();
+        await loadAnnouncements();
+        showNotification('Deleted', 'success');
+      } catch (err) {
+        console.error(err);
+        showNotification('Delete failed', 'error');
       }
     }
 
-    function updateStats() {
-      const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-      const today = new Date().toISOString().split('T')[0];
-      
-      const total = announcements.length;
-      const todayCount = announcements.filter(a => a.date.split('T')[0] === today).length;
-      const studentCount = announcements.filter(a => a.toStudents).length;
-      const parentCount = announcements.filter(a => a.toParents).length;
-      
-      document.getElementById('totalAnnouncements').textContent = total;
-      document.getElementById('todayAnnouncements').textContent = todayCount;
-      document.getElementById('studentAnnouncements').textContent = studentCount;
-      document.getElementById('parentAnnouncements').textContent = parentCount;
+    // ============================
+    // UI Helpers
+    // ============================
+    function toggleAnnouncementForm() {
+      const form = document.getElementById('announcementForm');
+      const icon = document.getElementById('formToggleIcon');
+      const text = document.getElementById('formToggleText');
+      if (form.style.display === 'none' || !form.style.display) {
+        form.style.display = 'block';
+        icon.textContent = '➖';
+        text.textContent = 'Hide Form';
+      } else {
+        form.style.display = 'none';
+        icon.textContent = '➕';
+        text.textContent = 'Create New Announcement';
+        clearForm();
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('announcementTitle').value = '';
+      document.getElementById('announcementContent').value = '';
+      document.getElementById('toStudents').checked = true;
+      document.getElementById('toParents').checked = false;
+      document.querySelectorAll('#classCheckboxes input[type="checkbox"]').forEach(cb => cb.checked = true);
     }
 
     function showNotification(message, type = 'info') {
-      // Remove existing notification
-      const existingNotification = document.querySelector('.notification');
-      if (existingNotification) {
-        existingNotification.remove();
-      }
-      
-      const notification = document.createElement('div');
-      notification.className = `notification notification-${type}`;
-      notification.innerHTML = `
-        <div class="notification-content">
-          <span class="notification-message">${message}</span>
-          <button class="notification-close">×</button>
-        </div>
-      `;
-      
-      document.body.appendChild(notification);
-      
-      // Add click handler for close button
-      notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.className = `notification notification-${type}`;
+      el.innerHTML = `<div class="notification-content"><span>${message}</span><button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button></div>`;
+      document.body.appendChild(el);
+      setTimeout(() => { if (el.parentNode) el.remove(); }, 3000);
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        localStorage.removeItem("teacherVerification");
+        window.location.href = "../role-selection.html";
       });
-      
-      // Auto remove after 3 seconds
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.remove();
-        }
-      }, 3000);
     }
 
-    // Initialize sample data if not exists
-    function initializeSampleData() {
-      if (!localStorage.getItem('announcements')) {
-        const sampleAnnouncements = [
-          {
-            id: 1,
-            title: "Physics Test Schedule Update",
-            content: "The Physics test scheduled for tomorrow has been postponed to next Monday. Please prepare accordingly.\n\nTopics to be covered:\n- Thermodynamics\n- Laws of Motion\n- Gravitation",
-            classes: ['11th-mhtcet-pcm', '12th-mhtcet-pcm', '12th-jee'],
-            toStudents: true,
-            toParents: true,
-            date: new Date().toISOString(),
-            sentBy: "Dr. Sharma"
-          },
-          {
-            id: 2,
-            title: "Parent-Teacher Meeting",
-            content: "Quarterly Parent-Teacher Meeting will be held on 25th December. Please confirm your attendance by 20th December.",
-            classes: ['11th-mhtcet-pcm', '11th-mhtcet-pcb', '12th-mhtcet-pcm', '12th-mhtcet-pcb'],
-            toStudents: false,
-            toParents: true,
-            date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-            sentBy: "Dr. Sharma"
-          },
-          {
-            id: 3,
-            title: "Chemistry Lab Safety Guidelines",
-            content: "Important safety guidelines for Chemistry lab sessions starting next week. All students must read and follow these instructions carefully.",
-            classes: ['11th-mhtcet-pcb', '12th-mhtcet-pcb', '11th-neet', '12th-neet'],
-            toStudents: true,
-            toParents: false,
-            date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-            sentBy: "Dr. Sharma"
-          }
-        ];
-        localStorage.setItem('announcements', JSON.stringify(sampleAnnouncements));
-      }
+    function setupHamburger() {
+      const hamburger = document.getElementById('hamburger');
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('overlay');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        sideNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+      });
+      overlay.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (link.getAttribute('href') === '../role-selection.html' && link.onclick) return;
+          hamburger.classList.remove('active');
+          sideNav.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      });
     }
-
-    // Load data when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeSampleData();
-      loadAnnouncements();
-      updateStats();
-    });
-
-    // Close modal when clicking outside
-    document.getElementById('editAnnouncementModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeEditModal();
-      }
-    });
   </script>
 </body>
 </html>

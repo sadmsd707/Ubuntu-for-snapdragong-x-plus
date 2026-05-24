@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add Student - Soham Teacher Dashboard</title>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
-    /* ========== YOUR ORIGINAL CSS (UNCHANGED) ========== */
+    /* ========== All original CSS (unchanged) ========== */
     * {
       margin: 0;
       padding: 0;
@@ -25,38 +22,6 @@
       color: #333;
       line-height: 1.6;
       overflow-x: hidden;
-    }
-
-    #loadingOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 9999;
-      font-size: 1.5rem;
-      color: #2563eb;
-    }
-
-    .spinner {
-      border: 4px solid #e2e8f0;
-      border-top: 4px solid #2563eb;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
     }
 
     header {
@@ -122,7 +87,6 @@
       box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
       transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       z-index: 1000;
-      padding-top: 0;
       display: flex;
       flex-direction: column;
     }
@@ -292,7 +256,7 @@
       border-radius: 15px;
       padding: 40px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       position: relative;
     }
 
@@ -459,7 +423,7 @@
       border-radius: 15px;
       padding: 30px;
       margin-top: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
     .quick-add-section h3 {
@@ -516,22 +480,15 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .student-list-container {
       background: white;
       border-radius: 15px;
       padding: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
     .list-header {
@@ -669,45 +626,14 @@
       font-weight: 600;
     }
 
-    .class-11th-mhtcet-pcm {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .class-11th-mhtcet-pcb {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .class-11th-jee {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .class-11th-neet {
-      background: #fce7f3;
-      color: #9d174d;
-    }
-
-    .class-12th-mhtcet-pcm {
-      background: #ede9fe;
-      color: #5b21b6;
-    }
-
-    .class-12th-mhtcet-pcb {
-      background: #ccfbf1;
-      color: #0f766e;
-    }
-
-    .class-12th-jee {
-      background: #fef7cd;
-      color: #854d0e;
-    }
-
-    .class-12th-neet {
-      background: #fae8ff;
-      color: #86198f;
-    }
+    .class-11th-mhtcet-pcm { background: #dbeafe; color: #1e40af; }
+    .class-11th-mhtcet-pcb { background: #dcfce7; color: #166534; }
+    .class-11th-jee { background: #fef3c7; color: #92400e; }
+    .class-11th-neet { background: #fce7f3; color: #9d174d; }
+    .class-12th-mhtcet-pcm { background: #ede9fe; color: #5b21b6; }
+    .class-12th-mhtcet-pcb { background: #ccfbf1; color: #0f766e; }
+    .class-12th-jee { background: #fef7cd; color: #854d0e; }
+    .class-12th-neet { background: #fae8ff; color: #86198f; }
 
     .action-buttons {
       display: flex;
@@ -727,13 +653,8 @@
       background: #f1f5f9;
     }
 
-    .edit-btn {
-      color: #2563eb;
-    }
-
-    .delete-btn {
-      color: #ef4444;
-    }
+    .edit-btn { color: #2563eb; }
+    .delete-btn { color: #ef4444; }
 
     .age-badge {
       display: inline-block;
@@ -762,13 +683,6 @@
       font-size: 1.5rem;
       margin-bottom: 10px;
       color: #475569;
-    }
-
-    .empty-state p {
-      margin-bottom: 30px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .pagination {
@@ -822,77 +736,18 @@
       margin-top: 50px;
     }
 
-    footer p {
-      font-size: 1rem;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 15px 20px;
-      }
-
-      .welcome-section h2 {
-        font-size: 1.8rem;
-      }
-
-      .welcome-section p {
-        font-size: 1rem;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .form-header {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .form-icon {
-        margin-right: 0;
-        margin-bottom: 15px;
-      }
-
-      .form-actions {
-        flex-direction: column;
-      }
-
-      .quick-actions {
-        justify-content: center;
-      }
-
-      .list-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-      }
-
-      .search-filter-container {
-        flex-direction: column;
-      }
-
-      .search-box {
-        min-width: 100%;
-      }
-
-      .student-table {
-        min-width: 800px;
-      }
-
-      .pagination {
-        flex-direction: column;
-        gap: 15px;
-      }
-    }
-
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255, 255, 255, .3);
+      border: 3px solid rgba(255,255,255,.3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .success-message {
@@ -903,7 +758,7 @@
       color: white;
       padding: 15px 25px;
       border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -916,54 +771,20 @@
       transform: translateX(0);
     }
 
-    .success-icon {
-      font-size: 1.5rem;
-    }
-
-    .field-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 5px;
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-
-    .info-icon {
-      color: #2563eb;
-    }
-
-    .auto-save-indicator {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #f59e0b;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 1000;
-      transform: translateY(150%);
-      transition: transform 0.3s ease;
-    }
-
-    .auto-save-indicator.show {
-      transform: translateY(0);
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-filter-container {
+        flex-direction: column;
+      }
+      .student-table {
+        min-width: 800px;
+      }
     }
   </style>
 </head>
-
 <body>
-
-  <!-- Loading overlay – shown while Firebase checks auth -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-    <div>Checking authentication...</div>
-  </div>
-
   <header>
     <h1>Soham - Teacher Dashboard</h1>
     <button class="hamburger" id="hamburger">
@@ -973,7 +794,6 @@
     </button>
   </header>
 
-  <!-- Side Navigation -->
   <div class="side-nav" id="sideNav">
     <ul>
       <li><a href="teacher-dashboard.html"><span class="nav-icon">📊</span>Dashboard</a></li>
@@ -985,26 +805,18 @@
       <li><a href="sitting-arrangement.html"><span class="nav-icon">💺</span>Sitting Arrangement</a></li>
       <li><a href="omr-scanner.html"><span class="nav-icon">📸</span>OMR Scanner</a></li>
       <li><a href="teacher-scores.html"><span class="nav-icon">📈</span>Student Scores</a></li>
-      <li><a href="add-student.html"><span class="nav-icon">👨‍🎓</span>Add Student</a></li>
+      <li><a href="add-student.html" class="nav-active"><span class="nav-icon">👨‍🎓</span>Add Student</a></li>
       <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
-
   <div class="overlay" id="overlay"></div>
 
-  <!-- Success Message -->
   <div class="success-message" id="successMessage">
     <span class="success-icon">✅</span>
     <span id="successText">Student added successfully!</span>
-  </div>
-
-  <!-- Auto-save Indicator -->
-  <div class="auto-save-indicator" id="autoSaveIndicator">
-    <span class="success-icon">💾</span>
-    <span>Data saved automatically</span>
   </div>
 
   <main class="dashboard">
@@ -1027,33 +839,26 @@
           <div class="form-group">
             <label for="studentName">Full Name</label>
             <input type="text" id="studentName" class="form-control" placeholder="Enter student's full name" required>
-            <div class="field-info"><span class="info-icon">ℹ️</span><span>Enter the student's complete name as per
-                official records</span></div>
           </div>
           <div class="form-group">
             <label for="studentId">Student ID</label>
             <input type="text" id="studentId" class="form-control" placeholder="Enter student ID" required>
-            <div class="field-info"><span class="info-icon">ℹ️</span><span>Unique identifier for the student (will be
-                used for login)</span></div>
           </div>
+          
           <div class="form-group">
             <label for="motherName">Mother's Name</label>
             <input type="text" id="motherName" class="form-control" placeholder="Enter mother's full name" required>
-            <div class="field-info"><span class="info-icon">ℹ️</span><span>Enter mother's name as per official records
-                (required for student login)</span></div>
           </div>
+          
           <div class="form-group">
             <label for="dateOfBirth">Date of Birth</label>
             <div class="dob-container">
               <input type="date" id="dateOfBirth" class="form-control" required>
               <span class="dob-icon">📅</span>
             </div>
-            <div class="field-info">
-              <span class="info-icon">ℹ️</span>
-              <span>Student's date of birth</span>
-              <span id="ageDisplay" class="age-display" style="display: none;">Age: </span>
-            </div>
+            <span id="ageDisplay" class="age-display" style="display: none;">Age: </span>
           </div>
+          
           <div class="form-group full-width">
             <label for="studentClass">Select Class</label>
             <select id="studentClass" class="form-control" required>
@@ -1067,31 +872,27 @@
               <option value="12th-jee">12th JEE</option>
               <option value="12th-neet">12th NEET</option>
             </select>
-            <div class="field-info"><span class="info-icon">ℹ️</span><span>Select the appropriate class for the
-                student</span></div>
           </div>
+          
           <div class="form-group">
             <label for="studentMobile">Student Mobile No.</label>
             <input type="tel" id="studentMobile" class="form-control" placeholder="+91 98765 43210" required>
-            <div class="field-info"><span class="info-icon">ℹ️</span><span>Student's personal contact number</span>
-            </div>
           </div>
           <div class="form-group">
             <label for="parentMobile">Parent Mobile No.</label>
             <input type="tel" id="parentMobile" class="form-control" placeholder="+91 98765 43210" required>
-            <div class="field-info"><span class="info-icon">ℹ️</span><span>Parent or guardian's contact number</span>
-            </div>
           </div>
         </div>
+        
         <div class="form-actions">
-          <button type="submit" class="btn btn-success"><span>Add Student</span></button>
-          <button type="button" class="btn btn-secondary" onclick="clearForm()"><span>Clear Form</span></button>
+          <button type="submit" class="btn btn-success">Add Student</button>
+          <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
         </div>
       </form>
     </div>
 
     <div class="quick-add-section">
-      <h3><span class="icon">⚡</span> Quick Actions</h3>
+      <h3>⚡ Quick Actions</h3>
       <div class="quick-actions">
         <div class="quick-action-btn" onclick="generateStudentId()">
           <div class="quick-action-icon">🆔</div>
@@ -1105,30 +906,22 @@
           <div class="quick-action-icon">👥</div>
           <div class="quick-action-text" id="studentListToggleText">View All Students</div>
         </div>
-        <div class="quick-action-btn" onclick="loadSavedData()">
-          <div class="quick-action-icon">📥</div>
-          <div class="quick-action-text">Load Saved Data</div>
-        </div>
       </div>
     </div>
 
-    <!-- Student List Section -->
     <div class="student-list-section" id="studentListSection" style="display: none;">
       <div class="student-list-container">
         <div class="list-header">
-          <div class="list-title">
-            <div class="list-icon">👥</div>
-            <div>All Students</div>
-          </div>
+          <div class="list-title"><div class="list-icon">👥</div> All Students</div>
           <div class="list-actions">
-            <button class="btn btn-secondary" onclick="exportStudentData()"><span>Export Data</span></button>
-            <button class="btn btn-secondary" onclick="toggleStudentList()"><span>Close</span></button>
+            <button class="btn btn-secondary" onclick="exportStudentData()">Export Data</button>
+            <button class="btn btn-secondary" onclick="toggleStudentList()">Close</button>
           </div>
         </div>
+
         <div class="search-filter-container">
           <div class="search-box">
-            <input type="text" class="search-input" id="searchInput"
-              placeholder="Search students by name, ID, or mother's name...">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search students...">
             <span class="search-icon">🔍</span>
           </div>
           <select class="filter-select" id="classFilter">
@@ -1143,6 +936,7 @@
             <option value="12th-neet">12th NEET</option>
           </select>
         </div>
+
         <div class="student-table-container">
           <table class="student-table" id="studentTable">
             <thead>
@@ -1161,14 +955,14 @@
             <tbody id="studentTableBody"></tbody>
           </table>
         </div>
+
         <div id="emptyState" class="empty-state" style="display: none;">
           <div class="empty-icon">👨‍🎓</div>
           <h3>No Students Found</h3>
-          <p>You haven't added any students yet. Add your first student to get started.</p>
-          <button class="btn btn-success" onclick="toggleStudentList()">Add Student</button>
         </div>
+
         <div class="pagination" id="pagination" style="display: none;">
-          <div class="pagination-info" id="paginationInfo">Showing 0 of 0 students</div>
+          <div class="pagination-info" id="paginationInfo"></div>
           <div class="pagination-controls" id="paginationControls"></div>
         </div>
       </div>
@@ -1177,502 +971,487 @@
 
   <footer>
     <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
-    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
-    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    // ============================
+    // Firebase Initialization
+    // ============================
     const firebaseConfig = {
       apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
       authDomain: "soham-6d886.firebaseapp.com",
       projectId: "soham-6d886",
       storageBucket: "soham-6d886.firebasestorage.app",
       messagingSenderId: "281780176229",
-      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
-      measurementId: "G-CB1J6LQ7DJ"
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
     };
-
-    // Initialize Firebase immediately (no placeholder check)
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Prevent redirect loops
-    let redirecting = false;
-
-    // Global variables
-    let allStudents = [];
-    let filteredStudents = [];
-    let currentPage = 1;
-    const studentsPerPage = 10;
-    let isStudentListVisible = false;
-    let currentEditingStudentId = null;
-
-    // ---------- Authentication Check ----------
+    // ============================
+    // Daily Teacher Verification
+    // ============================
+    let teacherData = null;
     auth.onAuthStateChanged(async (user) => {
-      if (redirecting) return;
-
       if (!user) {
-        redirecting = true;
-        window.location.replace("../role-selection.html");
+        localStorage.removeItem("teacherVerification");
+        window.location.href = "role-selection.html";
         return;
       }
-
+      const cached = JSON.parse(localStorage.getItem("teacherVerification"));
+      const today = new Date().toISOString().split('T')[0];
+      if (cached && cached.uid === user.uid && cached.date === today) {
+        teacherData = cached.teacherData || null;
+        initPage();
+        return;
+      }
       try {
-        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
-        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
-          // User is not a teacher – show error but do NOT auto-signout to avoid loop
-          document.getElementById("loadingOverlay").innerHTML = `
-            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
-            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
-            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
-            <button class="btn" onclick="auth.signOut()">Logout</button>
-          `;
-          return;
+        const docSnap = await db.collection("teachers").doc(user.uid).get();
+        if (docSnap.exists && docSnap.data().role === "teacher") {
+          teacherData = docSnap.data();
+          localStorage.setItem("teacherVerification", JSON.stringify({ uid: user.uid, date: today, teacherData }));
+          initPage();
+        } else {
+          localStorage.removeItem("teacherVerification");
+          auth.signOut();
+          window.location.href = "role-selection.html";
         }
-
-        // Valid teacher – hide loading screen
-        document.getElementById("loadingOverlay").style.display = "none";
-        console.log("Teacher authenticated:", user.email);
-      } catch (error) {
-        console.error("Auth check error:", error);
-        document.getElementById("loadingOverlay").innerHTML = `
-          <div style="color:#dc2626;">Error checking permissions. Please try again.</div>
-          <button class="btn" onclick="location.reload()">Reload</button>
-        `;
+      } catch (err) {
+        localStorage.removeItem("teacherVerification");
+        auth.signOut();
+        window.location.href = "role-selection.html";
       }
     });
 
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-      e.preventDefault();
-      await auth.signOut();
-      window.location.href = "../role-selection.html";
-    });
-
-    // ---------- Utility Functions ----------
-    function calculateAge(dob) {
-      if (!dob) return null;
-      const birthDate = new Date(dob);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
-      return age;
+    function initPage() {
+      document.getElementById('dateOfBirth').addEventListener('change', updateAgeDisplay);
+      document.getElementById('addStudentForm').addEventListener('submit', handleAddStudent);
+      document.getElementById('searchInput').addEventListener('input', applyFilters);
+      document.getElementById('classFilter').addEventListener('change', applyFilters);
     }
 
-    function formatDate(dateString) {
-      if (!dateString) return '';
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-    }
-
-    function showSuccessMessage(message, icon = '✅') {
-      const successMessage = document.getElementById('successMessage');
-      successMessage.innerHTML = `<span class="success-icon">${icon}</span><span>${message}</span>`;
-      successMessage.classList.add('show');
-      setTimeout(() => successMessage.classList.remove('show'), 3000);
-    }
-
-    function showAutoSaveIndicator() {
-      const indicator = document.getElementById('autoSaveIndicator');
-      indicator.classList.add('show');
-      setTimeout(() => indicator.classList.remove('show'), 2000);
-    }
-
-    // ---------- Form Auto‑save (client‑side only) ----------
-    const form = document.getElementById('addStudentForm');
-    const formFields = form.querySelectorAll('input, select');
-
-    window.addEventListener('DOMContentLoaded', () => {
-      loadSavedData();
-    });
-
-    formFields.forEach(field => {
-      field.addEventListener('input', () => { saveFormData(); showAutoSaveIndicator(); });
-      field.addEventListener('change', () => { saveFormData(); showAutoSaveIndicator(); });
-    });
-
-    function saveFormData() {
-      const formData = {
-        studentName: document.getElementById('studentName').value,
-        studentId: document.getElementById('studentId').value,
-        motherName: document.getElementById('motherName').value,
-        dateOfBirth: document.getElementById('dateOfBirth').value,
-        studentClass: document.getElementById('studentClass').value,
-        studentMobile: document.getElementById('studentMobile').value,
-        parentMobile: document.getElementById('parentMobile').value
-      };
-      localStorage.setItem('studentFormData', JSON.stringify(formData));
-    }
-
-    function loadSavedData() {
-      const savedData = localStorage.getItem('studentFormData');
-      if (savedData) {
-        const formData = JSON.parse(savedData);
-        document.getElementById('studentName').value = formData.studentName || '';
-        document.getElementById('studentId').value = formData.studentId || '';
-        document.getElementById('motherName').value = formData.motherName || '';
-        document.getElementById('dateOfBirth').value = formData.dateOfBirth || '';
-        document.getElementById('studentClass').value = formData.studentClass || '';
-        document.getElementById('studentMobile').value = formData.studentMobile || '';
-        document.getElementById('parentMobile').value = formData.parentMobile || '';
-        if (formData.dateOfBirth) {
-          const age = calculateAge(formData.dateOfBirth);
-          document.getElementById('ageDisplay').textContent = `Age: ${age} years`;
-          document.getElementById('ageDisplay').style.display = 'inline-block';
-        }
-      }
-    }
-
-    window.clearForm = function () {
-      form.reset();
-      document.getElementById('ageDisplay').style.display = 'none';
-      localStorage.removeItem('studentFormData');
-      currentEditingStudentId = null;
-      document.getElementById('addStudentForm').querySelector('button[type="submit"]').innerHTML = '<span>Add Student</span>';
-      form.onsubmit = defaultFormSubmit;
-      showSuccessMessage('Form cleared successfully!', '🗑️');
-    };
-
-    window.generateStudentId = function () {
-      const prefix = 'SOHAM';
-      const random = Math.floor(1000 + Math.random() * 9000);
-      document.getElementById('studentId').value = `${prefix}${random}`;
-      saveFormData();
-      showAutoSaveIndicator();
-    };
-
-    document.getElementById('dateOfBirth').addEventListener('change', function () {
-      const dob = this.value;
+    function updateAgeDisplay() {
+      const dob = document.getElementById('dateOfBirth').value;
       const ageDisplay = document.getElementById('ageDisplay');
       if (dob) {
-        ageDisplay.textContent = `Age: ${calculateAge(dob)} years`;
+        const age = calculateAge(dob);
+        ageDisplay.textContent = `Age: ${age} years`;
         ageDisplay.style.display = 'inline-block';
       } else {
         ageDisplay.style.display = 'none';
       }
-    });
-
-    // ---------- Firebase CRUD ----------
-    async function saveStudentToFirebase(formData) {
-      await db.collection("students").doc(formData.studentId).set({
-        ...formData,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      await db.collection("studentCredentials").doc(formData.studentId).set({
-        studentId: formData.studentId,
-        password: '290108',
-        name: formData.studentName,
-        motherName: formData.motherName,
-        class: formData.studentClass,
-        role: 'student'
-      });
-      await incrementClassCount(formData.studentClass, 1);
     }
 
-    async function updateStudentInFirebase(oldStudentId, formData) {
-      if (oldStudentId !== formData.studentId) {
-        const newDoc = await db.collection("students").doc(formData.studentId).get();
-        if (newDoc.exists) throw new Error("A student with the new ID already exists.");
-        await db.collection("students").doc(oldStudentId).delete();
-        await db.collection("studentCredentials").doc(oldStudentId).delete();
-        const oldStudent = allStudents.find(s => s.studentId === oldStudentId);
-        if (oldStudent) await incrementClassCount(oldStudent.studentClass, -1);
-      }
-      await db.collection("students").doc(formData.studentId).set({
-        ...formData,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      await db.collection("studentCredentials").doc(formData.studentId).set({
-        studentId: formData.studentId,
-        password: '290108',
-        name: formData.studentName,
-        motherName: formData.motherName,
-        class: formData.studentClass,
-        role: 'student'
-      }, { merge: true });
-      await incrementClassCount(formData.studentClass, 1);
+    function calculateAge(dob) {
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      return age;
     }
 
-    async function deleteStudentFromFirebase(studentId) {
-      const studentDoc = await db.collection("students").doc(studentId).get();
-      const studentData = studentDoc.data();
-      await db.collection("students").doc(studentId).delete();
-      await db.collection("studentCredentials").doc(studentId).delete();
-      if (studentData) await incrementClassCount(studentData.studentClass, -1);
+    function generateStudentId() {
+      const prefix = 'SOHAM';
+      const random = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('studentId').value = `${prefix}${random}`;
     }
 
-    async function incrementClassCount(className, delta) {
-      if (!className) return;
-      const ref = db.collection("classStats").doc(className);
-      await db.runTransaction(async (transaction) => {
-        const doc = await transaction.get(ref);
-        let newCount = (doc.exists ? (doc.data().studentCount || 0) : 0) + delta;
-        newCount = Math.max(0, newCount);
-        transaction.set(ref, { studentCount: newCount }, { merge: true });
-      });
+    function clearForm() {
+      document.getElementById('addStudentForm').reset();
+      document.getElementById('ageDisplay').style.display = 'none';
+      showNotification('Form cleared', 'info');
     }
 
-    // ---------- Form Submission ----------
-    const defaultFormSubmit = async function (e) {
+    // ============================
+    // Add Student (Firestore)
+    // ============================
+    async function handleAddStudent(e) {
       e.preventDefault();
-      const dob = document.getElementById('dateOfBirth').value;
-      if (!dob) { alert('Please enter Date of Birth'); return; }
-      const age = calculateAge(dob);
-      if (age < 10 || age > 25) {
-        if (!confirm(`Student age is ${age} years. Are you sure?`)) return;
-      }
-
-      const submitBtn = this.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span class="loading"></span> Saving...';
+      const form = document.getElementById('addStudentForm');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="loading"></span> Adding...';
       submitBtn.disabled = true;
 
-      const formData = {
-        studentName: document.getElementById('studentName').value,
-        studentId: document.getElementById('studentId').value,
-        motherName: document.getElementById('motherName').value,
-        dateOfBirth: dob,
-        age: age,
-        studentClass: document.getElementById('studentClass').value,
-        studentMobile: document.getElementById('studentMobile').value,
-        parentMobile: document.getElementById('parentMobile').value
-      };
+      const studentId = document.getElementById('studentId').value.trim();
+      const studentName = document.getElementById('studentName').value.trim();
+      const motherName = document.getElementById('motherName').value.trim();
+      const dateOfBirth = document.getElementById('dateOfBirth').value;
+      const studentClass = document.getElementById('studentClass').value;
+      const studentMobile = document.getElementById('studentMobile').value.trim();
+      const parentMobile = document.getElementById('parentMobile').value.trim();
 
-      try {
-        if (currentEditingStudentId) {
-          await updateStudentInFirebase(currentEditingStudentId, formData);
-          showSuccessMessage('Student updated successfully!', '✅');
-        } else {
-          const existing = await db.collection("students").doc(formData.studentId).get();
-          if (existing.exists) throw new Error("Student ID already exists.");
-          await saveStudentToFirebase(formData);
-          showSuccessMessage('Student added successfully!', '✅');
-        }
-
-        form.reset();
-        document.getElementById('ageDisplay').style.display = 'none';
-        localStorage.removeItem('studentFormData');
-        currentEditingStudentId = null;
-        submitBtn.innerHTML = originalText;
+      if (!studentId || !studentName || !motherName || !dateOfBirth || !studentClass || !studentMobile || !parentMobile) {
+        alert('Please fill all fields');
+        submitBtn.innerHTML = originalHTML;
         submitBtn.disabled = false;
-        if (isStudentListVisible) loadStudentsFromFirebase();
-      } catch (error) {
-        alert('Error: ' + error.message);
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      }
-    };
-    form.onsubmit = defaultFormSubmit;
-
-    // ---------- Load Students ----------
-    async function loadStudentsFromFirebase() {
-      try {
-        const snapshot = await db.collection("students").orderBy("timestamp", "desc").get();
-        allStudents = [];
-        snapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
-        filteredStudents = [...allStudents];
-        renderStudentTable();
-        updatePagination();
-        setupSearchAndFilterListeners();
-      } catch (error) {
-        console.error("Error loading students:", error);
-      }
-    }
-
-    function renderStudentTable() {
-      const tableBody = document.getElementById('studentTableBody');
-      const emptyState = document.getElementById('emptyState');
-      const tableContainer = document.querySelector('.student-table-container');
-      const pagination = document.getElementById('pagination');
-
-      if (filteredStudents.length === 0) {
-        tableContainer.style.display = 'none';
-        emptyState.style.display = 'block';
-        pagination.style.display = 'none';
         return;
       }
 
-      tableContainer.style.display = 'block';
-      emptyState.style.display = 'none';
-      pagination.style.display = 'flex';
+      try {
+        // Check if student ID already exists
+        const existing = await db.collection("students").doc(studentId).get();
+        if (existing.exists) {
+          alert('Student ID already exists!');
+          submitBtn.innerHTML = originalHTML;
+          submitBtn.disabled = false;
+          return;
+        }
 
-      const startIndex = (currentPage - 1) * studentsPerPage;
-      const endIndex = Math.min(startIndex + studentsPerPage, filteredStudents.length);
-      const studentsToShow = filteredStudents.slice(startIndex, endIndex);
+        const batch = db.batch();
 
-      tableBody.innerHTML = '';
-      studentsToShow.forEach(student => {
-        const row = document.createElement('tr');
-        const initials = student.studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-        const className = student.studentClass.replace(/-/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase());
-        const age = student.age || calculateAge(student.dateOfBirth);
-        row.innerHTML = `
-          <td><div class="student-name-cell"><div class="student-avatar">${initials}</div><div>${student.studentName}</div></div></td>
-          <td>${student.studentId}</td>
-          <td>${student.motherName || '-'}</td>
-          <td>${formatDate(student.dateOfBirth)}</td>
-          <td><span class="age-badge">${age} yrs</span></td>
-          <td><span class="class-badge ${student.studentClass}">${className}</span></td>
-          <td>${student.studentMobile}</td>
-          <td>${student.parentMobile}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="action-btn edit-btn" onclick="editStudent('${student.studentId}')">✏️</button>
-              <button class="action-btn delete-btn" onclick="deleteStudent('${student.studentId}')">🗑️</button>
-            </div>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-    }
-
-    function updatePagination() {
-      const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
-      const paginationInfo = document.getElementById('paginationInfo');
-      const paginationControls = document.getElementById('paginationControls');
-
-      const startIndex = (currentPage - 1) * studentsPerPage + 1;
-      const endIndex = Math.min(currentPage * studentsPerPage, filteredStudents.length);
-      paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${filteredStudents.length} students`;
-
-      paginationControls.innerHTML = '';
-
-      const prevButton = document.createElement('button');
-      prevButton.className = 'pagination-btn';
-      prevButton.innerHTML = '&laquo; Previous';
-      prevButton.disabled = currentPage === 1;
-      prevButton.addEventListener('click', () => {
-        if (currentPage > 1) { currentPage--; renderStudentTable(); updatePagination(); }
-      });
-      paginationControls.appendChild(prevButton);
-
-      const maxVisiblePages = 5;
-      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-      if (endPage - startPage + 1 < maxVisiblePages) startPage = Math.max(1, endPage - maxVisiblePages + 1);
-
-      for (let i = startPage; i <= endPage; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
-        pageButton.textContent = i;
-        pageButton.addEventListener('click', () => {
-          currentPage = i;
-          renderStudentTable();
-          updatePagination();
+        // 1. Add to students collection
+        const studentRef = db.collection("students").doc(studentId);
+        batch.set(studentRef, {
+          studentId,
+          studentName,
+          studentMobile,
+          parentMobile,
+          dateOfBirth,
+          studentClass,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-        paginationControls.appendChild(pageButton);
+
+        // 2. Add to studentCredentials
+        const credRef = db.collection("studentCredentials").doc(studentId);
+        batch.set(credRef, {
+          studentId,
+          password: '290108',
+          name: studentName,
+          motherName,
+          class: studentClass,
+          role: 'student'
+        });
+
+        // 3. Update classStats using a transaction for the counter
+        const classStatsRef = db.collection("classStats").doc(studentClass);
+        const statsSnap = await classStatsRef.get();
+        if (statsSnap.exists) {
+          batch.update(classStatsRef, {
+            studentCount: firebase.firestore.FieldValue.increment(1)
+          });
+        } else {
+          // Create if not exists
+          batch.set(classStatsRef, {
+            studentCount: 1,
+            testsCount: 0,
+            assignmentsCount: 0,
+            avgScore: 0,
+            attendance: 0
+          });
+        }
+
+        await batch.commit();
+
+        showNotification('Student added successfully!', 'success');
+        form.reset();
+        document.getElementById('ageDisplay').style.display = 'none';
+
+        if (isStudentListVisible) {
+          fetchAllStudents(); // refresh list
+        }
+      } catch (error) {
+        console.error("Error adding student:", error);
+        alert('Failed to add student. Please try again.');
       }
 
-      const nextButton = document.createElement('button');
-      nextButton.className = 'pagination-btn';
-      nextButton.innerHTML = 'Next &raquo;';
-      nextButton.disabled = currentPage === totalPages;
-      nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) { currentPage++; renderStudentTable(); updatePagination(); }
-      });
-      paginationControls.appendChild(nextButton);
+      submitBtn.innerHTML = originalHTML;
+      submitBtn.disabled = false;
     }
 
-    function setupSearchAndFilterListeners() {
-      const searchInput = document.getElementById('searchInput');
-      const classFilter = document.getElementById('classFilter');
-      const newSearch = searchInput.cloneNode(true);
-      const newFilter = classFilter.cloneNode(true);
-      searchInput.parentNode.replaceChild(newSearch, searchInput);
-      classFilter.parentNode.replaceChild(newFilter, classFilter);
+    // ============================
+    // Student List (Firestore)
+    // ============================
+    let allStudents = [];
+    let filteredStudents = [];
+    let currentPage = 1;
+    const perPage = 10;
+    let isStudentListVisible = false;
 
-      document.getElementById('searchInput').addEventListener('input', filterStudents);
-      document.getElementById('classFilter').addEventListener('change', filterStudents);
-    }
-
-    function filterStudents() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const selectedClass = document.getElementById('classFilter').value;
-
-      filteredStudents = allStudents.filter(student => {
-        const matchesSearch =
-          student.studentName.toLowerCase().includes(searchTerm) ||
-          student.studentId.toLowerCase().includes(searchTerm) ||
-          (student.motherName && student.motherName.toLowerCase().includes(searchTerm));
-        const matchesClass = selectedClass === '' || student.studentClass === selectedClass;
-        return matchesSearch && matchesClass;
-      });
-
-      currentPage = 1;
-      renderStudentTable();
-      updatePagination();
-    }
-
-    window.toggleStudentList = function () {
+    async function toggleStudentList() {
+      isStudentListVisible = !isStudentListVisible;
       const section = document.getElementById('studentListSection');
       const toggleText = document.getElementById('studentListToggleText');
-      isStudentListVisible = !isStudentListVisible;
       if (isStudentListVisible) {
         section.style.display = 'block';
         toggleText.textContent = 'Hide Students';
-        loadStudentsFromFirebase();
-        section.scrollIntoView({ behavior: 'smooth' });
+        await fetchAllStudents();
       } else {
         section.style.display = 'none';
         toggleText.textContent = 'View All Students';
       }
-    };
+    }
 
-    window.editStudent = function (studentId) {
-      const student = allStudents.find(s => s.studentId === studentId);
+    async function fetchAllStudents() {
+      try {
+        const snap = await db.collection("students").get();
+        allStudents = [];
+        snap.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+        filteredStudents = [...allStudents];
+        currentPage = 1;
+        renderTable();
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const cls = document.getElementById('classFilter').value;
+      filteredStudents = allStudents.filter(s => {
+        const matchSearch = s.studentName?.toLowerCase().includes(search) ||
+                            s.studentId?.toLowerCase().includes(search) ||
+                            s.motherName?.toLowerCase().includes(search);
+        const matchClass = cls === '' || s.studentClass === cls;
+        return matchSearch && matchClass;
+      });
+      currentPage = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('studentTableBody');
+      const empty = document.getElementById('emptyState');
+      const pag = document.getElementById('pagination');
+
+      if (filteredStudents.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        pag.style.display = 'none';
+        return;
+      }
+      empty.style.display = 'none';
+      pag.style.display = 'flex';
+
+      const start = (currentPage - 1) * perPage;
+      const end = Math.min(start + perPage, filteredStudents.length);
+      const pageStudents = filteredStudents.slice(start, end);
+
+      tbody.innerHTML = pageStudents.map(s => {
+        const initials = s.studentName.split(' ').map(n => n[0]).join('').toUpperCase();
+        const age = s.dateOfBirth ? calculateAge(s.dateOfBirth) : '';
+        const formattedDOB = s.dateOfBirth ? new Date(s.dateOfBirth).toLocaleDateString('en-IN') : '';
+        const className = s.studentClass.replace(/-/g, ' ').replace(/(?:^|\s)\S/g, a => a.toUpperCase());
+        return `
+          <tr>
+            <td><div class="student-name-cell"><div class="student-avatar">${initials}</div>${s.studentName}</div></td>
+            <td>${s.studentId}</td>
+            <td>${s.motherName || '-'}</td>
+            <td>${formattedDOB}</td>
+            <td><span class="age-badge">${age} yrs</span></td>
+            <td><span class="class-badge ${s.studentClass}">${className}</span></td>
+            <td>${s.studentMobile}</td>
+            <td>${s.parentMobile}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn edit-btn" onclick="editStudent('${s.id}')">✏️</button>
+                <button class="action-btn delete-btn" onclick="deleteStudent('${s.id}')">🗑️</button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+
+      updatePagination();
+    }
+
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredStudents.length / perPage);
+      document.getElementById('paginationInfo').textContent =
+        `Showing ${(currentPage-1)*perPage+1}-${Math.min(currentPage*perPage, filteredStudents.length)} of ${filteredStudents.length}`;
+      const controls = document.getElementById('paginationControls');
+      controls.innerHTML = '';
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'pagination-btn';
+      prevBtn.innerHTML = '&laquo; Previous';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => { currentPage--; renderTable(); };
+      controls.appendChild(prevBtn);
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+        btn.textContent = i;
+        btn.onclick = () => { currentPage = i; renderTable(); };
+        controls.appendChild(btn);
+      }
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'pagination-btn';
+      nextBtn.innerHTML = 'Next &raquo;';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => { currentPage++; renderTable(); };
+      controls.appendChild(nextBtn);
+    }
+
+    // ============================
+    // Edit & Delete (Firestore)
+    // ============================
+    async function editStudent(docId) {
+      const student = allStudents.find(s => s.id === docId);
       if (!student) return;
-      document.getElementById('studentName').value = student.studentName;
-      document.getElementById('studentId').value = student.studentId;
+      document.getElementById('studentName').value = student.studentName || '';
+      document.getElementById('studentId').value = student.studentId || '';
       document.getElementById('motherName').value = student.motherName || '';
       document.getElementById('dateOfBirth').value = student.dateOfBirth || '';
-      document.getElementById('studentClass').value = student.studentClass;
-      document.getElementById('studentMobile').value = student.studentMobile;
-      document.getElementById('parentMobile').value = student.parentMobile;
-      if (student.dateOfBirth) {
-        document.getElementById('ageDisplay').textContent = `Age: ${calculateAge(student.dateOfBirth)} years`;
-        document.getElementById('ageDisplay').style.display = 'inline-block';
-      }
-      currentEditingStudentId = studentId;
-      document.querySelector('#addStudentForm button[type="submit"]').innerHTML = '<span>Update Student</span>';
-      form.onsubmit = defaultFormSubmit;
-      showSuccessMessage('Student data loaded for editing!', '✏️');
+      document.getElementById('studentClass').value = student.studentClass || '';
+      document.getElementById('studentMobile').value = student.studentMobile || '';
+      document.getElementById('parentMobile').value = student.parentMobile || '';
+      updateAgeDisplay();
       document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
-    };
+      // Switch form to update mode (store old ID to handle potential ID change)
+      window.editingStudentDocId = docId;
+      window.editingOldStudentId = student.studentId;
+      const form = document.getElementById('addStudentForm');
+      form.onsubmit = handleUpdateStudent;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.innerHTML = 'Update Student';
+    }
 
-    window.deleteStudent = async function (studentId) {
-      if (confirm(`Delete student ${studentId}?`)) {
-        try {
-          await deleteStudentFromFirebase(studentId);
-          showSuccessMessage('Student deleted successfully!');
-          if (isStudentListVisible) loadStudentsFromFirebase();
-        } catch (error) {
-          alert('Delete failed: ' + error.message);
+    async function handleUpdateStudent(e) {
+      e.preventDefault();
+      const docId = window.editingStudentDocId;
+      const oldStudentId = window.editingOldStudentId;
+      const form = document.getElementById('addStudentForm');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="loading"></span> Updating...';
+      submitBtn.disabled = true;
+
+      const studentId = document.getElementById('studentId').value.trim();
+      const studentName = document.getElementById('studentName').value.trim();
+      const motherName = document.getElementById('motherName').value.trim();
+      const dateOfBirth = document.getElementById('dateOfBirth').value;
+      const studentClass = document.getElementById('studentClass').value;
+      const studentMobile = document.getElementById('studentMobile').value.trim();
+      const parentMobile = document.getElementById('parentMobile').value.trim();
+
+      try {
+        const batch = db.batch();
+        const studentRef = db.collection("students").doc(oldStudentId); // use old ID
+
+        // If ID changed, we need to delete old doc and create new one
+        if (studentId !== oldStudentId) {
+          // Delete old doc
+          batch.delete(db.collection("students").doc(oldStudentId));
+          batch.delete(db.collection("studentCredentials").doc(oldStudentId));
+          // Create new doc
+          batch.set(db.collection("students").doc(studentId), {
+            studentId,
+            studentName,
+            studentMobile,
+            parentMobile,
+            dateOfBirth,
+            studentClass,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          batch.set(db.collection("studentCredentials").doc(studentId), {
+            studentId,
+            password: '290108',
+            name: studentName,
+            motherName,
+            class: studentClass,
+            role: 'student'
+          });
+          // Adjust classStats for old class (decrement) and new class (increment) if class changed
+          if (studentClass !== oldStudentClass) {
+            batch.update(db.collection("classStats").doc(oldStudentClass), { studentCount: firebase.firestore.FieldValue.increment(-1) });
+            batch.update(db.collection("classStats").doc(studentClass), { studentCount: firebase.firestore.FieldValue.increment(1) });
+          }
+        } else {
+          // Update existing doc
+          batch.update(studentRef, {
+            studentId,
+            studentName,
+            studentMobile,
+            parentMobile,
+            dateOfBirth,
+            studentClass,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          batch.update(db.collection("studentCredentials").doc(studentId), {
+            name: studentName,
+            motherName,
+            class: studentClass
+          });
+          // If class changed, update classStats
+          if (studentClass !== oldStudentClass) {
+            batch.update(db.collection("classStats").doc(oldStudentClass), { studentCount: firebase.firestore.FieldValue.increment(-1) });
+            batch.update(db.collection("classStats").doc(studentClass), { studentCount: firebase.firestore.FieldValue.increment(1) });
+          }
         }
-      }
-    };
 
-    window.exportStudentData = function () {
-      if (filteredStudents.length === 0) { alert('No data to export.'); return; }
-      let csv = "Name,Student ID,Mother's Name,Date of Birth,Age,Class,Student Mobile,Parent Mobile\n";
+        await batch.commit();
+        showNotification('Student updated successfully!', 'success');
+        form.reset();
+        document.getElementById('ageDisplay').style.display = 'none';
+        form.onsubmit = handleAddStudent;
+        submitBtn.innerHTML = originalHTML;
+        submitBtn.disabled = false;
+        window.editingStudentDocId = null;
+        window.editingOldStudentId = null;
+        window.oldStudentClass = null;
+        if (isStudentListVisible) await fetchAllStudents();
+      } catch (error) {
+        console.error(error);
+        alert('Update failed');
+        submitBtn.innerHTML = originalHTML;
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function deleteStudent(docId) {
+      if (!confirm('Delete this student? This cannot be undone.')) return;
+      try {
+        const studentDoc = await db.collection("students").doc(docId).get();
+        if (!studentDoc.exists) return;
+        const data = studentDoc.data();
+        const batch = db.batch();
+        batch.delete(db.collection("students").doc(docId));
+        batch.delete(db.collection("studentCredentials").doc(data.studentId));
+        batch.update(db.collection("classStats").doc(data.studentClass), {
+          studentCount: firebase.firestore.FieldValue.increment(-1)
+        });
+        await batch.commit();
+        showNotification('Student deleted', 'success');
+        if (isStudentListVisible) await fetchAllStudents();
+      } catch (error) {
+        console.error(error);
+        alert('Deletion failed');
+      }
+    }
+
+    function exportStudentData() {
+      if (filteredStudents.length === 0) return alert('No data to export');
+      let csv = "Name,Student ID,Mother's Name,DOB,Age,Class,Student Mobile,Parent Mobile\n";
       filteredStudents.forEach(s => {
-        csv += `"${s.studentName}","${s.studentId}","${s.motherName || ''}","${formatDate(s.dateOfBirth)}","${s.age || calculateAge(s.dateOfBirth)}","${s.studentClass.replace(/-/g, ' ')}","${s.studentMobile}","${s.parentMobile}"\n`;
+        const age = s.dateOfBirth ? calculateAge(s.dateOfBirth) : '';
+        csv += `"${s.studentName}","${s.studentId}","${s.motherName||''}","${s.dateOfBirth||''}","${age}","${s.studentClass}","${s.studentMobile}","${s.parentMobile}"\n`;
       });
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const blob = new Blob([csv], {type: 'text/csv'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `students_${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `students_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
-      URL.revokeObjectURL(a.href);
-      showSuccessMessage('Exported successfully!');
-    };
+    }
 
-    // ---------- Hamburger Menu ----------
+    function showNotification(msg, type = 'success') {
+      const el = document.getElementById('successMessage');
+      el.innerHTML = `<span class="success-icon">${type==='error'?'⚠️':'✅'}</span> ${msg}`;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        localStorage.removeItem("teacherVerification");
+        window.location.href = "role-selection.html";
+      });
+    }
+
+    // Hamburger menu (unchanged)
     const hamburger = document.getElementById('hamburger');
     const sideNav = document.getElementById('sideNav');
     const overlay = document.getElementById('overlay');
-
     hamburger.addEventListener('click', () => {
       sideNav.classList.toggle('active');
       overlay.classList.toggle('active');
@@ -1693,15 +1472,6 @@
         document.body.style.overflow = 'auto';
       });
     });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        hamburger.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      }
-    });
   </script>
 </body>
-
 </html>

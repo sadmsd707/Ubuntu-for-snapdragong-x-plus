@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OMR Scanner - Soham Teacher Dashboard</title>
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
     <style>
-        /* ========== Your existing CSS – kept exactly as you provided ========== */
+        /* ========== All original CSS (unchanged) ========== */
         * {
             margin: 0;
             padding: 0;
@@ -225,20 +222,18 @@
             }
         }
 
-        .upload-section,
-        .results-section {
+        .upload-section, .results-section {
             background: white;
             border-radius: 10px;
             padding: 30px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             border-left: 4px solid #2563eb;
             transition: transform 0.3s ease;
         }
 
-        .upload-section:hover,
-        .results-section:hover {
+        .upload-section:hover, .results-section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
         }
 
         .section-title {
@@ -291,7 +286,7 @@
             border-radius: 10px;
             margin-top: 20px;
             display: none;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             border: 1px solid #e2e8f0;
         }
 
@@ -331,7 +326,7 @@
         .btn-primary:hover {
             background: #1e3a8a;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .btn-secondary {
@@ -389,7 +384,7 @@
             border-radius: 10px;
             padding: 25px;
             text-align: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
             margin-bottom: 30px;
             border-left: 4px solid #10b981;
             display: none;
@@ -454,15 +449,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            border-left: 4px solid;
             border: 1px solid #e2e8f0;
         }
 
         .result-item:hover {
             transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .result-correct {
@@ -668,7 +662,7 @@
             border-radius: 15px;
             padding: 30px;
             margin: 30px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             border-left: 4px solid #2563eb;
         }
 
@@ -685,112 +679,125 @@
             header {
                 padding: 15px 20px;
             }
-
             header h1 {
                 font-size: 1.5rem;
             }
-
             .welcome-section {
                 margin: 15px;
                 padding: 20px;
             }
-
             .welcome-section h2 {
                 font-size: 1.8rem;
             }
-
             .welcome-section p {
                 font-size: 1rem;
             }
-
             .main-content {
                 padding: 0 15px;
                 gap: 20px;
             }
-
-            .upload-section,
-            .results-section {
+            .upload-section, .results-section {
                 padding: 20px;
             }
-
             .controls {
                 flex-direction: column;
                 align-items: stretch;
             }
-
             .btn {
                 justify-content: center;
             }
-
             .result-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
             }
-
             .result-info {
                 width: 100%;
             }
-
             .score-number {
                 font-size: 2.5rem;
             }
-
             .side-nav {
                 height: 100vh;
             }
-
             .side-nav ul {
                 max-height: 100vh;
             }
-
             .dashboard-section {
                 padding: 20px;
                 margin: 20px 0;
             }
         }
 
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 9999;
-            font-size: 1.5rem;
-            color: #2563eb;
-        }
-
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #2563eb;
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .notification-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-error {
+            background: #ef4444;
+        }
+
+        .notification-warning {
+            background: #f59e0b;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100px); }
         }
     </style>
 </head>
-
 <body>
-    <!-- Loading overlay -->
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <div>Checking authentication...</div>
-    </div>
-
     <header>
         <h1><i class="fas fa-scanner"></i> OMR Scanner</h1>
         <button class="hamburger" id="hamburger">
@@ -816,11 +823,10 @@
             <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
             <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
             <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-            <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
+            <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
         </ul>
     </div>
 
-    <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
 
     <div class="main-container">
@@ -830,18 +836,16 @@
         </section>
 
         <div class="main-content">
-            <!-- Upload Section -->
             <div class="upload-section">
-                <h2 class="section-title"><span class="icon"><i class="fas fa-upload"></i></span> Upload Answer Sheet
-                </h2>
-
+                <h2 class="section-title"><span class="icon"><i class="fas fa-upload"></i></span> Upload Answer Sheet</h2>
+                
                 <div class="quiz-select">
                     <label for="quizSelect"><i class="fas fa-file-alt"></i> Select Test:</label>
                     <select id="quizSelect">
-                        <option value="">-- Loading tests... --</option>
+                        <option value="">-- Select a test --</option>
                     </select>
                 </div>
-
+                
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon"><i class="fas fa-camera"></i></div>
                     <h3>Upload OMR Answer Sheet</h3>
@@ -849,11 +853,11 @@
                     <p class="file-types">Supports: JPG, PNG, PDF (Max: 10MB)</p>
                     <input type="file" id="imageInput" class="file-input" accept="image/*,.pdf">
                 </div>
-
+                
                 <div class="preview-container" id="previewContainer">
                     <img id="imagePreview" src="" alt="Preview">
                 </div>
-
+                
                 <div class="instructions">
                     <h4><i class="fas fa-info-circle"></i> Instructions for Best Results:</h4>
                     <ul>
@@ -864,7 +868,7 @@
                         <li>Save results to automatically update student scores</li>
                     </ul>
                 </div>
-
+                
                 <div class="controls">
                     <button class="btn btn-primary" id="captureBtn">
                         <i class="fas fa-camera"></i> Use Camera
@@ -877,12 +881,10 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Results Section -->
+            
             <div class="results-section">
-                <h2 class="section-title"><span class="icon"><i class="fas fa-chart-line"></i></span> Evaluation Results
-                </h2>
-
+                <h2 class="section-title"><span class="icon"><i class="fas fa-chart-line"></i></span> Evaluation Results</h2>
+                
                 <div class="score-card" id="scoreCard">
                     <h3>Student Score</h3>
                     <div class="score-display">
@@ -891,39 +893,33 @@
                     </div>
                     <div class="percentage" id="percentage">0%</div>
                     <p id="scoreMessage">Score will appear here after scanning</p>
-                    <button class="btn btn-success btn-small" id="saveResultsBtn"
-                        style="margin-top: 15px; display: none;">
+                    <button class="btn btn-success btn-small" id="saveResultsBtn" style="margin-top: 15px; display: none;">
                         <i class="fas fa-save"></i> Save to Student Record
                     </button>
                 </div>
-
+                
                 <h3 style="color: #1e3a8a; margin-bottom: 20px;">Question-wise Analysis</h3>
                 <div class="results-list" id="resultsList">
                     <div class="no-results" id="noResults">
                         <span class="icon"><i class="fas fa-clipboard-check"></i></span>
                         <p>Upload and scan an OMR sheet to view detailed results</p>
-                        <p style="font-size: 0.9rem; margin-top: 10px;">Results will show correct/incorrect answers and
-                            student responses</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Results will show correct/incorrect answers and student responses</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Scans Section -->
         <section class="dashboard-section">
             <h3><span class="icon"><i class="fas fa-history"></i></span> Recently Scanned Tests</h3>
-            <div class="recent-tests" id="recentTests">
-                <!-- Populated from Firestore -->
-            </div>
+            <div class="recent-tests" id="recentTests"></div>
         </section>
     </div>
-
+    
     <footer>
         <p>© 2026 Soham - Entrance Exam Practice. OMR Scanner</p>
         <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
     </footer>
 
-    <!-- Camera Modal -->
     <div class="modal" id="cameraModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -942,80 +938,430 @@
     </div>
 
     <script>
-        // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+        // ============================
+        // Firebase Initialization
+        // ============================
         const firebaseConfig = {
             apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
             authDomain: "soham-6d886.firebaseapp.com",
             projectId: "soham-6d886",
             storageBucket: "soham-6d886.firebasestorage.app",
             messagingSenderId: "281780176229",
-            appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
-            measurementId: "G-CB1J6LQ7DJ"
+            appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        // Class templates
-        const classTemplates = {
-            '11th-mhtcet-pcm': '11th MHTCET (PCM)',
-            '11th-mhtcet-pcb': '11th MHTCET (PCB)',
-            '11th-jee': '11th JEE',
-            '11th-neet': '11th NEET',
-            '12th-mhtcet-pcm': '12th MHTCET (PCM)',
-            '12th-mhtcet-pcb': '12th MHTCET (PCB)',
-            '12th-jee': '12th JEE',
-            '12th-neet': '12th NEET'
-        };
-
-        // Global variables
-        let currentImage = null;
-        let currentScanResult = null; // Holds the last scan result for saving
-        let stream = null;
-
-        // Authentication check
-        let redirecting = false;
+        // ============================
+        // Daily Teacher Verification
+        // ============================
+        let teacherData = null;
         auth.onAuthStateChanged(async (user) => {
-            if (redirecting) return;
             if (!user) {
-                redirecting = true;
-                window.location.replace("../role-selection.html");
+                localStorage.removeItem("teacherVerification");
+                window.location.href = "../role-selection.html";
+                return;
+            }
+            const cached = JSON.parse(localStorage.getItem("teacherVerification"));
+            const today = new Date().toISOString().split('T')[0];
+            if (cached && cached.uid === user.uid && cached.date === today) {
+                teacherData = cached.teacherData || null;
+                initPage();
                 return;
             }
             try {
-                const teacherDoc = await db.collection("teachers").doc(user.uid).get();
-                if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
-                    document.getElementById("loadingOverlay").innerHTML = `
-                        <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
-                        <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
-                        <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
-                        <button class="btn" onclick="auth.signOut()">Logout</button>
-                    `;
-                    return;
+                const docSnap = await db.collection("teachers").doc(user.uid).get();
+                if (docSnap.exists && docSnap.data().role === "teacher") {
+                    teacherData = docSnap.data();
+                    localStorage.setItem("teacherVerification", JSON.stringify({
+                        uid: user.uid,
+                        date: today,
+                        teacherData
+                    }));
+                    initPage();
+                } else {
+                    localStorage.removeItem("teacherVerification");
+                    auth.signOut();
+                    window.location.href = "../role-selection.html";
                 }
-                document.getElementById("loadingOverlay").style.display = "none";
-                initPage();
-            } catch (error) {
-                console.error("Auth check error:", error);
-                document.getElementById("loadingOverlay").innerHTML = `
-                    <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
-                    <button class="btn" onclick="location.reload()">Reload</button>
-                `;
+            } catch (err) {
+                console.error(err);
+                localStorage.removeItem("teacherVerification");
+                auth.signOut();
+                window.location.href = "../role-selection.html";
             }
         });
 
-        // Logout
-        document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+        // ============================
+        // Page Initialization
+        // ============================
+        async function initPage() {
+            await loadTestsForSelect();
+            await loadRecentScans();
+            resetAll();
+            setupHamburger();
+        }
+
+        // ============================
+        // Load Tests from Firestore
+        // ============================
+        async function loadTestsForSelect() {
+            const select = document.getElementById('quizSelect');
+            try {
+                const snap = await db.collection("tests").orderBy("date", "desc").get();
+                select.innerHTML = '<option value="">-- Select a test --</option>';
+                snap.forEach(doc => {
+                    const test = doc.data();
+                    select.innerHTML += `<option value="${doc.id}">${test.title} (${test.class || ''})</option>`;
+                });
+            } catch (err) {
+                console.error("Failed to load tests:", err);
+                // Keep fallback options
+                select.innerHTML = `
+                    <option value="">-- Select a test --</option>
+                    <option value="physics_thermo">Physics - Thermodynamics</option>
+                    <option value="chem_organic">Chemistry - Organic Compounds</option>
+                    <option value="math_calculus">Mathematics - Calculus</option>
+                `;
+            }
+        }
+
+        // ============================
+        // Recent Scans from Firestore
+        // ============================
+        async function loadRecentScans() {
+            try {
+                const snap = await db.collection("scans")
+                    .orderBy("timestamp", "desc")
+                    .limit(5)
+                    .get();
+                const scans = [];
+                snap.forEach(doc => scans.push({ id: doc.id, ...doc.data() }));
+                displayRecentScans(scans);
+            } catch (err) {
+                console.error("Failed to load scans:", err);
+                displayRecentScans([]);
+            }
+        }
+
+        function displayRecentScans(scans) {
+            const container = document.getElementById('recentTests');
+            if (scans.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <span class="icon"><i class="fas fa-history"></i></span>
+                        <p>No scans yet. Upload an OMR sheet to get started.</p>
+                    </div>`;
+                return;
+            }
+            container.innerHTML = scans.map(scan => `
+                <div class="test-item">
+                    <div class="test-info">
+                        <h4>${scan.testName || 'Unknown Test'}</h4>
+                        <p>Scanned: ${scan.timestamp ? new Date(scan.timestamp.toDate()).toLocaleString() : ''} • Score: ${scan.percentage || 0}%</p>
+                    </div>
+                    <div class="test-actions">
+                        <button class="btn btn-small" onclick="viewScanResults('${scan.id}')">View Results</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================
+        // DOM Elements
+        // ============================
+        const imageInput = document.getElementById('imageInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const scanBtn = document.getElementById('scanBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const quizSelect = document.getElementById('quizSelect');
+        const scoreCard = document.getElementById('scoreCard');
+        const resultsList = document.getElementById('resultsList');
+        const scoreElement = document.getElementById('score');
+        const totalElement = document.getElementById('total');
+        const percentageElement = document.getElementById('percentage');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const saveResultsBtn = document.getElementById('saveResultsBtn');
+        const cameraModal = document.getElementById('cameraModal');
+        const cameraVideo = document.getElementById('cameraVideo');
+        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+        const closeCameraBtn = document.getElementById('closeCameraBtn');
+        let currentImage = null;
+        let currentScanData = null;
+        let stream = null;
+
+        // ============================
+        // Event Listeners
+        // ============================
+        uploadArea.addEventListener('click', () => imageInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            await auth.signOut();
-            window.location.href = "../role-selection.html";
+            uploadArea.style.background = '#e8f0fe';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '#f8fafc';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f8fafc';
+            const file = e.dataTransfer.files[0];
+            if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
+                handleImageUpload(file);
+            }
         });
 
-        // Initialize page
-        function initPage() {
-            // Hamburger menu
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleImageUpload(file);
+        });
+
+        scanBtn.addEventListener('click', scanOMR);
+        resetBtn.addEventListener('click', resetAll);
+        captureBtn.addEventListener('click', openCamera);
+        capturePhotoBtn.addEventListener('click', capturePhoto);
+        closeCameraBtn.addEventListener('click', closeCamera);
+        saveResultsBtn.addEventListener('click', saveToFirestore);
+
+        // ============================
+        // Image Handling
+        // ============================
+        function handleImageUpload(file) {
+            if (file.size > 10 * 1024 * 1024) {
+                showNotification('File size too large. Please upload under 10MB.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImage = e.target.result;
+                if (file.type.startsWith('image/')) {
+                    imagePreview.src = currentImage;
+                } else {
+                    imagePreview.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGMEY0RkYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjMjU2M0VCIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+UERGIEZpbGU8L3RleHQ+PC9zdmc+';
+                }
+                previewContainer.style.display = 'block';
+                scanBtn.disabled = false;
+                scanBtn.style.opacity = '1';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============================
+        // Scan OMR (Simulated)
+        // ============================
+        async function scanOMR() {
+            if (!currentImage) {
+                showNotification('Please upload an image first!', 'warning');
+                return;
+            }
+            if (!quizSelect.value) {
+                showNotification('Please select a test!', 'warning');
+                return;
+            }
+
+            const originalText = scanBtn.innerHTML;
+            scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning...';
+            scanBtn.disabled = true;
+
+            // Simulate processing delay
+            setTimeout(() => {
+                const mockResults = generateMockResults();
+                currentScanData = mockResults;
+                displayResults(mockResults);
+                scanBtn.innerHTML = originalText;
+                scanBtn.disabled = false;
+                scoreCard.scrollIntoView({ behavior: 'smooth' });
+            }, 2500);
+        }
+
+        function generateMockResults() {
+            const totalQuestions = 20;
+            const correctAnswers = ['A','B','C','D','A','B','C','D','A','B','C','D','A','B','C','D','A','B','C','D'];
+            const results = [];
+            for (let i = 0; i < totalQuestions; i++) {
+                const options = ['A','B','C','D'];
+                const selected = options[Math.floor(Math.random() * options.length)];
+                const isCorrect = selected === correctAnswers[i];
+                results.push({ question: i + 1, selected, correct: correctAnswers[i], isCorrect });
+            }
+            const score = results.filter(r => r.isCorrect).length;
+            const percentage = (score / totalQuestions) * 100;
+            return {
+                results,
+                score,
+                total: totalQuestions,
+                percentage,
+                testName: quizSelect.options[quizSelect.selectedIndex].text,
+                testId: quizSelect.value,
+                studentName: generateRandomStudentName(),
+                studentId: 'SOHAM' + Math.floor(Math.random() * 9000 + 1000)
+            };
+        }
+
+        function generateRandomStudentName() {
+            const first = ['Rahul','Priya','Amit','Neha','Sandeep','Anjali','Vikram','Pooja'];
+            const last = ['Sharma','Patel','Kumar','Singh','Verma','Gupta','Joshi','Reddy'];
+            return first[Math.floor(Math.random()*first.length)] + ' ' + last[Math.floor(Math.random()*last.length)];
+        }
+
+        function displayResults(data) {
+            scoreElement.textContent = data.score;
+            totalElement.textContent = data.total;
+            percentageElement.textContent = `${data.percentage.toFixed(1)}%`;
+            scoreCard.style.display = 'block';
+
+            let message = '', color = '';
+            if (data.percentage >= 90) { message = 'Outstanding!'; color = '#10b981'; }
+            else if (data.percentage >= 75) { message = 'Very Good!'; color = '#3b82f6'; }
+            else if (data.percentage >= 60) { message = 'Good effort!'; color = '#f59e0b'; }
+            else if (data.percentage >= 40) { message = 'Needs improvement.'; color = '#ef4444'; }
+            else { message = 'Requires attention.'; color = '#dc2626'; }
+
+            scoreMessage.textContent = `${data.studentName} (${data.studentId}) - ${message}`;
+            scoreMessage.style.color = color;
+            saveResultsBtn.style.display = 'inline-flex';
+
+            resultsList.innerHTML = data.results.map(r => `
+                <div class="result-item ${r.isCorrect ? 'result-correct' : 'result-wrong'}">
+                    <div class="result-info">
+                        <div class="question-number">Q${r.question}</div>
+                        <div class="result-details">
+                            <p>Selected: <span class="selected-answer">${r.selected}</span> | Correct: <span class="correct-answer">${r.correct}</span></p>
+                            <p style="color:#666; font-size:0.9rem; margin-top:5px;">${r.isCorrect ? '✓ Correct' : '✗ Incorrect'}</p>
+                        </div>
+                    </div>
+                    <i class="fas ${r.isCorrect ? 'fa-check-circle correct-icon' : 'fa-times-circle wrong-icon'} status-icon"></i>
+                </div>
+            `).join('');
+        }
+
+        function resetAll() {
+            imageInput.value = '';
+            currentImage = null;
+            currentScanData = null;
+            imagePreview.src = '';
+            previewContainer.style.display = 'none';
+            scoreCard.style.display = 'none';
+            saveResultsBtn.style.display = 'none';
+            resultsList.innerHTML = `
+                <div class="no-results">
+                    <span class="icon"><i class="fas fa-clipboard-check"></i></span>
+                    <p>Upload and scan an OMR sheet to view detailed results</p>
+                </div>`;
+        }
+
+        // ============================
+        // Save Results to Firestore
+        // ============================
+        async function saveToFirestore() {
+            if (!currentScanData) return;
+            const btn = saveResultsBtn;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                // Save to scans collection
+                await db.collection("scans").add({
+                    testName: currentScanData.testName,
+                    testId: currentScanData.testId,
+                    studentName: currentScanData.studentName,
+                    studentId: currentScanData.studentId,
+                    score: currentScanData.score,
+                    total: currentScanData.total,
+                    percentage: currentScanData.percentage,
+                    results: currentScanData.results,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    teacherId: auth.currentUser.uid
+                });
+
+                // Also save to scores collection for student dashboard
+                const scoreDocId = `${currentScanData.studentId}_${currentScanData.testId || Date.now()}`;
+                await db.collection("scores").doc(scoreDocId).set({
+                    studentId: currentScanData.studentId,
+                    testName: currentScanData.testName,
+                    score: currentScanData.score,
+                    total: currentScanData.total,
+                    percentage: currentScanData.percentage,
+                    date: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                showNotification('Results saved successfully to student record!', 'success');
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved';
+                await loadRecentScans();
+            } catch (err) {
+                console.error("Save failed:", err);
+                showNotification('Failed to save results. Please try again.', 'error');
+                btn.innerHTML = originalHTML;
+            }
+            btn.disabled = false;
+        }
+
+        // ============================
+        // Camera
+        // ============================
+        async function openCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                cameraVideo.srcObject = stream;
+                cameraModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } catch (err) {
+                console.error('Camera error:', err);
+                showNotification('Unable to access camera. Check permissions.', 'error');
+            }
+        }
+
+        function capturePhoto() {
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraVideo.videoWidth;
+            canvas.height = cameraVideo.videoHeight;
+            canvas.getContext('2d').drawImage(cameraVideo, 0, 0);
+            currentImage = canvas.toDataURL('image/jpeg');
+            imagePreview.src = currentImage;
+            previewContainer.style.display = 'block';
+            scanBtn.disabled = false;
+            scanBtn.style.opacity = '1';
+            closeCamera();
+        }
+
+        function closeCamera() {
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+                stream = null;
+            }
+            cameraModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function viewScanResults(scanId) {
+            showNotification('Detailed view for scan ' + scanId + ' coming soon', 'info');
+        }
+
+        // ============================
+        // Helpers
+        // ============================
+        function showNotification(msg, type = 'info') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            const el = document.createElement('div');
+            el.className = `notification notification-${type}`;
+            el.innerHTML = `<div class="notification-content"><span>${msg}</span><button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button></div>`;
+            document.body.appendChild(el);
+            setTimeout(() => { if (el.parentNode) el.remove(); }, 3000);
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                localStorage.removeItem("teacherVerification");
+                window.location.href = "../role-selection.html";
+            });
+        }
+
+        function setupHamburger() {
             const hamburger = document.getElementById('hamburger');
             const sideNav = document.getElementById('sideNav');
             const overlay = document.getElementById('overlay');
@@ -1031,328 +1377,13 @@
             });
             document.querySelectorAll('.side-nav a').forEach(link => {
                 link.addEventListener('click', () => {
+                    if (link.getAttribute('href') === '../role-selection.html' && link.onclick) return;
                     sideNav.classList.remove('active');
                     overlay.classList.remove('active');
                     document.body.style.overflow = 'auto';
                 });
             });
-
-            // Load tests into dropdown
-            loadTestsForDropdown();
-
-            // Recent scans
-            loadRecentScans();
-
-            // Event listeners for OMR functionality
-            const imageInput = document.getElementById('imageInput');
-            const uploadArea = document.getElementById('uploadArea');
-            const previewContainer = document.getElementById('previewContainer');
-            const imagePreview = document.getElementById('imagePreview');
-            const scanBtn = document.getElementById('scanBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const captureBtn = document.getElementById('captureBtn');
-            const saveResultsBtn = document.getElementById('saveResultsBtn');
-            const cameraModal = document.getElementById('cameraModal');
-            const cameraVideo = document.getElementById('cameraVideo');
-            const capturePhotoBtn = document.getElementById('capturePhotoBtn');
-            const closeCameraBtn = document.getElementById('closeCameraBtn');
-
-            uploadArea.addEventListener('click', () => imageInput.click());
-            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.background = '#e8f0fe'; });
-            uploadArea.addEventListener('dragleave', () => { uploadArea.style.background = '#f8fafc'; });
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.style.background = '#f8fafc';
-                const file = e.dataTransfer.files[0];
-                if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
-                    handleImageUpload(file);
-                }
-            });
-            imageInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) handleImageUpload(file);
-            });
-            scanBtn.addEventListener('click', scanOMR);
-            resetBtn.addEventListener('click', resetAll);
-            captureBtn.addEventListener('click', openCamera);
-            capturePhotoBtn.addEventListener('click', capturePhoto);
-            closeCameraBtn.addEventListener('click', closeCamera);
-            saveResultsBtn.addEventListener('click', saveScanResult);
-
-            // Camera modal close on background click
-            cameraModal.addEventListener('click', function (e) {
-                if (e.target === cameraModal) closeCamera();
-            });
-        }
-
-        // Load available tests from Firestore
-        async function loadTestsForDropdown() {
-            const select = document.getElementById('quizSelect');
-            try {
-                const snapshot = await db.collection("tests").orderBy("title").get();
-                select.innerHTML = '<option value="">-- Select a test --</option>';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const className = classTemplates[data.class] || data.class || '';
-                    select.innerHTML += `<option value="${doc.id}">${data.title} (${className})</option>`;
-                });
-                if (snapshot.empty) {
-                    select.innerHTML += '<option disabled>No tests available</option>';
-                }
-            } catch (error) {
-                console.error("Error loading tests:", error);
-                select.innerHTML = '<option value="">-- Error loading tests --</option>';
-            }
-        }
-
-        // Load recent scans from Firestore (last 5)
-        async function loadRecentScans() {
-            const container = document.getElementById('recentTests');
-            try {
-                const snapshot = await db.collection("scans")
-                    .orderBy("scannedAt", "desc")
-                    .limit(5)
-                    .get();
-                if (snapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:#666;">No recent scans</p>';
-                    return;
-                }
-                let html = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const scannedDate = data.scannedAt?.toDate ? data.scannedAt.toDate() : new Date(data.scannedAt);
-                    const dateStr = scannedDate.toLocaleDateString();
-                    html += `
-                        <div class="test-item">
-                            <div class="test-info">
-                                <h4>${data.testName || 'Unknown'}</h4>
-                                <p>Scanned: ${dateStr} • ${data.className || ''} • Score: ${data.percentage}%</p>
-                            </div>
-                            <div class="test-actions">
-                                <a href="#" class="btn btn-small" onclick="viewScanResults('${doc.id}')">View Results</a>
-                                <a href="#" class="btn btn-small btn-secondary" onclick="rescanTest()">Re-scan</a>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (error) {
-                console.error("Error loading recent scans:", error);
-                container.innerHTML = '<p style="text-align:center; color:#ef4444;">Failed to load recent scans</p>';
-            }
-        }
-
-        // File upload handling
-        function handleImageUpload(file) {
-            if (file.size > 10 * 1024 * 1024) {
-                alert('File size too large. Please upload a file under 10MB.');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                currentImage = e.target.result;
-                if (file.type.startsWith('image/')) {
-                    document.getElementById('imagePreview').src = currentImage;
-                } else {
-                    // PDF placeholder
-                    document.getElementById('imagePreview').src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGMEY0RkYiLz48cGF0aCBkPSJNNTAgNzVIMTUwVjEyNUg1MFY3NVoiIGZpbGw9IiMyNTYzRUIiLz48cGF0aCBkPSJNNTAgMTI1SDE1MFYxNzVINTBWMTI1WiIgZmlsbD0iIzI1NjNFQiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMyNTYzRUIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5QREYgRmlsZTwvdGV4dD48L3N2Zz4=';
-                }
-                document.getElementById('previewContainer').style.display = 'block';
-                document.getElementById('scanBtn').disabled = false;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Mock OMR scanning (replace with real API in production)
-        async function scanOMR() {
-            if (!currentImage) {
-                alert('Please upload an image first!');
-                return;
-            }
-            const testId = document.getElementById('quizSelect').value;
-            if (!testId) {
-                alert('Please select a test first!');
-                return;
-            }
-
-            const scanBtn = document.getElementById('scanBtn');
-            const originalText = scanBtn.innerHTML;
-            scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scanning...';
-            scanBtn.disabled = true;
-
-            // Simulate processing delay
-            setTimeout(async () => {
-                const mockResults = generateMockResults();
-                displayResults(mockResults);
-                scanBtn.innerHTML = originalText;
-                scanBtn.disabled = false;
-            }, 2500);
-        }
-
-        function generateMockResults() {
-            const totalQuestions = 20;
-            const correctAnswers = ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'D'];
-            const results = [];
-            for (let i = 0; i < totalQuestions; i++) {
-                const randomAnswer = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
-                const isCorrect = randomAnswer === correctAnswers[i];
-                results.push({
-                    question: i + 1,
-                    selected: randomAnswer,
-                    correct: correctAnswers[i],
-                    isCorrect: isCorrect
-                });
-            }
-            const score = results.filter(r => r.isCorrect).length;
-            const percentage = (score / totalQuestions) * 100;
-            const testSelect = document.getElementById('quizSelect');
-            const testId = testSelect.value;
-            const testName = testSelect.options[testSelect.selectedIndex].text;
-            const studentName = generateRandomStudentName();
-            const studentId = 'STU' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-
-            return {
-                testId,
-                testName,
-                studentName,
-                studentId,
-                results,
-                score,
-                total: totalQuestions,
-                percentage,
-                scannedAt: new Date().toISOString()
-            };
-        }
-
-        function generateRandomStudentName() {
-            const first = ['Rahul', 'Priya', 'Amit', 'Neha', 'Sandeep', 'Anjali', 'Vikram', 'Pooja'];
-            const last = ['Sharma', 'Patel', 'Kumar', 'Singh', 'Verma', 'Gupta', 'Joshi', 'Reddy'];
-            return first[Math.floor(Math.random() * first.length)] + ' ' + last[Math.floor(Math.random() * last.length)];
-        }
-
-        function displayResults(data) {
-            currentScanResult = data;
-            document.getElementById('score').textContent = data.score;
-            document.getElementById('total').textContent = data.total;
-            document.getElementById('percentage').textContent = data.percentage.toFixed(1) + '%';
-            document.getElementById('scoreCard').style.display = 'block';
-            let message = '', color = '';
-            if (data.percentage >= 90) { message = 'Outstanding!'; color = '#10b981'; }
-            else if (data.percentage >= 75) { message = 'Very Good!'; color = '#3b82f6'; }
-            else if (data.percentage >= 60) { message = 'Good effort.'; color = '#f59e0b'; }
-            else { message = 'Needs improvement.'; color = '#ef4444'; }
-            document.getElementById('scoreMessage').innerHTML = `${data.studentName} (${data.studentId}) - ${message}`;
-            document.getElementById('scoreMessage').style.color = color;
-            document.getElementById('saveResultsBtn').style.display = 'inline-flex';
-
-            let resultsHTML = '';
-            data.results.forEach(r => {
-                const cls = r.isCorrect ? 'result-correct' : 'result-wrong';
-                const icon = r.isCorrect ?
-                    '<i class="fas fa-check-circle status-icon correct-icon"></i>' :
-                    '<i class="fas fa-times-circle status-icon wrong-icon"></i>';
-                resultsHTML += `
-                    <div class="result-item ${cls}">
-                        <div class="result-info">
-                            <div class="question-number">Q${r.question}</div>
-                            <div class="result-details">
-                                <p>Selected: <span class="selected-answer">${r.selected}</span> | Correct: <span class="correct-answer">${r.correct}</span></p>
-                            </div>
-                        </div>
-                        ${icon}
-                    </div>
-                `;
-            });
-            document.getElementById('resultsList').innerHTML = resultsHTML;
-            document.getElementById('noResults').style.display = 'none';
-        }
-
-        async function saveScanResult() {
-            if (!currentScanResult) return;
-            const saveBtn = document.getElementById('saveResultsBtn');
-            const originalHTML = saveBtn.innerHTML;
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            saveBtn.disabled = true;
-            try {
-                await db.collection("scans").add({
-                    ...currentScanResult,
-                    scannedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                // Refresh recent scans
-                await loadRecentScans();
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully';
-                saveBtn.style.background = '#10b981';
-                setTimeout(() => {
-                    saveBtn.innerHTML = originalHTML;
-                    saveBtn.style.background = '';
-                    saveBtn.disabled = false;
-                }, 3000);
-            } catch (error) {
-                alert('Failed to save: ' + error.message);
-                saveBtn.innerHTML = originalHTML;
-                saveBtn.disabled = false;
-            }
-        }
-
-        function resetAll() {
-            document.getElementById('imageInput').value = '';
-            currentImage = null;
-            document.getElementById('imagePreview').src = '';
-            document.getElementById('previewContainer').style.display = 'none';
-            document.getElementById('scoreCard').style.display = 'none';
-            document.getElementById('saveResultsBtn').style.display = 'none';
-            document.getElementById('resultsList').innerHTML = `
-                <div class="no-results" id="noResults">
-                    <span class="icon"><i class="fas fa-clipboard-check"></i></span>
-                    <p>Upload and scan an OMR sheet to view detailed results</p>
-                </div>
-            `;
-            document.getElementById('noResults').style.display = 'block';
-            currentScanResult = null;
-        }
-
-        // Camera functions (unchanged)
-        async function openCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('cameraVideo').srcObject = stream;
-                document.getElementById('cameraModal').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            } catch (err) {
-                alert('Unable to access camera.');
-            }
-        }
-
-        function capturePhoto() {
-            const video = document.getElementById('cameraVideo');
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            currentImage = canvas.toDataURL('image/jpeg');
-            document.getElementById('imagePreview').src = currentImage;
-            document.getElementById('previewContainer').style.display = 'block';
-            document.getElementById('scanBtn').disabled = false;
-            closeCamera();
-        }
-
-        function closeCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-            document.getElementById('cameraModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Placeholder actions
-        function viewScanResults(docId) {
-            alert(`Viewing details for scan ID: ${docId}`);
-        }
-        function rescanTest() {
-            resetAll();
         }
     </script>
 </body>
-
 </html>

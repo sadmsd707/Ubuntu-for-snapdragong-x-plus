@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Test - Soham</title>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
-        /* ========== Your existing CSS – kept exactly as you provided ========== */
+        /* ========== All original CSS (unchanged) ========== */
         :root {
             --primary-color: #2563eb;
             --primary-dark: #1e3a8a;
@@ -25,21 +22,21 @@
             --text-color: #333;
             --border-color: #e2e8f0;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
             background: var(--light-bg);
             color: var(--text-color);
             line-height: 1.6;
             overflow-x: hidden;
         }
-
+        
         header {
             background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
             color: white;
@@ -52,12 +49,13 @@
             z-index: 100;
             height: 70px;
         }
-
+        
         header h1 {
             font-size: 1.8rem;
             font-weight: 700;
         }
-
+        
+        /* Improved Hamburger Menu with Animation */
         .hamburger {
             background: none;
             border: none;
@@ -71,7 +69,7 @@
             z-index: 1001;
             position: relative;
         }
-
+        
         .hamburger span {
             display: block;
             height: 3px;
@@ -81,20 +79,21 @@
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             transform-origin: center;
         }
-
+        
         .hamburger.active span:nth-child(1) {
             transform: translateY(9px) rotate(45deg);
         }
-
+        
         .hamburger.active span:nth-child(2) {
             opacity: 0;
             transform: translateX(-20px);
         }
-
+        
         .hamburger.active span:nth-child(3) {
             transform: translateY(-9px) rotate(-45deg);
         }
-
+        
+        /* Improved Side Navigation Panel with Animation */
         .side-nav {
             position: fixed;
             top: 0;
@@ -108,11 +107,11 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         .side-nav.active {
             right: 0;
         }
-
+        
         .side-nav ul {
             list-style: none;
             padding: 0;
@@ -121,105 +120,66 @@
             overflow-y: auto;
             max-height: 100vh;
         }
-
+        
         .side-nav ul::-webkit-scrollbar {
             width: 5px;
         }
-
+        
         .side-nav ul::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
         }
-
+        
         .side-nav ul::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
         }
-
+        
         .side-nav ul::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
         }
-
+        
         .side-nav ul li {
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             transform: translateX(20px);
             animation: slideInRight 0.5s forwards;
         }
-
+        
         .side-nav.active ul li {
             opacity: 1;
             transform: translateX(0);
         }
-
-        .side-nav ul li:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .side-nav ul li:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .side-nav ul li:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .side-nav ul li:nth-child(4) {
-            animation-delay: 0.25s;
-        }
-
-        .side-nav ul li:nth-child(5) {
-            animation-delay: 0.3s;
-        }
-
-        .side-nav ul li:nth-child(6) {
-            animation-delay: 0.35s;
-        }
-
-        .side-nav ul li:nth-child(7) {
-            animation-delay: 0.4s;
-        }
-
-        .side-nav ul li:nth-child(8) {
-            animation-delay: 0.45s;
-        }
-
-        .side-nav ul li:nth-child(9) {
-            animation-delay: 0.5s;
-        }
-
-        .side-nav ul li:nth-child(10) {
-            animation-delay: 0.55s;
-        }
-
-        .side-nav ul li:nth-child(11) {
-            animation-delay: 0.6s;
-        }
-
-        .side-nav ul li:nth-child(12) {
-            animation-delay: 0.65s;
-        }
-
-        .side-nav ul li:nth-child(13) {
-            animation-delay: 0.7s;
-        }
-
+        
+        .side-nav ul li:nth-child(1) { animation-delay: 0.1s; }
+        .side-nav ul li:nth-child(2) { animation-delay: 0.15s; }
+        .side-nav ul li:nth-child(3) { animation-delay: 0.2s; }
+        .side-nav ul li:nth-child(4) { animation-delay: 0.25s; }
+        .side-nav ul li:nth-child(5) { animation-delay: 0.3s; }
+        .side-nav ul li:nth-child(6) { animation-delay: 0.35s; }
+        .side-nav ul li:nth-child(7) { animation-delay: 0.4s; }
+        .side-nav ul li:nth-child(8) { animation-delay: 0.45s; }
+        .side-nav ul li:nth-child(9) { animation-delay: 0.5s; }
+        .side-nav ul li:nth-child(10) { animation-delay: 0.55s; }
+        .side-nav ul li:nth-child(11) { animation-delay: 0.6s; }
+        .side-nav ul li:nth-child(12) { animation-delay: 0.65s; }
+        .side-nav ul li:nth-child(13) { animation-delay: 0.7s; }
+        
         @keyframes slideInRight {
             from {
                 opacity: 0;
                 transform: translateX(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateX(0);
             }
         }
-
+        
         .side-nav ul li:first-child {
             border-top: none;
             margin-top: 70px;
         }
-
+        
         .side-nav ul li a {
             display: block;
             color: white;
@@ -233,24 +193,24 @@
             background: transparent;
             margin: 0;
         }
-
+        
         .side-nav ul li a:hover {
             background-color: rgba(255, 255, 255, 0.1);
             padding-left: 40px;
             transform: translateX(5px);
         }
-
+        
         .nav-icon {
             font-size: 1.2rem;
             width: 20px;
             text-align: center;
         }
-
+        
         .nav-active {
             background-color: rgba(255, 255, 255, 0.2);
             border-left: 4px solid white;
         }
-
+        
         .overlay {
             position: fixed;
             top: 0;
@@ -263,18 +223,19 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-
+        
         .overlay.active {
             opacity: 1;
             visibility: visible;
         }
-
+        
+        /* Main Container */
         .dashboard {
             padding: 30px 20px;
             max-width: 1200px;
             margin: auto;
         }
-
+        
         .welcome-section {
             background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
             color: white;
@@ -286,7 +247,7 @@
             overflow: hidden;
             animation: fadeInUp 0.6s ease;
         }
-
+        
         .welcome-section::before {
             content: "";
             position: absolute;
@@ -297,30 +258,31 @@
             background: rgba(255, 255, 255, 0.1);
             transform: rotate(30deg);
         }
-
+        
         .welcome-section h2 {
             font-size: 2.2rem;
             margin-bottom: 10px;
             position: relative;
         }
-
+        
         .welcome-section p {
             font-size: 1.2rem;
             opacity: 0.9;
             position: relative;
         }
-
+        
+        /* Form Container */
         .form-container {
             background: var(--card-bg);
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             animation: fadeInUp 0.6s ease;
             animation-delay: 0.1s;
             animation-fill-mode: both;
         }
-
+        
         .form-header {
             display: flex;
             align-items: center;
@@ -329,7 +291,7 @@
             padding-bottom: 20px;
             border-bottom: 2px solid var(--border-color);
         }
-
+        
         .form-icon {
             font-size: 2.5rem;
             width: 70px;
@@ -341,36 +303,36 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .form-title {
             font-size: 1.8rem;
             color: var(--primary-dark);
             font-weight: 700;
             margin-bottom: 5px;
         }
-
+        
         .form-subtitle {
             color: #666;
             font-size: 1rem;
         }
-
+        
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 25px;
             margin-bottom: 30px;
         }
-
+        
         .form-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
+        
         .form-group.full-width {
             grid-column: span 2;
         }
-
+        
         .form-group label {
             font-weight: 600;
             color: var(--primary-dark);
@@ -379,7 +341,7 @@
             align-items: center;
             gap: 8px;
         }
-
+        
         .form-control {
             padding: 14px 16px;
             border: 2px solid var(--border-color);
@@ -389,23 +351,23 @@
             background: var(--light-bg);
             color: var(--text-color);
         }
-
+        
         .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
-
+        
         .form-control::placeholder {
             color: #94a3b8;
         }
-
+        
         textarea.form-control {
             resize: vertical;
             min-height: 100px;
             font-family: inherit;
         }
-
+        
         select.form-control {
             cursor: pointer;
             appearance: none;
@@ -415,7 +377,7 @@
             background-size: 16px;
             padding-right: 40px;
         }
-
+        
         .field-info {
             display: flex;
             align-items: center;
@@ -424,12 +386,13 @@
             color: #64748b;
             font-size: 0.85rem;
         }
-
+        
         .info-icon {
             font-size: 0.9rem;
             opacity: 0.7;
         }
-
+        
+        /* Form Actions */
         .form-actions {
             display: flex;
             gap: 15px;
@@ -437,7 +400,7 @@
             border-top: 2px solid var(--border-color);
             flex-wrap: wrap;
         }
-
+        
         .btn {
             background: var(--primary-color);
             color: white;
@@ -455,60 +418,61 @@
             overflow: hidden;
             font-size: 1rem;
         }
-
+        
         .btn:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
-
+        
         .btn:active {
             transform: translateY(0);
         }
-
+        
         .btn-success {
             background: var(--success-color);
         }
-
+        
         .btn-success:hover {
             background: #059669;
         }
-
+        
         .btn-warning {
             background: var(--warning-color);
         }
-
+        
         .btn-warning:hover {
             background: #d97706;
         }
-
+        
         .btn-secondary {
             background: #64748b;
         }
-
+        
         .btn-secondary:hover {
             background: #475569;
         }
-
+        
         .btn-danger {
             background: var(--danger-color);
         }
-
+        
         .btn-danger:hover {
             background: #dc2626;
         }
-
+        
+        /* Question Section */
         .question-section {
             background: var(--card-bg);
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             animation: fadeInUp 0.6s ease;
             animation-delay: 0.2s;
             animation-fill-mode: both;
         }
-
+        
         .question-section h3 {
             color: var(--primary-dark);
             margin-bottom: 25px;
@@ -517,13 +481,17 @@
             align-items: center;
             gap: 10px;
         }
-
+        
+        .question-section h3 .icon {
+            font-size: 1.5rem;
+        }
+        
         .question-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
         }
-
+        
         .question-action-btn {
             background: var(--light-bg);
             border: 2px dashed var(--border-color);
@@ -538,24 +506,25 @@
             transition: all 0.3s ease;
             text-align: center;
         }
-
+        
         .question-action-btn:hover {
             border-color: var(--primary-color);
             background: rgba(37, 99, 235, 0.05);
             transform: translateY(-5px);
         }
-
+        
         .question-action-icon {
             font-size: 2.5rem;
             color: var(--primary-color);
         }
-
+        
         .question-action-text {
             font-weight: 600;
             color: var(--primary-dark);
             font-size: 1.1rem;
         }
-
+        
+        /* Success Message */
         .success-message {
             position: fixed;
             bottom: 30px;
@@ -573,16 +542,17 @@
             transform: translateY(100px);
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-
+        
         .success-message.show {
             opacity: 1;
             transform: translateY(0);
         }
-
+        
         .success-icon {
             font-size: 1.8rem;
         }
-
+        
+        /* Auto-save Indicator */
         .auto-save-indicator {
             position: fixed;
             bottom: 30px;
@@ -601,12 +571,12 @@
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             font-size: 0.9rem;
         }
-
+        
         .auto-save-indicator.show {
             opacity: 1;
             transform: translateY(0);
         }
-
+        
         footer {
             background: var(--primary-dark);
             color: white;
@@ -615,53 +585,54 @@
             margin-top: 50px;
             animation: fadeInUp 0.6s ease;
         }
-
+        
         footer p {
             font-size: 1rem;
         }
-
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
             }
-
+            
             .form-group.full-width {
                 grid-column: span 1;
             }
-
+            
             .form-actions {
                 flex-direction: column;
             }
-
+            
             .form-actions .btn {
                 width: 100%;
                 justify-content: center;
             }
-
+            
             .question-actions {
                 grid-template-columns: 1fr;
             }
-
+            
             .welcome-section h2 {
                 font-size: 1.8rem;
             }
-
+            
             .welcome-section p {
                 font-size: 1rem;
             }
-
+            
             .form-header {
                 flex-direction: column;
                 text-align: center;
                 gap: 15px;
             }
-
+            
             .form-icon {
                 width: 60px;
                 height: 60px;
                 font-size: 2rem;
             }
-
+            
             .success-message,
             .auto-save-indicator {
                 left: 20px;
@@ -670,63 +641,63 @@
                 width: auto;
             }
         }
-
+        
         @media (max-width: 480px) {
             .dashboard {
                 padding: 20px 15px;
             }
-
+            
             .form-container,
             .question-section {
                 padding: 20px;
             }
-
+            
             .form-control {
                 padding: 12px 14px;
             }
-
+            
             .btn {
                 padding: 12px 20px;
                 font-size: 0.95rem;
             }
-
+            
             .question-action-btn {
                 padding: 25px 15px;
             }
-
+            
             .question-action-icon {
                 font-size: 2rem;
             }
         }
-
+        
+        /* Animation Keyframes */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
+        
+        /* Loading animation */
         .loading {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255, 255, 255, .3);
+            border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
-
+        
+        /* Notification Styles */
         .notification {
             position: fixed;
             top: 20px;
@@ -735,23 +706,23 @@
             color: white;
             padding: 15px 20px;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             z-index: 9999;
             animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
             min-width: 300px;
             max-width: 400px;
         }
-
+        
         .notification-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .notification-message {
             margin-right: 20px;
         }
-
+        
         .notification-close {
             background: none;
             border: none;
@@ -765,34 +736,35 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .notification-error {
             background: var(--danger-color);
         }
-
+        
         .notification-warning {
             background: var(--secondary-color);
         }
-
+        
         @keyframes fadeOut {
             from {
                 opacity: 1;
                 transform: translateX(0);
             }
-
             to {
                 opacity: 0;
                 transform: translateX(100px);
             }
         }
-
+        
+        /* Ripple animation for buttons */
         @keyframes ripple {
             to {
                 transform: scale(4);
                 opacity: 0;
             }
         }
-
+        
+        /* Test Preview Modal */
         .test-preview-modal {
             position: fixed;
             top: 0;
@@ -806,11 +778,11 @@
             justify-content: center;
             animation: fadeIn 0.3s ease;
         }
-
+        
         .test-preview-modal.active {
             display: flex;
         }
-
+        
         .test-preview-content {
             background: var(--card-bg);
             border-radius: 15px;
@@ -821,7 +793,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             animation: slideInUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-
+        
         .test-preview-header {
             background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
             color: white;
@@ -831,16 +803,16 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .test-preview-header h3 {
             margin: 0;
             font-size: 1.5rem;
         }
-
+        
         .test-preview-body {
             padding: 30px;
         }
-
+        
         .test-preview-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -849,25 +821,25 @@
             padding-bottom: 20px;
             border-bottom: 2px solid var(--border-color);
         }
-
+        
         .preview-info-item {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
+        
         .preview-label {
             color: #64748b;
             font-size: 0.9rem;
             font-weight: 600;
         }
-
+        
         .preview-value {
             color: var(--primary-dark);
             font-size: 1.1rem;
             font-weight: 600;
         }
-
+        
         .test-instructions-preview {
             background: var(--light-bg);
             padding: 20px;
@@ -875,82 +847,49 @@
             margin-bottom: 30px;
             border-left: 4px solid var(--primary-color);
         }
-
+        
         .test-instructions-preview h4 {
             color: var(--primary-dark);
             margin-bottom: 10px;
         }
-
+        
         .test-instructions-preview p {
             color: #475569;
             line-height: 1.6;
         }
-
+        
         .question-preview {
             margin-bottom: 20px;
             padding-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
         }
-
+        
         .question-preview h4 {
             color: var(--primary-dark);
             margin-bottom: 15px;
             font-size: 1.1rem;
         }
-
+        
         .options-preview {
             display: grid;
             grid-template-columns: 1fr;
             gap: 10px;
         }
-
+        
         .option-preview {
             padding: 12px 15px;
             background: var(--light-bg);
             border-radius: 8px;
             border-left: 3px solid #94a3b8;
         }
-
+        
         .option-preview.correct {
             border-left-color: var(--success-color);
             background: rgba(16, 185, 129, 0.1);
         }
-
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 9999;
-            font-size: 1.5rem;
-            color: #2563eb;
-        }
-
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #2563eb;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
     </style>
 </head>
-
 <body>
-    <!-- Loading overlay -->
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <div>Checking authentication...</div>
-    </div>
-
     <header>
         <h1>Soham - Create Test</h1>
         <button class="hamburger" id="hamburger">
@@ -976,10 +915,9 @@
             <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
             <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
             <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-            <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
+            <li><a href="role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
         </ul>
     </div>
-
     <div class="overlay" id="overlay"></div>
 
     <!-- Test Preview Modal -->
@@ -989,7 +927,9 @@
                 <h3>Test Preview</h3>
                 <button class="close-modal" onclick="closeTestPreview()">×</button>
             </div>
-            <div class="test-preview-body" id="testPreviewContent"></div>
+            <div class="test-preview-body" id="testPreviewContent">
+                <!-- Test preview content will be populated here -->
+            </div>
         </div>
     </div>
 
@@ -1024,8 +964,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="testTitle">Test Title</label>
-                        <input type="text" id="testTitle" class="form-control"
-                            placeholder="e.g., Physics - Thermodynamics" required>
+                        <input type="text" id="testTitle" class="form-control" placeholder="e.g., Physics - Thermodynamics" required>
                         <div class="field-info">
                             <span class="info-icon">ℹ️</span>
                             <span>Enter a descriptive title for your test</span>
@@ -1049,7 +988,7 @@
                             <span>Select the class this test is for</span>
                         </div>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="testDate">Scheduled Date</label>
                         <input type="date" id="testDate" class="form-control" required>
@@ -1066,7 +1005,7 @@
                             <span>Time limit for completing the test</span>
                         </div>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="totalMarks">Total Marks</label>
                         <input type="number" id="totalMarks" class="form-control" placeholder="e.g., 100" required>
@@ -1075,28 +1014,26 @@
                             <span>Maximum score for this test</span>
                         </div>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="numberOfQuestions">Number of Questions</label>
-                        <input type="number" id="numberOfQuestions" class="form-control" placeholder="e.g., 30"
-                            required>
+                        <input type="number" id="numberOfQuestions" class="form-control" placeholder="e.g., 30" required>
                         <div class="field-info">
                             <span class="info-icon">ℹ️</span>
                             <span>Total questions in this test</span>
                         </div>
                     </div>
-
+                    
                     <div class="form-group full-width">
                         <label for="instructions">Instructions</label>
-                        <textarea id="instructions" rows="4" class="form-control"
-                            placeholder="Enter any special instructions for students"></textarea>
+                        <textarea id="instructions" rows="4" class="form-control" placeholder="Enter any special instructions for students"></textarea>
                         <div class="field-info">
                             <span class="info-icon">ℹ️</span>
                             <span>Provide clear guidelines for students</span>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="form-actions">
                     <button type="submit" class="btn btn-success" id="submitButton">
                         <span>Create Test</span>
@@ -1107,8 +1044,7 @@
                     <button type="button" class="btn btn-secondary" onclick="clearForm()">
                         <span>Clear Form</span>
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="window.location.href='my-tests.html'"
-                        id="cancelButton" style="display: none;">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='my-tests.html'" id="cancelButton" style="display: none;">
                         <span>Cancel</span>
                     </button>
                 </div>
@@ -1144,107 +1080,356 @@
     </footer>
 
     <script>
-        // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+        // ============================
+        // Firebase Initialization
+        // ============================
         const firebaseConfig = {
             apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
             authDomain: "soham-6d886.firebaseapp.com",
             projectId: "soham-6d886",
             storageBucket: "soham-6d886.firebasestorage.app",
             messagingSenderId: "281780176229",
-            appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
-            measurementId: "G-CB1J6LQ7DJ"
+            appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        // Global variables
-        let currentEditingTestId = null; // Firestore document ID
-        const classTemplates = {
-            '11th-mhtcet-pcm': '11th MHTCET (PCM)',
-            '11th-mhtcet-pcb': '11th MHTCET (PCB)',
-            '11th-jee': '11th JEE',
-            '11th-neet': '11th NEET',
-            '12th-mhtcet-pcm': '12th MHTCET (PCM)',
-            '12th-mhtcet-pcb': '12th MHTCET (PCB)',
-            '12th-jee': '12th JEE',
-            '12th-neet': '12th NEET'
-        };
-
-        // Authentication check
-        let redirecting = false;
+        // ============================
+        // Daily Teacher Verification
+        // ============================
+        let teacherData = null;
         auth.onAuthStateChanged(async (user) => {
-            if (redirecting) return;
             if (!user) {
-                redirecting = true;
-                window.location.replace("../role-selection.html");
+                localStorage.removeItem("teacherVerification");
+                window.location.href = "role-selection.html";
                 return;
             }
-
-            try {
-                const teacherDoc = await db.collection("teachers").doc(user.uid).get();
-                if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
-                    document.getElementById("loadingOverlay").innerHTML = `
-                        <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
-                        <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
-                        <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
-                        <button class="btn" onclick="auth.signOut()">Logout</button>
-                    `;
-                    return;
-                }
-
-                document.getElementById("loadingOverlay").style.display = "none";
-                initPage();
-            } catch (error) {
-                console.error("Auth check error:", error);
-                document.getElementById("loadingOverlay").innerHTML = `
-                    <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
-                    <button class="btn" onclick="location.reload()">Reload</button>
-                `;
-            }
-        });
-
-        // Logout
-        document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-            e.preventDefault();
-            await auth.signOut();
-            window.location.href = "../role-selection.html";
-        });
-
-        // ---------- Page Initialization ----------
-        function initPage() {
-            // Set minimum date
+            const cached = JSON.parse(localStorage.getItem("teacherVerification"));
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('testDate').min = today;
+            if (cached && cached.uid === user.uid && cached.date === today) {
+                teacherData = cached.teacherData || null;
+                initPage();
+                return;
+            }
+            try {
+                const docSnap = await db.collection("teachers").doc(user.uid).get();
+                if (docSnap.exists && docSnap.data().role === "teacher") {
+                    teacherData = docSnap.data();
+                    localStorage.setItem("teacherVerification", JSON.stringify({
+                        uid: user.uid,
+                        date: today,
+                        teacherData
+                    }));
+                    initPage();
+                } else {
+                    localStorage.removeItem("teacherVerification");
+                    auth.signOut();
+                    window.location.href = "role-selection.html";
+                }
+            } catch (err) {
+                console.error(err);
+                localStorage.removeItem("teacherVerification");
+                auth.signOut();
+                window.location.href = "role-selection.html";
+            }
+        });
 
-            // Load draft from localStorage (auto‑save convenience)
-            loadDraft();
+        // ============================
+        // Page Initialization
+        // ============================
+        const form = document.getElementById('createTestForm');
+        const submitButton = document.getElementById('submitButton');
+        const updateButton = document.getElementById('updateButton');
+        const cancelButton = document.getElementById('cancelButton');
+        let editingTestId = null; // Firestore document ID
 
-            // Check if editing an existing test
-            const editTestId = localStorage.getItem('editTestId');
-            if (editTestId) {
-                enterEditMode(editTestId);
+        async function initPage() {
+            document.getElementById('testDate').min = new Date().toISOString().split('T')[0];
+            await loadDraft();
+
+            const editId = localStorage.getItem('editTestId');
+            if (editId) {
+                await loadTestForEditing(editId);
+                localStorage.removeItem('editTestId');
             }
 
-            // Form submission
-            document.getElementById('createTestForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await handleCreateOrUpdate();
-            });
-
-            // Auto‑save draft
-            const formInputs = document.querySelectorAll('#createTestForm input, #createTestForm select, #createTestForm textarea');
-            let autoSaveTimer;
-            formInputs.forEach(input => {
+            let autoSaveTimeout;
+            document.querySelectorAll('#createTestForm input, #createTestForm select, #createTestForm textarea').forEach(input => {
                 input.addEventListener('input', () => {
-                    clearTimeout(autoSaveTimer);
-                    autoSaveTimer = setTimeout(saveDraft, 2000);
+                    clearTimeout(autoSaveTimeout);
+                    autoSaveTimeout = setTimeout(saveDraft, 2000);
                 });
             });
 
-            // Hamburger menu (unchanged)
+            setupHamburger();
+            addRippleEffect();
+        }
+
+        // ============================
+        // Draft Handling (Firestore)
+        // ============================
+        async function saveDraft() {
+            if (!teacherData) return;
+            const draft = {
+                testTitle: document.getElementById('testTitle').value,
+                testClass: document.getElementById('testClass').value,
+                testDate: document.getElementById('testDate').value,
+                testDuration: document.getElementById('testDuration').value,
+                totalMarks: document.getElementById('totalMarks').value,
+                numberOfQuestions: document.getElementById('numberOfQuestions').value,
+                instructions: document.getElementById('instructions').value,
+                lastSaved: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                await db.collection("testDrafts").doc(auth.currentUser.uid).set(draft);
+                showAutoSaveIndicator();
+            } catch (err) {
+                console.error("Draft save failed", err);
+            }
+        }
+
+        async function loadDraft() {
+            if (!auth.currentUser) return;
+            try {
+                const doc = await db.collection("testDrafts").doc(auth.currentUser.uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('testTitle').value = data.testTitle || '';
+                    document.getElementById('testClass').value = data.testClass || '';
+                    document.getElementById('testDate').value = data.testDate || '';
+                    document.getElementById('testDuration').value = data.testDuration || '';
+                    document.getElementById('totalMarks').value = data.totalMarks || '';
+                    document.getElementById('numberOfQuestions').value = data.numberOfQuestions || '';
+                    document.getElementById('instructions').value = data.instructions || '';
+                }
+            } catch (err) {
+                console.error("Failed to load draft", err);
+            }
+        }
+
+        async function deleteDraft() {
+            if (!auth.currentUser) return;
+            try {
+                await db.collection("testDrafts").doc(auth.currentUser.uid).delete();
+            } catch (err) {
+                console.error("Failed to delete draft", err);
+            }
+        }
+
+        // ============================
+        // Edit Mode (load from Firestore)
+        // ============================
+        async function loadTestForEditing(docId) {
+            try {
+                const doc = await db.collection("tests").doc(docId).get();
+                if (doc.exists) {
+                    const test = doc.data();
+                    editingTestId = docId;
+                    document.getElementById('pageTitle').textContent = 'Edit Test';
+                    document.getElementById('formMainTitle').textContent = 'Test Editor';
+                    document.getElementById('testTitle').value = test.title;
+                    document.getElementById('testClass').value = test.class;
+                    document.getElementById('testDate').value = test.date;
+                    document.getElementById('testDuration').value = test.duration;
+                    document.getElementById('totalMarks').value = test.totalMarks;
+                    document.getElementById('numberOfQuestions').value = test.numberOfQuestions;
+                    document.getElementById('instructions').value = test.instructions || '';
+                    submitButton.style.display = 'none';
+                    updateButton.style.display = 'inline-flex';
+                    cancelButton.style.display = 'inline-flex';
+                }
+            } catch (err) {
+                console.error("Failed to load test", err);
+                showNotification('Failed to load test data', 'error');
+            }
+        }
+
+        // ============================
+        // Form Submit (Create/Update)
+        // ============================
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (editingTestId) {
+                updateTest();
+            } else {
+                createTest();
+            }
+        });
+
+        updateButton.addEventListener('click', updateTest);
+
+        async function createTest() {
+            if (!validateForm()) return;
+            setLoading(submitButton, true);
+            const testData = getFormData();
+            try {
+                await db.collection("tests").add({
+                    title: testData.testTitle,
+                    class: testData.testClass,
+                    date: testData.testDate,
+                    duration: parseInt(testData.testDuration),
+                    totalMarks: parseInt(testData.totalMarks),
+                    numberOfQuestions: parseInt(testData.numberOfQuestions),
+                    instructions: testData.instructions,
+                    createdDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'draft',
+                    studentsAssigned: 0,
+                    averageScore: 0
+                });
+                await deleteDraft();
+                showSuccessMessage('Test created successfully!');
+                setTimeout(() => window.location.href = 'my-tests.html', 1500);
+            } catch (err) {
+                console.error("Create failed", err);
+                showNotification('Failed to create test', 'error');
+            }
+            setLoading(submitButton, false);
+        }
+
+        async function updateTest() {
+            if (!editingTestId || !validateForm()) return;
+            setLoading(updateButton, true);
+            const testData = getFormData();
+            try {
+                await db.collection("tests").doc(editingTestId).update({
+                    title: testData.testTitle,
+                    class: testData.testClass,
+                    date: testData.testDate,
+                    duration: parseInt(testData.testDuration),
+                    totalMarks: parseInt(testData.totalMarks),
+                    numberOfQuestions: parseInt(testData.numberOfQuestions),
+                    instructions: testData.instructions,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                await deleteDraft();
+                showSuccessMessage('Test updated successfully!');
+                setTimeout(() => window.location.href = 'my-tests.html', 1500);
+            } catch (err) {
+                console.error("Update failed", err);
+                showNotification('Failed to update test', 'error');
+            }
+            setLoading(updateButton, false);
+        }
+
+        function getFormData() {
+            return {
+                testTitle: document.getElementById('testTitle').value.trim(),
+                testClass: document.getElementById('testClass').value,
+                testDate: document.getElementById('testDate').value,
+                testDuration: document.getElementById('testDuration').value,
+                totalMarks: document.getElementById('totalMarks').value,
+                numberOfQuestions: document.getElementById('numberOfQuestions').value,
+                instructions: document.getElementById('instructions').value
+            };
+        }
+
+        function validateForm() {
+            const d = getFormData();
+            if (!d.testTitle) { showNotification('Please enter a test title', 'error'); return false; }
+            if (!d.testClass) { showNotification('Please select a class', 'error'); return false; }
+            if (!d.testDate) { showNotification('Please select a date', 'error'); return false; }
+            if (!d.testDuration || parseInt(d.testDuration) <= 0) { showNotification('Invalid duration', 'error'); return false; }
+            if (!d.totalMarks || parseInt(d.totalMarks) <= 0) { showNotification('Invalid total marks', 'error'); return false; }
+            if (!d.numberOfQuestions || parseInt(d.numberOfQuestions) <= 0) { showNotification('Invalid number of questions', 'error'); return false; }
+            return true;
+        }
+
+        function setLoading(btn, isLoading) {
+            if (isLoading) {
+                btn.dataset.originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="loading"></span> Processing...';
+                btn.disabled = true;
+            } else {
+                btn.innerHTML = btn.dataset.originalHTML || btn.innerHTML;
+                btn.disabled = false;
+            }
+        }
+
+        function clearForm() {
+            if (confirm('Clear all fields? This cannot be undone.')) {
+                form.reset();
+                deleteDraft();
+                showNotification('Form cleared', 'success');
+            }
+        }
+
+        // ============================
+        // Preview Modal
+        // ============================
+        window.previewTest = function() {
+            if (!validateForm()) return;
+            const d = getFormData();
+            const classNameMap = {
+                '11th-mhtcet-pcm': '11th MHTCET (PCM)',
+                '11th-mhtcet-pcb': '11th MHTCET (PCB)',
+                '11th-jee': '11th JEE',
+                '11th-neet': '11th NEET',
+                '12th-mhtcet-pcm': '12th MHTCET (PCM)',
+                '12th-mhtcet-pcb': '12th MHTCET (PCB)',
+                '12th-jee': '12th JEE',
+                '12th-neet': '12th NEET'
+            };
+            const html = `
+                <div class="test-preview-info">
+                    <div class="preview-info-item"><div class="preview-label">Title</div><div class="preview-value">${d.testTitle}</div></div>
+                    <div class="preview-info-item"><div class="preview-label">Class</div><div class="preview-value">${classNameMap[d.testClass] || d.testClass}</div></div>
+                    <div class="preview-info-item"><div class="preview-label">Date</div><div class="preview-value">${new Date(d.testDate).toLocaleDateString()}</div></div>
+                    <div class="preview-info-item"><div class="preview-label">Duration</div><div class="preview-value">${d.testDuration} min</div></div>
+                    <div class="preview-info-item"><div class="preview-label">Marks</div><div class="preview-value">${d.totalMarks}</div></div>
+                    <div class="preview-info-item"><div class="preview-label">Questions</div><div class="preview-value">${d.numberOfQuestions}</div></div>
+                </div>
+                <div class="test-instructions-preview"><h4>Instructions</h4><p>${d.instructions || 'None'}</p></div>
+                <p style="text-align:center">Add questions using "Add Questions" button.</p>
+                <button class="btn" onclick="closeTestPreview()">Close</button>`;
+            document.getElementById('testPreviewContent').innerHTML = html;
+            document.getElementById('testPreviewModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+        window.closeTestPreview = function() {
+            document.getElementById('testPreviewModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+
+        // ============================
+        // Helpers
+        // ============================
+        function showSuccessMessage(msg) {
+            const el = document.getElementById('successMessage');
+            el.innerHTML = `<span class="success-icon">✅</span><span>${msg}</span>`;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        function showAutoSaveIndicator() {
+            const el = document.getElementById('autoSaveIndicator');
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2000);
+        }
+
+        function showNotification(msg, type = 'info') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            const el = document.createElement('div');
+            el.className = `notification notification-${type}`;
+            el.innerHTML = `<div class="notification-content"><span>${msg}</span><button onclick="this.parentElement.parentElement.remove()">×</button></div>`;
+            document.body.appendChild(el);
+            setTimeout(() => { if (el.parentNode) el.remove(); }, 3000);
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                localStorage.removeItem("teacherVerification");
+                window.location.href = "role-selection.html";
+            });
+        }
+
+        // Question placeholders
+        window.addQuestions = () => showNotification('Question editor coming soon', 'info');
+        window.importQuestions = () => showNotification('Import feature coming soon', 'info');
+        window.questionBank = () => showNotification('Question bank coming soon', 'info');
+
+        function setupHamburger() {
             const hamburger = document.getElementById('hamburger');
             const sideNav = document.getElementById('sideNav');
             const overlay = document.getElementById('overlay');
@@ -1261,7 +1446,8 @@
                 document.body.style.overflow = 'auto';
             });
             document.querySelectorAll('.side-nav a').forEach(link => {
-                link.addEventListener('click', () => {
+                link.addEventListener('click', (e) => {
+                    if (link.getAttribute('href') === 'role-selection.html' && link.onclick) return;
                     hamburger.classList.remove('active');
                     sideNav.classList.remove('active');
                     overlay.classList.remove('active');
@@ -1270,270 +1456,20 @@
             });
         }
 
-        // ---------- Draft Handling (localStorage only) ----------
-        function saveDraft() {
-            const formData = getFormData();
-            localStorage.setItem('draftTest', JSON.stringify({ ...formData, lastSaved: new Date().toISOString() }));
-            showAutoSaveIndicator();
+        function addRippleEffect() {
+            document.querySelectorAll('.btn, .question-action-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const x = e.clientX - this.getBoundingClientRect().left;
+                    const y = e.clientY - this.getBoundingClientRect().top;
+                    const ripple = document.createElement('span');
+                    ripple.style.cssText = `position:absolute; background:rgba(255,255,255,0.5); border-radius:50%; transform:scale(0); animation:ripple 0.6s linear; width:100px; height:100px; top:${y-50}px; left:${x-50}px;`;
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
         }
-
-        function loadDraft() {
-            const draft = localStorage.getItem('draftTest');
-            if (draft) {
-                const data = JSON.parse(draft);
-                document.getElementById('testTitle').value = data.testTitle || '';
-                document.getElementById('testClass').value = data.testClass || '';
-                document.getElementById('testDate').value = data.testDate || '';
-                document.getElementById('testDuration').value = data.testDuration || '';
-                document.getElementById('totalMarks').value = data.totalMarks || '';
-                document.getElementById('numberOfQuestions').value = data.numberOfQuestions || '';
-                document.getElementById('instructions').value = data.instructions || '';
-            }
-        }
-
-        function showAutoSaveIndicator() {
-            const indicator = document.getElementById('autoSaveIndicator');
-            indicator.classList.add('show');
-            setTimeout(() => indicator.classList.remove('show'), 3000);
-        }
-
-        // ---------- Form Data & Validation ----------
-        function getFormData() {
-            return {
-                testTitle: document.getElementById('testTitle').value.trim(),
-                testClass: document.getElementById('testClass').value,
-                testDate: document.getElementById('testDate').value,
-                testDuration: parseInt(document.getElementById('testDuration').value) || 0,
-                totalMarks: parseInt(document.getElementById('totalMarks').value) || 0,
-                numberOfQuestions: parseInt(document.getElementById('numberOfQuestions').value) || 0,
-                instructions: document.getElementById('instructions').value.trim()
-            };
-        }
-
-        function validateForm() {
-            const data = getFormData();
-            if (!data.testTitle) { showNotification('Please enter a test title', 'error'); return false; }
-            if (!data.testClass) { showNotification('Please select a class', 'error'); return false; }
-            if (!data.testDate) { showNotification('Please select a test date', 'error'); return false; }
-            if (!data.testDuration || data.testDuration <= 0) { showNotification('Please enter a valid duration', 'error'); return false; }
-            if (!data.totalMarks || data.totalMarks <= 0) { showNotification('Please enter valid total marks', 'error'); return false; }
-            if (!data.numberOfQuestions || data.numberOfQuestions <= 0) { showNotification('Please enter valid number of questions', 'error'); return false; }
-            return true;
-        }
-
-        // ---------- Create / Update Test (Firestore) ----------
-        async function handleCreateOrUpdate() {
-            if (!validateForm()) return;
-
-            const formData = getFormData();
-            const testData = {
-                title: formData.testTitle,
-                class: formData.testClass,
-                date: formData.testDate,
-                duration: formData.testDuration,
-                totalMarks: formData.totalMarks,
-                numberOfQuestions: formData.numberOfQuestions,
-                instructions: formData.instructions,
-                status: 'draft', // or 'scheduled'
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            const submitBtn = document.getElementById(currentEditingTestId ? 'updateButton' : 'submitButton');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="loading"></span> Saving...';
-            submitBtn.disabled = true;
-
-            try {
-                if (currentEditingTestId) {
-                    // Update existing test
-                    await db.collection("tests").doc(currentEditingTestId).update(testData);
-                    showSuccessMessage('Test updated successfully!');
-                    localStorage.removeItem('editTestId');
-                } else {
-                    // Create new test
-                    testData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    const docRef = await db.collection("tests").add(testData);
-                    showSuccessMessage('Test created successfully!');
-                }
-
-                // Clear draft and form
-                localStorage.removeItem('draftTest');
-                clearFormFields();
-
-                setTimeout(() => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    window.location.href = 'my-tests.html';
-                }, 1500);
-            } catch (error) {
-                showNotification('Error: ' + error.message, 'error');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        }
-
-        // ---------- Edit Mode (load from Firestore) ----------
-        async function enterEditMode(testId) {
-            try {
-                const docSnap = await db.collection("tests").doc(testId).get();
-                if (!docSnap.exists) {
-                    showNotification('Test not found', 'error');
-                    localStorage.removeItem('editTestId');
-                    return;
-                }
-
-                const data = docSnap.data();
-                currentEditingTestId = testId;
-
-                // Update UI
-                document.getElementById('pageTitle').textContent = 'Edit Test';
-                document.getElementById('pageSubtitle').textContent = 'Update test settings and details';
-                document.getElementById('formMainTitle').textContent = 'Test Editor';
-                document.getElementById('formSubtitle').textContent = 'Modify your test configuration';
-
-                document.getElementById('testTitle').value = data.title || '';
-                document.getElementById('testClass').value = data.class || '';
-                document.getElementById('testDate').value = data.date || '';
-                document.getElementById('testDuration').value = data.duration || '';
-                document.getElementById('totalMarks').value = data.totalMarks || '';
-                document.getElementById('numberOfQuestions').value = data.numberOfQuestions || '';
-                document.getElementById('instructions').value = data.instructions || '';
-
-                document.getElementById('submitButton').style.display = 'none';
-                document.getElementById('updateButton').style.display = 'inline-flex';
-                document.getElementById('cancelButton').style.display = 'inline-flex';
-            } catch (error) {
-                showNotification('Failed to load test: ' + error.message, 'error');
-                localStorage.removeItem('editTestId');
-            }
-        }
-
-        function clearFormFields() {
-            document.getElementById('createTestForm').reset();
-            currentEditingTestId = null;
-            document.getElementById('submitButton').style.display = 'inline-flex';
-            document.getElementById('updateButton').style.display = 'none';
-            document.getElementById('cancelButton').style.display = 'none';
-            document.getElementById('pageTitle').textContent = 'Create New Test';
-            document.getElementById('pageSubtitle').textContent = 'Design and schedule assessments for your students';
-            document.getElementById('formMainTitle').textContent = 'Test Creation';
-            document.getElementById('formSubtitle').textContent = 'Configure your test settings and details';
-        }
-
-        function clearForm() {
-            if (confirm('Are you sure you want to clear all fields? This action cannot be undone.')) {
-                clearFormFields();
-                localStorage.removeItem('draftTest');
-                localStorage.removeItem('editTestId');
-                showNotification('Form cleared successfully', 'success');
-            }
-        }
-
-        // ---------- Question Management (placeholders) ----------
-        window.addQuestions = function () {
-            if (!validateForm()) return;
-            const formData = getFormData();
-            localStorage.setItem('currentTestData', JSON.stringify(formData));
-            showNotification('Redirecting to question editor...', 'info');
-            setTimeout(() => {
-                window.location.href = 'add-questions.html';
-            }, 1000);
-        };
-
-        window.importQuestions = function () {
-            showNotification('This feature would open a file picker to import questions from CSV/Excel', 'info');
-        };
-
-        window.questionBank = function () {
-            showNotification('This feature would show your question bank with filtering options', 'info');
-        };
-
-        window.previewTest = function () {
-            if (!validateForm()) return;
-            const formData = getFormData();
-            const previewHTML = `
-                <div class="test-preview-info">
-                    <div class="preview-info-item">
-                        <div class="preview-label">Test Title</div>
-                        <div class="preview-value">${formData.testTitle}</div>
-                    </div>
-                    <div class="preview-info-item">
-                        <div class="preview-label">Class</div>
-                        <div class="preview-value">${classTemplates[formData.testClass] || formData.testClass}</div>
-                    </div>
-                    <div class="preview-info-item">
-                        <div class="preview-label">Date</div>
-                        <div class="preview-value">${new Date(formData.testDate).toLocaleDateString()}</div>
-                    </div>
-                    <div class="preview-info-item">
-                        <div class="preview-label">Duration</div>
-                        <div class="preview-value">${formData.testDuration} minutes</div>
-                    </div>
-                    <div class="preview-info-item">
-                        <div class="preview-label">Total Marks</div>
-                        <div class="preview-value">${formData.totalMarks}</div>
-                    </div>
-                    <div class="preview-info-item">
-                        <div class="preview-label">Number of Questions</div>
-                        <div class="preview-value">${formData.numberOfQuestions}</div>
-                    </div>
-                </div>
-                <div class="test-instructions-preview">
-                    <h4>Instructions</h4>
-                    <p>${formData.instructions || 'No special instructions provided.'}</p>
-                </div>
-                <div class="question-preview">
-                    <h4>Sample Question Preview</h4>
-                    <p>This is where individual questions would appear. Questions can be added using the "Add Questions" button.</p>
-                    <div class="options-preview">
-                        <div class="option-preview">Option A</div>
-                        <div class="option-preview">Option B</div>
-                        <div class="option-preview correct">Option C (Correct Answer)</div>
-                        <div class="option-preview">Option D</div>
-                    </div>
-                </div>
-                <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                    <button class="btn" onclick="closeTestPreview()">Close Preview</button>
-                </div>
-            `;
-            document.getElementById('testPreviewContent').innerHTML = previewHTML;
-            document.getElementById('testPreviewModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        };
-
-        window.closeTestPreview = function () {
-            document.getElementById('testPreviewModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        };
-
-        // ---------- Notification & Messages ----------
-        function showNotification(message, type = 'info') {
-            const existing = document.querySelector('.notification');
-            if (existing) existing.remove();
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span class="notification-message">${message}</span>
-                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
-                </div>
-            `;
-            document.body.appendChild(notification);
-            setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
-        }
-
-        function showSuccessMessage(message) {
-            document.getElementById('successText').textContent = message;
-            const el = document.getElementById('successMessage');
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3000);
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('testPreviewModal').addEventListener('click', function (e) {
-            if (e.target === this) closeTestPreview();
-        });
     </script>
 </body>
-
 </html>

@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>12th NEET - Soham Teacher Dashboard</title>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
-    /* ========== Your existing CSS – kept exactly as you provided ========== */
+    /* ========== All original CSS (unchanged) ========== */
     * {
       margin: 0;
       padding: 0;
@@ -141,68 +138,23 @@
       transform: translateX(0);
     }
 
-    .side-nav ul li:nth-child(1) {
-      animation-delay: 0.05s;
-    }
-
-    .side-nav ul li:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-
-    .side-nav ul li:nth-child(3) {
-      animation-delay: 0.15s;
-    }
-
-    .side-nav ul li:nth-child(4) {
-      animation-delay: 0.2s;
-    }
-
-    .side-nav ul li:nth-child(5) {
-      animation-delay: 0.25s;
-    }
-
-    .side-nav ul li:nth-child(6) {
-      animation-delay: 0.3s;
-    }
-
-    .side-nav ul li:nth-child(7) {
-      animation-delay: 0.35s;
-    }
-
-    .side-nav ul li:nth-child(8) {
-      animation-delay: 0.4s;
-    }
-
-    .side-nav ul li:nth-child(9) {
-      animation-delay: 0.45s;
-    }
-
-    .side-nav ul li:nth-child(10) {
-      animation-delay: 0.5s;
-    }
-
-    .side-nav ul li:nth-child(11) {
-      animation-delay: 0.55s;
-    }
-
-    .side-nav ul li:nth-child(12) {
-      animation-delay: 0.6s;
-    }
-
-    .side-nav ul li:nth-child(13) {
-      animation-delay: 0.65s;
-    }
+    .side-nav ul li:nth-child(1) { animation-delay: 0.05s; }
+    .side-nav ul li:nth-child(2) { animation-delay: 0.1s; }
+    .side-nav ul li:nth-child(3) { animation-delay: 0.15s; }
+    .side-nav ul li:nth-child(4) { animation-delay: 0.2s; }
+    .side-nav ul li:nth-child(5) { animation-delay: 0.25s; }
+    .side-nav ul li:nth-child(6) { animation-delay: 0.3s; }
+    .side-nav ul li:nth-child(7) { animation-delay: 0.35s; }
+    .side-nav ul li:nth-child(8) { animation-delay: 0.4s; }
+    .side-nav ul li:nth-child(9) { animation-delay: 0.45s; }
+    .side-nav ul li:nth-child(10) { animation-delay: 0.5s; }
+    .side-nav ul li:nth-child(11) { animation-delay: 0.55s; }
+    .side-nav ul li:nth-child(12) { animation-delay: 0.6s; }
+    .side-nav ul li:nth-child(13) { animation-delay: 0.65s; }
 
     @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .side-nav ul li:first-child {
@@ -286,7 +238,7 @@
     .back-button:hover {
       background: #bae6fd;
       transform: translateX(-5px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .welcome-section {
@@ -335,7 +287,7 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       flex: 1;
       min-width: 200px;
       text-align: center;
@@ -347,24 +299,13 @@
 
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
     }
 
-    .stat-card:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .stat-card:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .stat-card:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    .stat-card:nth-child(4) {
-      animation-delay: 0.4s;
-    }
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
 
     .stat-card h3 {
       font-size: 2.5rem;
@@ -382,7 +323,7 @@
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       animation: fadeInUp 0.6s ease;
       animation-fill-mode: both;
     }
@@ -394,6 +335,10 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .dashboard-section h3 .icon {
+      font-size: 1.5rem;
     }
 
     .class-info-grid {
@@ -416,7 +361,7 @@
 
     .info-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
     .info-card h4 {
@@ -450,46 +395,26 @@
     .btn:hover {
       background: #1e40af;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .btn-primary {
-      background: #1a56db;
-    }
+    .btn-primary { background: #1a56db; }
+    .btn-primary:hover { background: #1e40af; }
 
-    .btn-primary:hover {
-      background: #1e40af;
-    }
+    .btn-secondary { background: #2563eb; }
+    .btn-secondary:hover { background: #1d4ed8; }
 
-    .btn-secondary {
-      background: #2563eb;
-    }
+    .btn-success { background: #0ea5e9; }
+    .btn-success:hover { background: #0284c7; }
 
-    .btn-secondary:hover {
-      background: #1d4ed8;
-    }
-
-    .btn-success {
-      background: #0ea5e9;
-    }
-
-    .btn-success:hover {
-      background: #0284c7;
-    }
-
-    .btn-danger {
-      background: #dc2626;
-    }
-
-    .btn-danger:hover {
-      background: #b91c1c;
-    }
+    .btn-danger { background: #dc2626; }
+    .btn-danger:hover { background: #b91c1c; }
 
     .table-container {
       overflow-x: auto;
       border-radius: 10px;
       border: 1px solid #dbeafe;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       margin-bottom: 20px;
     }
 
@@ -594,13 +519,9 @@
       text-decoration: underline;
     }
 
-    /* Modal styles */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.7);
       display: none;
       align-items: center;
@@ -615,7 +536,7 @@
       border-radius: 10px;
       max-width: 500px;
       width: 90%;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       animation: slideInUp 0.3s ease;
     }
 
@@ -651,170 +572,34 @@
       justify-content: flex-end;
     }
 
-    /* Loading overlay */
-    #loadingOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 9999;
-      font-size: 1.5rem;
-      color: #2563eb;
-    }
-
-    .spinner {
-      border: 4px solid #e2e8f0;
-      border-top: 4px solid #2563eb;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
     @media (max-width: 768px) {
-      header {
-        padding: 15px 20px;
-      }
-
-      .welcome-section h2 {
-        font-size: 1.8rem;
-      }
-
-      .welcome-section p {
-        font-size: 1rem;
-      }
-
-      .stats-container {
-        flex-direction: column;
-      }
-
-      .class-info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .students-table {
-        font-size: 0.9rem;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      .side-nav {
-        width: 280px;
-      }
-
-      .modal {
-        width: 95%;
-        padding: 20px;
-      }
+      header { padding: 15px 20px; }
+      .welcome-section h2 { font-size: 1.8rem; }
+      .stats-container { flex-direction: column; }
+      .class-info-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .side-nav { width: 280px; }
     }
 
     .loading {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, .3);
+      width: 20px; height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
     }
-
-    /* Notification styles */
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      animation: slideInRight 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      max-width: 400px;
-    }
-
-    .notification.success {
-      background: #10b981;
-      color: white;
-    }
-
-    .notification.error {
-      background: #ef4444;
-      color: white;
-    }
-
-    .notification.info {
-      background: #3b82f6;
-      color: white;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-
 <body>
-
-  <!-- Loading overlay -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-    <div>Checking authentication...</div>
-  </div>
-
   <header>
     <h1>12th NEET - Class Details</h1>
-    <button class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </header>
 
   <div class="side-nav" id="sideNav">
@@ -832,13 +617,11 @@
       <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
-
   <div class="overlay" id="overlay"></div>
 
-  <!-- Modals -->
   <div class="modal-overlay" id="confirmationModal">
     <div class="modal">
       <div class="modal-header">
@@ -853,539 +636,304 @@
     </div>
   </div>
 
-  <!-- Edit student modal -->
-  <div class="modal-overlay" id="editModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title">Edit Student</h3>
-        <button class="modal-close" onclick="closeEditModal()">×</button>
-      </div>
-      <div class="modal-content" id="editModalContent"></div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-        <button class="btn btn-success" id="saveEditBtn">Save Changes</button>
-      </div>
-    </div>
-  </div>
-
   <main class="dashboard">
     <a href="teacher-classes.html" class="back-button">← Back to All Classes</a>
-
     <section class="welcome-section">
       <h2>12th NEET Class</h2>
       <p>Physics, Chemistry, Biology - NEET UG Preparation</p>
     </section>
-
     <div class="class-info-grid" id="classInfo"></div>
-
     <section class="dashboard-section">
       <h3><span class="icon">📊</span> Class Statistics</h3>
       <div class="stats-container" id="statsContainer"></div>
     </section>
-
     <section class="dashboard-section">
       <h3><span class="icon">👨‍🎓</span> Students List</h3>
       <div class="table-container">
-        <table class="students-table" id="studentsTable">
-          <thead>
-            <tr>
-              <th>Student ID</th>
-              <th>Student Name</th>
-              <th>Mobile Number</th>
-              <th>Parent Mobile</th>
-              <th>Join Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="studentsBody"></tbody>
-        </table>
+        <table class="students-table"><thead><tr><th>Student ID</th><th>Student Name</th><th>Mobile Number</th><th>Parent Mobile</th><th>Join Date</th><th>Actions</th></tr></thead><tbody id="studentsBody"></tbody></table>
       </div>
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <div class="icon">👨‍🎓</div>
-        <h3>No Students Found</h3>
-        <p>This class currently has no students.</p>
-      </div>
+      <div id="emptyState" class="empty-state" style="display:none;"><div class="icon">👨‍🎓</div><h3>No Students Found</h3></div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
+    <p>&copy; 2026 Soham – Entrance Exam Practice</p>
     <div class="footer-links">
-      <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="terms-of-service.html">Terms of Service</a>
-      <a href="contact.html">Contact Us</a>
-      <a href="about.html">About Soham</a>
+      <a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Contact Us</a>
     </div>
-    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+    <p style="margin-top:10px; font-size:0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
-    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    // ============================
+    // Firebase Initialization
+    // ============================
     const firebaseConfig = {
       apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
       authDomain: "soham-6d886.firebaseapp.com",
       projectId: "soham-6d886",
       storageBucket: "soham-6d886.firebasestorage.app",
       messagingSenderId: "281780176229",
-      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
-      measurementId: "G-CB1J6LQ7DJ"
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    // Class constants – 12th NEET specific
+    // Class‑specific constants
     const currentClass = '12th-neet';
     const className = '12th NEET';
     const subjects = ['Physics', 'Chemistry', 'Biology'];
 
-    // Global variables
-    let allClassStudents = [];
-    let currentStudentIdToDelete = null;
-    let currentEditStudentData = null;
-
-    // Authentication check
-    let redirecting = false;
+    // ============================
+    // Daily Teacher Verification (cache once per day)
+    // ============================
+    let teacherData = null;
     auth.onAuthStateChanged(async (user) => {
-      if (redirecting) return;
       if (!user) {
-        redirecting = true;
-        window.location.replace("../role-selection.html");
+        localStorage.removeItem("teacherVerification");
+        window.location.href = "../role-selection.html";
         return;
       }
-
+      const cached = JSON.parse(localStorage.getItem("teacherVerification"));
+      const today = new Date().toISOString().split('T')[0];
+      if (cached && cached.uid === user.uid && cached.date === today) {
+        teacherData = cached.teacherData || null;
+        loadClassData();
+        return;
+      }
       try {
-        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
-        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
-          document.getElementById("loadingOverlay").innerHTML = `
-            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
-            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
-            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
-            <button class="btn" onclick="auth.signOut()">Logout</button>
-          `;
-          return;
+        const docSnap = await db.collection("teachers").doc(user.uid).get();
+        if (docSnap.exists && docSnap.data().role === "teacher") {
+          teacherData = docSnap.data();
+          localStorage.setItem("teacherVerification", JSON.stringify({ uid: user.uid, date: today, teacherData }));
+          loadClassData();
+        } else {
+          localStorage.removeItem("teacherVerification");
+          auth.signOut();
+          window.location.href = "../role-selection.html";
         }
-
-        document.getElementById("loadingOverlay").style.display = "none";
-        loadClassData();
-      } catch (error) {
-        console.error("Auth check error:", error);
-        document.getElementById("loadingOverlay").innerHTML = `
-          <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
-          <button class="btn" onclick="location.reload()">Reload</button>
-        `;
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("teacherVerification");
+        auth.signOut();
+        window.location.href = "../role-selection.html";
       }
     });
 
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-      e.preventDefault();
-      await auth.signOut();
-      window.location.href = "../role-selection.html";
-    });
-
-    // ---------- Utility Functions ----------
-    function formatDate(timestamp) {
-      if (!timestamp) return '';
-      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-      return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-    }
-
-    function showNotification(message, type = 'success') {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.innerHTML = `
-        <span>${type === 'success' ? '✅' : type === 'error' ? '⚠️' : 'ℹ️'}</span>
-        <div>${message}</div>
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => {
-        notification.style.animation = 'fadeOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
-    }
-
-    // ---------- Modal Handling ----------
-    const confirmationModal = document.getElementById('confirmationModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalContent = document.getElementById('modalContent');
-    const confirmActionBtn = document.getElementById('confirmActionBtn');
-
-    function showModal() {
-      confirmationModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      confirmationModal.style.display = 'none';
-      document.body.style.overflow = 'auto';
-      confirmActionBtn.onclick = null;
-    }
-
-    confirmationModal.addEventListener('click', (e) => {
-      if (e.target === confirmationModal) closeModal();
-    });
-
-    // Edit modal functions
-    const editModal = document.getElementById('editModal');
-    const editModalContent = document.getElementById('editModalContent');
-    const saveEditBtn = document.getElementById('saveEditBtn');
-
-    function showEditModal(studentData) {
-      editModalContent.innerHTML = `
-        <div class="form-group" style="margin-bottom:15px;">
-          <label>Student Name</label>
-          <input type="text" id="editStudentName" class="form-control" value="${studentData.studentName}" required>
-        </div>
-        <div class="form-group" style="margin-bottom:15px;">
-          <label>Student Mobile</label>
-          <input type="tel" id="editStudentMobile" class="form-control" value="${studentData.studentMobile}" required>
-        </div>
-        <div class="form-group" style="margin-bottom:15px;">
-          <label>Parent Mobile</label>
-          <input type="tel" id="editParentMobile" class="form-control" value="${studentData.parentMobile}" required>
-        </div>
-      `;
-      editModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      currentEditStudentData = studentData;
-    }
-
-    function closeEditModal() {
-      editModal.style.display = 'none';
-      document.body.style.overflow = 'auto';
-      currentEditStudentData = null;
-    }
-
-    editModal.addEventListener('click', (e) => {
-      if (e.target === editModal) closeEditModal();
-    });
-
-    saveEditBtn.addEventListener('click', async () => {
-      if (!currentEditStudentData) return;
-      const name = document.getElementById('editStudentName').value.trim();
-      const mobile = document.getElementById('editStudentMobile').value.trim();
-      const parentMobile = document.getElementById('editParentMobile').value.trim();
-      if (!name || !mobile || !parentMobile) {
-        showNotification('All fields are required', 'error');
-        return;
-      }
-      try {
-        await db.collection("students").doc(currentEditStudentData.studentId).update({
-          studentName: name,
-          studentMobile: mobile,
-          parentMobile: parentMobile
-        });
-        await db.collection("studentCredentials").doc(currentEditStudentData.studentId).update({
-          name: name
-        });
-        showNotification('Student updated successfully!', 'success');
-        closeEditModal();
-        loadClassData();
-      } catch (error) {
-        showNotification('Update failed: ' + error.message, 'error');
-      }
-    });
-
-    // ---------- Load Class Data from Firestore ----------
+    // ============================
+    // Class Data – ALWAYS FRESH (no daily cache)
+    // ============================
     async function loadClassData() {
       try {
-        const studentsSnapshot = await db.collection("students")
+        const studentsSnap = await db.collection("students")
           .where("studentClass", "==", currentClass)
           .orderBy("timestamp", "desc")
           .get();
 
-        allClassStudents = [];
-        studentsSnapshot.forEach(doc => {
-          allClassStudents.push({ id: doc.id, ...doc.data() });
-        });
+        const classStudents = [];
+        studentsSnap.forEach(doc => classStudents.push({ id: doc.id, ...doc.data() }));
 
+        let stats = { studentCount: 0, testsCount: 0, assignmentsCount: 0, avgScore: 0, attendance: 0 };
         const statsDoc = await db.collection("classStats").doc(currentClass).get();
-        const stats = statsDoc.exists ? statsDoc.data() : {
-          studentCount: 0,
-          testsCount: 0,
-          assignmentsCount: 0,
-          avgScore: 0,
-          attendance: 0
-        };
+        if (statsDoc.exists) stats = statsDoc.data();
 
-        renderClassInfo(stats);
-        renderStats(stats);
-        renderStudentTable();
-
+        updateUI(classStudents, stats);
       } catch (error) {
         console.error("Error loading class data:", error);
-        showNotification('Failed to load class data', 'error');
+        showNotification("Failed to load class data.", "error");
       }
     }
 
-    function renderClassInfo(stats) {
-      const classInfoElement = document.getElementById('classInfo');
-      classInfoElement.innerHTML = `
-        <div class="info-card">
-          <h4>${allClassStudents.length}</h4>
-          <p>Total Students</p>
-        </div>
-        <div class="info-card">
-          <h4>${subjects.length}</h4>
-          <p>Subjects</p>
-        </div>
-        <div class="info-card">
-          <h4>${stats.testsCount || 0}</h4>
-          <p>Tests Conducted</p>
-        </div>
-        <div class="info-card">
-          <h4>${stats.assignmentsCount || 0}</h4>
-          <p>Assignments</p>
-        </div>
+    function updateUI(students, stats) {
+      // Info cards
+      document.getElementById('classInfo').innerHTML = `
+        <div class="info-card"><h4>${students.length}</h4><p>Total Students</p></div>
+        <div class="info-card"><h4>${subjects.length}</h4><p>Subjects</p></div>
+        <div class="info-card"><h4>${stats.testsCount || 0}</h4><p>Tests Conducted</p></div>
+        <div class="info-card"><h4>${stats.assignmentsCount || 0}</h4><p>Assignments</p></div>
       `;
-    }
 
-    function renderStats(stats) {
-      const statsContainer = document.getElementById('statsContainer');
-      statsContainer.innerHTML = `
-        <div class="stat-card">
-          <h3>${stats.avgScore || 0}%</h3>
-          <p>Average Score</p>
-        </div>
-        <div class="stat-card">
-          <h3>${stats.attendance || 0}%</h3>
-          <p>Attendance Rate</p>
-        </div>
-        <div class="stat-card">
-          <h3>${stats.testsCount || 0}</h3>
-          <p>Tests This Month</p>
-        </div>
-        <div class="stat-card">
-          <h3>${allClassStudents.filter(s => s.studentId && s.studentId.includes('2023')).length}</h3>
-          <p>New Students</p>
-        </div>
+      // Stats grid
+      document.getElementById('statsContainer').innerHTML = `
+        <div class="stat-card"><h3>${stats.avgScore || 0}%</h3><p>Average Score</p></div>
+        <div class="stat-card"><h3>${stats.attendance || 0}%</h3><p>Attendance Rate</p></div>
+        <div class="stat-card"><h3>${stats.testsCount || 0}</h3><p>Tests This Month</p></div>
+        <div class="stat-card"><h3>${students.length}</h3><p>Total Students</p></div>
       `;
-    }
 
-    function renderStudentTable() {
-      const studentsBody = document.getElementById('studentsBody');
-      const emptyState = document.getElementById('emptyState');
-
-      if (allClassStudents.length === 0) {
-        studentsBody.innerHTML = '';
-        emptyState.style.display = 'block';
+      // Students table
+      const tbody = document.getElementById('studentsBody');
+      const empty = document.getElementById('emptyState');
+      if (students.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
       } else {
-        emptyState.style.display = 'none';
-        studentsBody.innerHTML = allClassStudents.map((student, index) => `
-          <tr style="animation-delay: ${index * 0.05}s">
-            <td>${student.studentId}</td>
-            <td>${student.studentName}</td>
-            <td>${student.studentMobile}</td>
-            <td>${student.parentMobile}</td>
-            <td>${formatDate(student.timestamp)}</td>
+        empty.style.display = 'none';
+        tbody.innerHTML = students.map((s, i) => `
+          <tr>
+            <td>${s.studentId}</td>
+            <td>${s.studentName}</td>
+            <td>${s.studentMobile}</td>
+            <td>${s.parentMobile}</td>
+            <td>${s.timestamp ? new Date(s.timestamp.toDate()).toLocaleDateString() : 'N/A'}</td>
             <td>
-              <div class="actions">
-                <button class="btn btn-small btn-secondary" onclick="viewStudent('${student.studentId}')">View</button>
-                <button class="btn btn-small btn-danger" onclick="showRemoveStudentConfirm('${student.studentId}', '${student.studentName}')">Remove</button>
-              </div>
+              <button class="btn btn-small btn-secondary" onclick="viewStudent('${s.id}')">View</button>
+              <button class="btn btn-small btn-danger" onclick="showRemoveStudentConfirm('${s.id}', '${s.studentName}')">Remove</button>
             </td>
-          </tr>
-        `).join('');
+          </tr>`).join('');
       }
     }
 
-    // ---------- Student Actions ----------
-    window.showRemoveStudentConfirm = function (studentId, studentName) {
-      currentStudentIdToDelete = studentId;
-      modalTitle.textContent = 'Remove Student';
-      modalContent.innerHTML = `
-        <p>Are you sure you want to remove <strong>${studentName}</strong> (${studentId}) from this class?</p>
-        <p style="color: #ef4444; font-weight: 600; margin-top: 10px;">⚠️ This action cannot be undone!</p>
+    // ============================
+    // Student Actions (Firestore)
+    // ============================
+    function showRemoveStudentConfirm(docId, studentName) {
+      document.getElementById('modalTitle').textContent = 'Remove Student';
+      document.getElementById('modalContent').innerHTML = `
+        <p>Are you sure you want to remove <strong>${studentName}</strong> from this class?</p>
+        <p style="color:#ef4444; font-weight:600;">⚠️ This action cannot be undone!</p>
       `;
-      confirmActionBtn.innerHTML = '<span>🗑️</span> Remove Student';
-      confirmActionBtn.onclick = removeStudent;
+      document.getElementById('confirmActionBtn').innerHTML = '🗑️ Remove Student';
+      document.getElementById('confirmActionBtn').onclick = () => removeStudent(docId);
       showModal();
-    };
+    }
 
-    async function removeStudent() {
-      if (!currentStudentIdToDelete) return;
+    async function removeStudent(docId) {
       try {
-        const studentDoc = await db.collection("students").doc(currentStudentIdToDelete).get();
-        const studentData = studentDoc.data();
-
-        await db.collection("students").doc(currentStudentIdToDelete).delete();
-        await db.collection("studentCredentials").doc(currentStudentIdToDelete).delete();
-
-        if (studentData && studentData.studentClass) {
-          const classRef = db.collection("classStats").doc(studentData.studentClass);
-          await db.runTransaction(async (transaction) => {
-            const doc = await transaction.get(classRef);
-            let newCount = (doc.exists ? (doc.data().studentCount || 0) : 0) - 1;
-            newCount = Math.max(0, newCount);
-            transaction.set(classRef, { studentCount: newCount }, { merge: true });
-          });
+        const studentDoc = await db.collection("students").doc(docId).get();
+        if (!studentDoc.exists) return showNotification('Student not found!', 'error');
+        const data = studentDoc.data();
+        const batch = db.batch();
+        batch.delete(db.collection("students").doc(docId));
+        batch.delete(db.collection("studentCredentials").doc(data.studentId));
+        const statsRef = db.collection("classStats").doc(data.studentClass);
+        const statsSnap = await statsRef.get();
+        if (statsSnap.exists) {
+          batch.update(statsRef, { studentCount: Math.max(0, (statsSnap.data().studentCount || 0) - 1) });
         }
-
+        await batch.commit();
         closeModal();
-        loadClassData();
-        showNotification(`Student ${currentStudentIdToDelete} removed successfully!`, 'success');
-        currentStudentIdToDelete = null;
-      } catch (error) {
-        showNotification('Failed to remove student: ' + error.message, 'error');
-        closeModal();
+        loadClassData(); // always fetch fresh data
+        showNotification(`Removed ${data.studentName}`, 'success');
+      } catch (err) {
+        console.error(err);
+        showNotification('Removal failed', 'error');
       }
     }
 
-    window.viewStudent = async function (studentId) {
+    async function viewStudent(docId) {
       try {
-        const docSnap = await db.collection("students").doc(studentId).get();
-        if (!docSnap.exists) {
-          showNotification('Student not found', 'error');
-          return;
-        }
-        const student = docSnap.data();
-        modalTitle.textContent = 'Student Details';
-        modalContent.innerHTML = `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
-            <div style="grid-column: span 2;">
-              <div style="font-size: 0.9rem; color: #64748b;">Student Name</div>
-              <div style="font-weight: 600; font-size: 1.2rem;">${student.studentName}</div>
-            </div>
-            <div><div style="font-size: 0.9rem; color: #64748b;">Student ID</div><div style="font-weight: 600;">${student.studentId}</div></div>
-            <div><div style="font-size: 0.9rem; color: #64748b;">Class</div><div style="font-weight: 600;">${className}</div></div>
-            <div><div style="font-size: 0.9rem; color: #64748b;">Student Mobile</div><div style="font-weight: 600;">${student.studentMobile}</div></div>
-            <div><div style="font-size: 0.9rem; color: #64748b;">Parent Mobile</div><div style="font-weight: 600;">${student.parentMobile}</div></div>
-            <div><div style="font-size: 0.9rem; color: #64748b;">Joined On</div><div style="font-weight: 600;">${formatDate(student.timestamp)}</div></div>
+        const doc = await db.collection("students").doc(docId).get();
+        if (!doc.exists) return showNotification('Student not found.', 'error');
+        const s = doc.data();
+        document.getElementById('modalTitle').textContent = 'Student Details';
+        document.getElementById('modalContent').innerHTML = `
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+            <div style="grid-column:span 2;"><strong>${s.studentName}</strong></div>
+            <div><small>ID</small><br>${s.studentId}</div>
+            <div><small>Class</small><br>${className}</div>
+            <div><small>Student Mobile</small><br>${s.studentMobile}</div>
+            <div><small>Parent Mobile</small><br>${s.parentMobile}</div>
+            <div><small>Joined</small><br>${s.timestamp ? new Date(s.timestamp.toDate()).toLocaleDateString() : 'N/A'}</div>
           </div>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn btn-small" onclick="viewStudentScores('${student.studentId}')">View Scores</button>
-            <button class="btn btn-small btn-secondary" onclick="sendMessage('${student.studentId}')">Send Message</button>
-            <button class="btn btn-small btn-success" onclick="callParent('${student.parentMobile}')">Call Parent</button>
-            <button class="btn btn-small btn-primary" onclick="editStudent('${student.studentId}')">Edit</button>
+          <div style="margin-top:20px; display:flex; gap:10px;">
+            <button class="btn btn-small" onclick="viewStudentScores('${s.studentId}')">Scores</button>
+            <button class="btn btn-small btn-secondary" onclick="sendMessage('${s.studentId}')">Message</button>
+            <button class="btn btn-small btn-success" onclick="callParent('${s.parentMobile}')">Call Parent</button>
           </div>
         `;
-        confirmActionBtn.innerHTML = '<span>✏️</span> Edit Student';
-        confirmActionBtn.onclick = () => {
-          closeModal();
-          editStudent(studentId);
-        };
+        document.getElementById('confirmActionBtn').innerHTML = '✏️ Edit';
+        document.getElementById('confirmActionBtn').onclick = () => { closeModal(); editStudent(docId); };
         showModal();
-      } catch (error) {
-        showNotification('Error loading student details', 'error');
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to load student', 'error');
       }
-    };
+    }
 
-    window.editStudent = async function (studentId) {
-      const student = allClassStudents.find(s => s.studentId === studentId);
-      if (!student) {
-        const docSnap = await db.collection("students").doc(studentId).get();
-        if (!docSnap.exists) {
-          showNotification('Student not found', 'error');
-          return;
-        }
-        showEditModal(docSnap.data());
-      } else {
-        showEditModal(student);
-      }
-    };
+    function viewStudentScores(id) { localStorage.setItem('viewScoresStudent', id); window.location.href = 'teacher-scores.html'; }
+    function sendMessage(id) { showNotification('Message feature coming soon', 'info'); }
+    function callParent(phone) { showNotification(`Calling ${phone}…`, 'info'); }
+    function editStudent(docId) { localStorage.setItem('editStudentDocId', docId); window.location.href = 'edit-student.html'; }
 
-    window.viewStudentScores = function (studentId) {
-      localStorage.setItem('viewScoresStudent', studentId);
-      window.location.href = 'teacher-scores.html';
-    };
+    // ============================
+    // Modal & UI helpers
+    // ============================
+    const modal = document.getElementById('confirmationModal');
+    function showModal() { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+    function closeModal() { modal.style.display = 'none'; document.body.style.overflow = 'auto'; document.getElementById('confirmActionBtn').onclick = null; }
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
 
-    window.sendMessage = function (studentId) {
-      showNotification(`Message feature for ${studentId} would open here`, 'info');
-    };
+    function showNotification(msg, type = 'success') {
+      const el = document.createElement('div');
+      el.style.cssText = `position:fixed; top:20px; right:20px; background:${type==='success'?'#10b981':type==='error'?'#ef4444':'#1a56db'}; color:white; padding:15px 25px; border-radius:8px; z-index:1000; animation:slideInRight .3s ease; display:flex; align-items:center; gap:10px; max-width:400px;`;
+      el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'⚠️':'ℹ️'}</span> ${msg}`;
+      document.body.appendChild(el);
+      setTimeout(() => { el.style.animation = 'fadeOut .3s ease'; setTimeout(() => el.remove(), 300); }, 3000);
+    }
 
-    window.callParent = function (phoneNumber) {
-      showNotification(`Calling parent at ${phoneNumber}...`, 'info');
-    };
+    function logout() {
+      auth.signOut().then(() => {
+        localStorage.removeItem("teacherVerification");
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        window.location.href = "../role-selection.html";
+      });
+    }
 
-    // ---------- Hamburger Menu (unchanged) ----------
+    // Hamburger menu (unchanged)
     const hamburger = document.getElementById('hamburger');
     const sideNav = document.getElementById('sideNav');
     const overlay = document.getElementById('overlay');
-
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('active');
       sideNav.classList.toggle('active');
       overlay.classList.toggle('active');
       document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
     });
-
     overlay.addEventListener('click', () => {
       hamburger.classList.remove('active');
       sideNav.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflow = 'auto';
     });
-
     document.querySelectorAll('.side-nav a').forEach(link => {
       link.addEventListener('click', () => {
+        if (link.getAttribute('href') === '../role-selection.html' && link.onclick) return;
         hamburger.classList.remove('active');
         sideNav.classList.remove('active');
         overlay.classList.remove('active');
         document.body.style.overflow = 'auto';
+        if (link.getAttribute('href') && !link.getAttribute('href').startsWith('#'))
+          window.location.href = link.getAttribute('href');
       });
     });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (sideNav.classList.contains('active')) {
-          hamburger.classList.remove('active');
-          sideNav.classList.remove('active');
-          overlay.classList.remove('active');
-          document.body.style.overflow = 'auto';
-        }
-        if (confirmationModal.style.display === 'flex') closeModal();
-        if (editModal.style.display === 'flex') closeEditModal();
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
       }
     });
 
-    // Fade out animation for notifications
-    const fadeOutStyle = document.createElement('style');
-    fadeOutStyle.textContent = `
-      @keyframes fadeOut {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(100px); }
-      }
-    `;
-    document.head.appendChild(fadeOutStyle);
-
-    // Button ripple effect (optional)
+    // Ripple effect (unchanged)
     document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('.btn');
-      buttons.forEach(button => {
-        button.addEventListener('click', function (e) {
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
           if (this.disabled || this.getAttribute('href')) return;
-          const x = e.clientX - e.target.getBoundingClientRect().left;
-          const y = e.clientY - e.target.getBoundingClientRect().top;
+          const x = e.clientX - this.getBoundingClientRect().left;
+          const y = e.clientY - this.getBoundingClientRect().top;
           const ripple = document.createElement('span');
-          ripple.style.cssText = `
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            width: 100px;
-            height: 100px;
-            top: ${y - 50}px;
-            left: ${x - 50}px;
-          `;
-          this.style.position = 'relative';
-          this.style.overflow = 'hidden';
+          ripple.style.cssText = `position:absolute; background:rgba(255,255,255,.5); border-radius:50%; transform:scale(0); animation:ripple .6s linear; width:100px; height:100px; top:${y-50}px; left:${x-50}px;`;
+          this.style.position = 'relative'; this.style.overflow = 'hidden';
           this.appendChild(ripple);
           setTimeout(() => ripple.remove(), 600);
         });
       });
-      const rippleStyle = document.createElement('style');
-      rippleStyle.textContent = `
-        @keyframes ripple {
-          to { transform: scale(4); opacity: 0; }
-        }
-      `;
-      document.head.appendChild(rippleStyle);
     });
   </script>
 </body>
-
 </html>

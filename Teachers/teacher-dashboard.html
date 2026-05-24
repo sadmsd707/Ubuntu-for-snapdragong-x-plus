@@ -1,55 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teacher Dashboard - Soham</title>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
-    /* ========== All your existing CSS – kept exactly as you provided ========== */
+    /* ============== Attendance-specific styles ============== */
     .attendance-actions {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
-
+    
     .attendance-filter {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
       align-items: center;
     }
-
+    
     .attendance-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
     }
-
+    
     .attendance-table th,
     .attendance-table td {
       padding: 12px 15px;
       text-align: left;
       border-bottom: 1px solid #e2e8f0;
     }
-
+    
     .attendance-table th {
       background-color: #f8fafc;
       color: #1e3a8a;
       font-weight: 600;
     }
-
+    
     .attendance-table tr:hover {
       background-color: #f8fafc;
     }
-
+    
     .attendance-status {
       display: inline-block;
       padding: 5px 10px;
@@ -57,61 +54,61 @@
       font-size: 0.8rem;
       font-weight: 600;
     }
-
+    
     .status-present {
       background-color: #d1fae5;
       color: #065f46;
     }
-
+    
     .status-absent {
       background-color: #fee2e2;
       color: #991b1b;
     }
-
+    
     .status-late {
       background-color: #fef3c7;
       color: #92400e;
     }
-
+    
     .attendance-checkbox {
       width: 20px;
       height: 20px;
       cursor: pointer;
     }
-
+    
     .attendance-summary {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 15px;
       margin-bottom: 25px;
     }
-
+    
     .summary-card {
       background: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       text-align: center;
     }
-
+    
     .summary-card h4 {
       font-size: 1.8rem;
       color: #1e3a8a;
       margin-bottom: 5px;
     }
-
+    
     .summary-card p {
       color: #555;
       font-weight: 600;
     }
-
+    
     .attendance-calendar {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 5px;
       margin-top: 20px;
     }
-
+    
     .calendar-day {
       aspect-ratio: 1;
       display: flex;
@@ -121,37 +118,37 @@
       font-weight: 600;
       cursor: pointer;
     }
-
+    
     .calendar-day.empty {
       background: transparent;
       cursor: default;
     }
-
+    
     .calendar-day.present {
       background-color: #d1fae5;
       color: #065f46;
     }
-
+    
     .calendar-day.absent {
       background-color: #fee2e2;
       color: #991b1b;
     }
-
+    
     .calendar-day.late {
       background-color: #fef3c7;
       color: #92400e;
     }
-
+    
     .calendar-day:hover:not(.empty) {
       transform: scale(1.05);
     }
-
+    
     .attendance-modal .student-list {
       max-height: 400px;
       overflow-y: auto;
       margin-top: 20px;
     }
-
+    
     .attendance-modal .student-item {
       display: flex;
       justify-content: space-between;
@@ -161,22 +158,22 @@
       border-radius: 8px;
       margin-bottom: 10px;
     }
-
+    
     .attendance-modal .student-info h4 {
       color: #1e3a8a;
       margin-bottom: 5px;
     }
-
+    
     .attendance-modal .student-info p {
       color: #666;
       font-size: 0.9rem;
     }
-
+    
     .attendance-modal .status-selector {
       display: flex;
       gap: 10px;
     }
-
+    
     .status-option {
       padding: 8px 15px;
       border-radius: 5px;
@@ -184,29 +181,30 @@
       font-weight: 600;
       transition: all 0.3s ease;
     }
-
+    
     .status-option.selected {
       transform: scale(1.05);
     }
-
+    
     .status-option.present {
       background-color: #d1fae5;
       color: #065f46;
       border: 2px solid #10b981;
     }
-
+    
     .status-option.absent {
       background-color: #fee2e2;
       color: #991b1b;
       border: 2px solid #ef4444;
     }
-
+    
     .status-option.late {
       background-color: #fef3c7;
       color: #92400e;
       border: 2px solid #f59e0b;
     }
-
+    
+    /* ============== General Styles ============== */
     * {
       margin: 0;
       padding: 0;
@@ -239,6 +237,7 @@
       font-weight: 700;
     }
 
+    /* Hamburger Menu with Animation */
     .hamburger {
       background: none;
       border: none;
@@ -276,6 +275,7 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
+    /* Side Navigation Panel */
     .side-nav {
       position: fixed;
       top: 0;
@@ -332,64 +332,25 @@
       transform: translateX(0);
     }
 
-    .side-nav ul li:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .side-nav ul li:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .side-nav ul li:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-
-    .side-nav ul li:nth-child(4) {
-      animation-delay: 0.25s;
-    }
-
-    .side-nav ul li:nth-child(5) {
-      animation-delay: 0.3s;
-    }
-
-    .side-nav ul li:nth-child(6) {
-      animation-delay: 0.35s;
-    }
-
-    .side-nav ul li:nth-child(7) {
-      animation-delay: 0.4s;
-    }
-
-    .side-nav ul li:nth-child(8) {
-      animation-delay: 0.45s;
-    }
-
-    .side-nav ul li:nth-child(9) {
-      animation-delay: 0.5s;
-    }
-
-    .side-nav ul li:nth-child(10) {
-      animation-delay: 0.55s;
-    }
-
-    .side-nav ul li:nth-child(11) {
-      animation-delay: 0.6s;
-    }
-
-    .side-nav ul li:nth-child(12) {
-      animation-delay: 0.65s;
-    }
-
-    .side-nav ul li:nth-child(13) {
-      animation-delay: 0.7s;
-    }
+    .side-nav ul li:nth-child(1) { animation-delay: 0.1s; }
+    .side-nav ul li:nth-child(2) { animation-delay: 0.15s; }
+    .side-nav ul li:nth-child(3) { animation-delay: 0.2s; }
+    .side-nav ul li:nth-child(4) { animation-delay: 0.25s; }
+    .side-nav ul li:nth-child(5) { animation-delay: 0.3s; }
+    .side-nav ul li:nth-child(6) { animation-delay: 0.35s; }
+    .side-nav ul li:nth-child(7) { animation-delay: 0.4s; }
+    .side-nav ul li:nth-child(8) { animation-delay: 0.45s; }
+    .side-nav ul li:nth-child(9) { animation-delay: 0.5s; }
+    .side-nav ul li:nth-child(10) { animation-delay: 0.55s; }
+    .side-nav ul li:nth-child(11) { animation-delay: 0.6s; }
+    .side-nav ul li:nth-child(12) { animation-delay: 0.65s; }
+    .side-nav ul li:nth-child(13) { animation-delay: 0.7s; }
 
     @keyframes slideInRight {
       from {
         opacity: 0;
         transform: translateX(20px);
       }
-
       to {
         opacity: 1;
         transform: translateX(0);
@@ -450,6 +411,7 @@
       visibility: visible;
     }
 
+    /* Dashboard Styles */
     .dashboard {
       padding: 30px 20px;
       max-width: 1400px;
@@ -502,7 +464,7 @@
       background: white;
       padding: 25px;
       border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       flex: 1;
       min-width: 200px;
       text-align: center;
@@ -514,24 +476,13 @@
 
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
     }
 
-    .stat-card:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .stat-card:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .stat-card:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    .stat-card:nth-child(4) {
-      animation-delay: 0.4s;
-    }
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
 
     .stat-card h3 {
       font-size: 2.5rem;
@@ -549,26 +500,15 @@
       border-radius: 15px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       animation: fadeInUp 0.6s ease;
       animation-fill-mode: both;
     }
 
-    .dashboard-section:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .dashboard-section:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .dashboard-section:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    .dashboard-section:nth-child(4) {
-      animation-delay: 0.4s;
-    }
+    .dashboard-section:nth-child(1) { animation-delay: 0.1s; }
+    .dashboard-section:nth-child(2) { animation-delay: 0.2s; }
+    .dashboard-section:nth-child(3) { animation-delay: 0.3s; }
+    .dashboard-section:nth-child(4) { animation-delay: 0.4s; }
 
     .dashboard-section h3 {
       color: #1e3a8a;
@@ -577,6 +517,10 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .dashboard-section h3 .icon {
+      font-size: 1.5rem;
     }
 
     .classes-grid {
@@ -598,7 +542,7 @@
 
     .class-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
     .class-card h4 {
@@ -650,7 +594,7 @@
     .btn:hover {
       background: #1e3a8a;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
     .btn-secondary {
@@ -712,17 +656,9 @@
       transform: translateX(5px);
     }
 
-    .test-item:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .test-item:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .test-item:nth-child(3) {
-      animation-delay: 0.3s;
-    }
+    .test-item:nth-child(1) { animation-delay: 0.1s; }
+    .test-item:nth-child(2) { animation-delay: 0.2s; }
+    .test-item:nth-child(3) { animation-delay: 0.3s; }
 
     .test-info h4 {
       color: #1e3a8a;
@@ -739,6 +675,7 @@
       gap: 10px;
     }
 
+    /* Recent Students Section */
     .recent-students {
       display: flex;
       flex-direction: column;
@@ -764,25 +701,11 @@
       transform: translateX(5px);
     }
 
-    .student-item:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .student-item:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .student-item:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    .student-item:nth-child(4) {
-      animation-delay: 0.4s;
-    }
-
-    .student-item:nth-child(5) {
-      animation-delay: 0.5s;
-    }
+    .student-item:nth-child(1) { animation-delay: 0.1s; }
+    .student-item:nth-child(2) { animation-delay: 0.2s; }
+    .student-item:nth-child(3) { animation-delay: 0.3s; }
+    .student-item:nth-child(4) { animation-delay: 0.4s; }
+    .student-item:nth-child(5) { animation-delay: 0.5s; }
 
     .student-info h4 {
       color: #1e3a8a;
@@ -799,6 +722,7 @@
       gap: 10px;
     }
 
+    /* Student Profile Modal */
     .modal {
       display: none;
       position: fixed;
@@ -897,25 +821,11 @@
       animation-fill-mode: both;
     }
 
-    .detail-row:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .detail-row:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .detail-row:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    .detail-row:nth-child(4) {
-      animation-delay: 0.4s;
-    }
-
-    .detail-row:nth-child(5) {
-      animation-delay: 0.5s;
-    }
+    .detail-row:nth-child(1) { animation-delay: 0.1s; }
+    .detail-row:nth-child(2) { animation-delay: 0.2s; }
+    .detail-row:nth-child(3) { animation-delay: 0.3s; }
+    .detail-row:nth-child(4) { animation-delay: 0.4s; }
+    .detail-row:nth-child(5) { animation-delay: 0.5s; }
 
     .detail-label {
       font-weight: 600;
@@ -925,27 +835,6 @@
 
     .detail-value {
       color: #1e293b;
-    }
-
-    .summary-card {
-      animation: fadeInUp 0.5s ease;
-      animation-fill-mode: both;
-    }
-
-    .summary-card:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-
-    .summary-card:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .summary-card:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    .summary-card:nth-child(4) {
-      animation-delay: 0.4s;
     }
 
     footer {
@@ -961,73 +850,67 @@
       font-size: 1rem;
     }
 
+    /* Responsive styles */
     @media (max-width: 768px) {
       header {
         padding: 15px 20px;
       }
-
+      
       .welcome-section h2 {
         font-size: 1.8rem;
       }
-
+      
       .welcome-section p {
         font-size: 1rem;
       }
-
+      
       .stats-container {
         flex-direction: column;
       }
-
+      
       .classes-grid {
         grid-template-columns: 1fr;
       }
-
-      .test-item,
-      .student-item {
+      
+      .test-item, .student-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
       }
-
-      .test-actions,
-      .student-actions {
+      
+      .test-actions, .student-actions {
         width: 100%;
         justify-content: space-between;
       }
-
+      
       .student-profile {
         grid-template-columns: 1fr;
         text-align: center;
       }
-
+      
       .profile-avatar {
         margin: 0 auto;
       }
-
+      
       .attendance-table {
         display: block;
         overflow-x: auto;
       }
-
-      .attendance-actions,
-      .attendance-filter {
+      
+      .attendance-actions, .attendance-filter {
         flex-direction: column;
         align-items: stretch;
       }
-
+      
       .side-nav {
         width: 280px;
       }
     }
 
+    /* Animation Keyframes */
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes fadeInUp {
@@ -1035,7 +918,6 @@
         opacity: 0;
         transform: translateY(30px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -1047,7 +929,6 @@
         opacity: 0;
         transform: translateX(-30px);
       }
-
       to {
         opacity: 1;
         transform: translateX(0);
@@ -1059,7 +940,6 @@
         opacity: 0;
         transform: translateY(100px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -1067,70 +947,27 @@
     }
 
     @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.05);
-      }
-
-      100% {
-        transform: scale(1);
-      }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255, 255, 255, .3);
+      border: 3px solid rgba(255,255,255,.3);
       border-radius: 50%;
       border-top-color: #fff;
       animation: spin 1s ease-in-out infinite;
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    #loadingOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 9999;
-      font-size: 1.5rem;
-      color: #2563eb;
-    }
-
-    .spinner {
-      border: 4px solid #e2e8f0;
-      border-top: 4px solid #2563eb;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
-
 <body>
-  <!-- Loading overlay -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-    <div>Checking authentication...</div>
-  </div>
-
   <header>
     <h1>Soham - Teacher Dashboard</h1>
     <button class="hamburger" id="hamburger">
@@ -1156,11 +993,11 @@
       <li><a href="teacher-parent.html"><span class="nav-icon">👪</span>Parent Section</a></li>
       <li><a href="teacher-resources.html"><span class="nav-icon">📚</span>Resources</a></li>
       <li><a href="my-account.html"><span class="nav-icon">👤</span>My Account</a></li>
-      <li><a href="#" id="logoutBtn"><span class="nav-icon">🚪</span>Logout</a></li>
+      <li><a href="../role-selection.html" onclick="logout()"><span class="nav-icon">🚪</span>Logout</a></li>
     </ul>
   </div>
 
-  <!-- Overlay -->
+  <!-- Overlay for closing the menu when clicking outside -->
   <div class="overlay" id="overlay"></div>
 
   <!-- Student Profile Modal -->
@@ -1170,7 +1007,9 @@
         <h3>Student Profile</h3>
         <button class="close-modal" onclick="closeStudentProfile()">×</button>
       </div>
-      <div class="modal-body" id="studentProfileContent"></div>
+      <div class="modal-body" id="studentProfileContent">
+        <!-- Student profile content will be populated here -->
+      </div>
     </div>
   </div>
 
@@ -1184,7 +1023,6 @@
       <div class="modal-body">
         <div class="attendance-filter">
           <select id="attendanceClass" class="btn btn-small">
-            <option value="all">All Classes</option>
             <option value="11th-mhtcet-pcm">11th MHTCET (PCM)</option>
             <option value="11th-mhtcet-pcb">11th MHTCET (PCB)</option>
             <option value="11th-jee">11th JEE</option>
@@ -1197,40 +1035,51 @@
           <input type="date" id="attendanceDate" class="btn btn-small" value="">
           <button class="btn btn-small btn-success" onclick="saveAttendance()">Save Attendance</button>
         </div>
-        <div class="student-list" id="attendanceStudentList"></div>
+        <div class="student-list" id="attendanceStudentList">
+          <!-- Student list for attendance will be populated here -->
+        </div>
       </div>
     </div>
   </div>
 
   <main class="dashboard">
     <section class="welcome-section">
-      <h2 id="welcomeMessage">Welcome back!</h2>
+      <h2>Welcome back, Dr. Sharma!</h2>
       <p>Here's an overview of your classes and student performance.</p>
     </section>
 
-    <div class="stats-container" id="statsContainer"></div>
+    <div class="stats-container" id="statsContainer">
+      <!-- Stats will be populated by JavaScript -->
+    </div>
 
     <section class="dashboard-section">
       <h3><span class="icon">🏫</span> My Classes</h3>
-      <div class="classes-grid" id="classesGrid"></div>
+      <div class="classes-grid" id="classesGrid">
+        <!-- Class cards will be populated by JavaScript -->
+      </div>
     </section>
 
     <section class="dashboard-section">
       <h3><span class="icon">📊</span> Recent Tests</h3>
-      <div class="recent-tests" id="recentTests"></div>
+      <div class="recent-tests">
+        <!-- Test items will be populated by JavaScript -->
+      </div>
     </section>
 
     <section class="dashboard-section">
       <h3><span class="icon">👥</span> Recently Added Students</h3>
-      <div class="recent-students" id="recentStudents"></div>
+      <div class="recent-students" id="recentStudents">
+        <!-- Recent students will be populated by JavaScript -->
+      </div>
     </section>
-
+    
     <section class="dashboard-section">
       <h3><span class="icon">📅</span> Attendance Overview</h3>
       <div class="attendance-actions">
         <button class="btn btn-success" onclick="markAttendance()">Mark Today's Attendance</button>
         <button class="btn btn-secondary" onclick="viewAttendanceRecords()">View Attendance Records</button>
       </div>
+      
       <div class="attendance-summary">
         <div class="summary-card">
           <h4 id="presentCount">0</h4>
@@ -1249,6 +1098,7 @@
           <p>Attendance Rate</p>
         </div>
       </div>
+      
       <div class="attendance-table-container">
         <h4>Today's Attendance</h4>
         <table class="attendance-table" id="attendanceTable">
@@ -1260,7 +1110,9 @@
               <th>Time</th>
             </tr>
           </thead>
-          <tbody id="attendanceTableBody"></tbody>
+          <tbody id="attendanceTableBody">
+            <!-- Attendance data will be populated here -->
+          </tbody>
         </table>
       </div>
     </section>
@@ -1272,183 +1124,172 @@
   </footer>
 
   <script>
-    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    // ============================
+    // Firebase Initialization
+    // ============================
     const firebaseConfig = {
       apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
       authDomain: "soham-6d886.firebaseapp.com",
       projectId: "soham-6d886",
       storageBucket: "soham-6d886.firebasestorage.app",
       messagingSenderId: "281780176229",
-      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
-      measurementId: "G-CB1J6LQ7DJ"
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const classTemplates = {
-      '11th-mhtcet-pcm': '11th MHTCET (PCM)',
-      '11th-mhtcet-pcb': '11th MHTCET (PCB)',
-      '11th-jee': '11th JEE',
-      '11th-neet': '11th NEET',
-      '12th-mhtcet-pcm': '12th MHTCET (PCM)',
-      '12th-mhtcet-pcb': '12th MHTCET (PCB)',
-      '12th-jee': '12th JEE',
-      '12th-neet': '12th NEET'
-    };
+    // ============================
+    // Teacher Verification with Daily Cache
+    // ============================
+    let teacherData = null;
 
-    // Global data
-    let allStudents = [];
-    let allClassStats = {};
-    let allTests = [];
-    let tempAttendance = {};
-
-    // Authentication check
-    let redirecting = false;
     auth.onAuthStateChanged(async (user) => {
-      if (redirecting) return;
       if (!user) {
-        redirecting = true;
-        window.location.replace("../role-selection.html");
+        localStorage.removeItem("teacherVerification");
+        window.location.href = "../role-selection.html";
         return;
       }
+
+      const cached = JSON.parse(localStorage.getItem("teacherVerification"));
+      const today = new Date().toISOString().split('T')[0];
+
+      // If cache exists for today and same user – skip Firestore check
+      if (cached && cached.uid === user.uid && cached.date === today) {
+        teacherData = cached.teacherData || null;
+        loadDashboardData();
+        return;
+      }
+
+      // Perform fresh verification
       try {
-        const teacherDoc = await db.collection("teachers").doc(user.uid).get();
-        if (!teacherDoc.exists || teacherDoc.data().role !== "teacher") {
-          document.getElementById("loadingOverlay").innerHTML = `
-            <div style="color:#dc2626; font-size:2rem; margin-bottom:1rem;">⛔</div>
-            <div style="color:#dc2626; font-weight:bold;">Access Denied</div>
-            <div style="color:#475569; margin:1rem;">Your account is not registered as a teacher.</div>
-            <button class="btn" onclick="auth.signOut()">Logout</button>
-          `;
-          return;
+        const docSnapshot = await db.collection("teachers").doc(user.uid).get();
+        if (docSnapshot.exists && docSnapshot.data().role === "teacher") {
+          teacherData = docSnapshot.data();
+          // Cache for the rest of the day
+          localStorage.setItem("teacherVerification", JSON.stringify({
+            uid: user.uid,
+            date: today,
+            teacherData: teacherData
+          }));
+          loadDashboardData();
+        } else {
+          // Not a teacher
+          localStorage.removeItem("teacherVerification");
+          auth.signOut();
+          window.location.href = "../role-selection.html";
         }
-        document.getElementById("loadingOverlay").style.display = "none";
-        // Update welcome message with teacher name
-        const teacherData = teacherDoc.data();
-        const displayName = teacherData.fullName || 'Teacher';
-        document.getElementById('welcomeMessage').textContent = `Welcome back, ${displayName}!`;
-        initPage();
       } catch (error) {
-        console.error("Auth check error:", error);
-        document.getElementById("loadingOverlay").innerHTML = `
-          <div style="color:#dc2626;">Error checking permissions. Please reload.</div>
-          <button class="btn" onclick="location.reload()">Reload</button>
-        `;
+        console.error("Teacher verification failed:", error);
+        localStorage.removeItem("teacherVerification");
+        auth.signOut();
+        window.location.href = "../role-selection.html";
       }
     });
 
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-      e.preventDefault();
-      await auth.signOut();
-      window.location.href = "../role-selection.html";
-    });
+    // ============================
+    // Logout (clears daily cache)
+    // ============================
+    function logout() {
+      auth.signOut().then(() => {
+        localStorage.removeItem("teacherVerification"); // daily cache
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        window.location.href = "../role-selection.html";
+      });
+    }
 
-    // Initialize page
-    function initPage() {
-      // Hamburger menu
-      const hamburger = document.getElementById('hamburger');
-      const sideNav = document.getElementById('sideNav');
-      const overlay = document.getElementById('overlay');
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        sideNav.classList.toggle('active');
-        overlay.classList.toggle('active');
-        document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
-      });
-      overlay.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        sideNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      });
-      document.querySelectorAll('.side-nav a').forEach(link => {
-        link.addEventListener('click', () => {
-          hamburger.classList.remove('active');
-          sideNav.classList.remove('active');
-          overlay.classList.remove('active');
-          document.body.style.overflow = 'auto';
+    // ============================
+    // Dashboard Data Loader
+    // ============================
+    async function loadDashboardData() {
+      try {
+        // Fetch all students
+        const studentsSnapshot = await db.collection("students").get();
+        const allStudents = [];
+        studentsSnapshot.forEach(doc => {
+          allStudents.push({ id: doc.id, ...doc.data() });
         });
-      });
 
-      // Modal close on background click
-      document.getElementById('studentProfileModal').addEventListener('click', function (e) {
-        if (e.target === this) closeStudentProfile();
-      });
-      document.getElementById('attendanceModal').addEventListener('click', function (e) {
-        if (e.target === this) closeAttendanceModal();
-      });
+        // Fetch classStats
+        const classStatsSnapshot = await db.collection("classStats").get();
+        const classStatsData = {};
+        classStatsSnapshot.forEach(doc => {
+          classStatsData[doc.id] = doc.data();
+        });
 
-      // Load all data
-      loadAllData();
-    }
+        // Fetch recent tests (last 3)
+        const testsSnapshot = await db.collection("tests")
+          .orderBy("date", "desc")
+          .limit(3)
+          .get();
+        const recentTests = [];
+        testsSnapshot.forEach(doc => {
+          recentTests.push({ id: doc.id, ...doc.data() });
+        });
 
-    async function loadAllData() {
-      try {
-        // Fetch students
-        const studentsSnapshot = await db.collection("students").orderBy("timestamp", "desc").get();
-        allStudents = [];
-        studentsSnapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+        // Fetch today's attendance
+        const today = new Date().toISOString().split('T')[0];
+        const attendanceSnapshot = await db.collection("attendance")
+          .where("date", "==", today)
+          .get();
+        const attendanceMap = {};
+        attendanceSnapshot.forEach(doc => {
+          const data = doc.data();
+          attendanceMap[data.studentId] = data;
+        });
 
-        // Fetch class stats
-        const statsSnapshot = await db.collection("classStats").get();
-        allClassStats = {};
-        statsSnapshot.forEach(doc => { allClassStats[doc.id] = doc.data(); });
+        // Update UI
+        updateStats(allStudents, classStatsData, recentTests.length);
+        updateClassesGrid(allStudents, classStatsData);
+        updateRecentTests(recentTests);
+        updateRecentStudents(allStudents.slice(0, 5));
+        updateAttendanceSection(allStudents, attendanceMap, today);
 
-        // Fetch recent tests
-        const testsSnapshot = await db.collection("tests").orderBy("createdAt", "desc").limit(3).get();
-        allTests = [];
-        testsSnapshot.forEach(doc => allTests.push({ id: doc.id, ...doc.data() }));
-
-        // Render everything
-        renderStats();
-        renderClasses();
-        renderRecentTests();
-        renderRecentStudents();
-        loadAttendanceData();
       } catch (error) {
-        console.error("Error loading dashboard data:", error);
-        showNotification('Failed to load dashboard data', 'error');
+        console.error("Error loading dashboard:", error);
+        showNotification("Failed to load data. Check console for details.", "error");
       }
     }
 
-    function renderStats() {
-      const totalStudents = allStudents.length;
-      const totalClasses = Object.keys(classTemplates).length;
-      let totalTestsCount = 0;
-      let sumAvgScores = 0;
-      let classesWithScores = 0;
-
-      Object.keys(classTemplates).forEach(classKey => {
-        const stats = allClassStats[classKey] || {};
-        totalTestsCount += stats.testsCount || 0;
-        if (stats.avgScore !== undefined) {
-          sumAvgScores += stats.avgScore;
-          classesWithScores++;
-        }
-      });
-      const avgScore = classesWithScores > 0 ? Math.round(sumAvgScores / classesWithScores) : 0;
+    function updateStats(students, classStats, totalTests) {
+      const totalStudents = students.length;
+      const totalClasses = Object.keys(classStats).length;
+      const avgScore = totalClasses > 0
+        ? Object.values(classStats).reduce((sum, stat) => sum + (stat.avgScore || 0), 0) / totalClasses
+        : 0;
 
       document.getElementById('statsContainer').innerHTML = `
         <div class="stat-card"><h3>${totalClasses}</h3><p>Active Classes</p></div>
         <div class="stat-card"><h3>${totalStudents}</h3><p>Total Students</p></div>
-        <div class="stat-card"><h3>${totalTestsCount}</h3><p>Tests Created</p></div>
-        <div class="stat-card"><h3>${avgScore}%</h3><p>Average Score</p></div>
+        <div class="stat-card"><h3>${totalTests}</h3><p>Tests Created</p></div>
+        <div class="stat-card"><h3>${Math.round(avgScore)}%</h3><p>Average Score</p></div>
       `;
     }
 
-    function renderClasses() {
-      const grid = document.getElementById('classesGrid');
+    function updateClassesGrid(students, classStats) {
+      const classTemplates = {
+        '11th-mhtcet-pcm': '11th MHTCET (PCM)',
+        '11th-mhtcet-pcb': '11th MHTCET (PCB)',
+        '11th-jee': '11th JEE',
+        '11th-neet': '11th NEET',
+        '12th-mhtcet-pcm': '12th MHTCET (PCM)',
+        '12th-mhtcet-pcb': '12th MHTCET (PCB)',
+        '12th-jee': '12th JEE',
+        '12th-neet': '12th NEET'
+      };
+
+      const classesGrid = document.getElementById('classesGrid');
       let html = '';
-      Object.entries(classTemplates).forEach(([classKey, className], index) => {
-        const stats = allClassStats[classKey] || {};
-        const studentCount = allStudents.filter(s => s.studentClass === classKey).length;
+      Object.keys(classTemplates).forEach((classKey, index) => {
+        const stats = classStats[classKey] || { avgScore: 0, testsCount: 0, assignmentsCount: 0 };
+        const studentsInClass = students.filter(s => s.studentClass === classKey);
+        const studentCount = studentsInClass.length;
+
         html += `
           <div class="class-card" style="animation-delay: ${0.1 * index}s">
-            <h4>${className}</h4>
+            <h4>${classTemplates[classKey]}</h4>
             <p>${studentCount} students</p>
             <div class="class-stats">
               <div class="class-stat"><div class="value">${stats.avgScore || 0}%</div><div class="label">Avg. Score</div></div>
@@ -1456,50 +1297,55 @@
               <div class="class-stat"><div class="value">${stats.assignmentsCount || 0}</div><div class="label">Assignments</div></div>
             </div>
             <div class="actions">
-              <a href="${classKey}-class.html" class="btn btn-small">View Class</a>
+              <a href="#" class="btn btn-small" onclick="viewClassStudents('${classKey}')">View Class</a>
               <a href="create-test.html" class="btn btn-small btn-secondary">Create Test</a>
             </div>
-          </div>
-        `;
+          </div>`;
       });
-      grid.innerHTML = html;
+      classesGrid.innerHTML = html;
     }
 
-    function renderRecentTests() {
-      const container = document.getElementById('recentTests');
-      if (allTests.length === 0) {
-        container.innerHTML = `<div class="test-item"><div class="test-info"><h4>No tests created yet</h4><p>Create your first test to see it here</p></div><div class="test-actions"><a href="create-test.html" class="btn btn-small">Create Test</a></div></div>`;
+    function updateRecentTests(tests) {
+      const container = document.querySelector('.recent-tests');
+      if (tests.length === 0) {
+        container.innerHTML = `<div class="test-item"><p>No tests created yet.</p></div>`;
         return;
       }
       let html = '';
-      allTests.forEach(test => {
-        const className = classTemplates[test.class] || test.class || 'N/A';
-        const createdAt = test.createdAt?.toDate ? test.createdAt.toDate() : new Date(test.createdAt || Date.now());
+      tests.forEach((test, index) => {
         html += `
-          <div class="test-item">
+          <div class="test-item" style="animation-delay: ${0.1 * index}s">
             <div class="test-info">
-              <h4>${test.title || 'Untitled'}</h4>
-              <p>${className} • ${test.numberOfQuestions || 0} questions • ${test.totalMarks || 0} marks</p>
+              <h4>${test.title}</h4>
+              <p>${test.class} • ${test.totalMarks} marks • ${test.duration} mins</p>
             </div>
             <div class="test-actions">
-              <a href="my-tests.html" class="btn btn-small">View Results</a>
-              <a href="create-test.html" class="btn btn-small btn-secondary">Create More</a>
+              <a href="#" class="btn btn-small">View Results</a>
+              <a href="#" class="btn btn-small btn-secondary">Analyze</a>
             </div>
-          </div>
-        `;
+          </div>`;
       });
       container.innerHTML = html;
     }
 
-    function renderRecentStudents() {
+    function updateRecentStudents(students) {
       const container = document.getElementById('recentStudents');
-      const recent = allStudents.slice(0, 5);
-      if (recent.length === 0) {
-        container.innerHTML = `<div class="student-item"><div class="student-info"><h4>No students added yet</h4><p>Add your first student to see them here</p></div><div class="student-actions"><a href="add-student.html" class="btn btn-small">Add Student</a></div></div>`;
+      const classTemplates = {
+        '11th-mhtcet-pcm': '11th MHTCET (PCM)',
+        '11th-mhtcet-pcb': '11th MHTCET (PCB)',
+        '11th-jee': '11th JEE',
+        '11th-neet': '11th NEET',
+        '12th-mhtcet-pcm': '12th MHTCET (PCM)',
+        '12th-mhtcet-pcb': '12th MHTCET (PCB)',
+        '12th-jee': '12th JEE',
+        '12th-neet': '12th NEET'
+      };
+      if (students.length === 0) {
+        container.innerHTML = `<div class="student-item"><p>No students added yet.</p></div>`;
         return;
       }
       let html = '';
-      recent.forEach((student, index) => {
+      students.forEach((student, index) => {
         html += `
           <div class="student-item" style="animation-delay: ${0.1 * index}s">
             <div class="student-info">
@@ -1508,63 +1354,81 @@
             </div>
             <div class="student-actions">
               <button class="btn btn-small" onclick="viewStudentProfile('${student.studentId}')">View Profile</button>
-              <a href="create-test.html" class="btn btn-small btn-secondary">Assign Test</a>
+              <button class="btn btn-small btn-secondary">Assign Test</button>
             </div>
-          </div>
-        `;
+          </div>`;
       });
       container.innerHTML = html;
     }
 
-    // ---------- Attendance (Firestore) ----------
-    async function loadAttendanceData() {
-      const today = new Date().toISOString().split('T')[0];
-      const snapshot = await db.collection("attendance").where("date", "==", today).get();
-      const todayRecords = {};
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        todayRecords[data.studentId] = data;
-      });
+    function updateAttendanceSection(students, attendanceMap, today) {
+      const classTemplates = {
+        '11th-mhtcet-pcm': '11th MHTCET (PCM)',
+        '11th-mhtcet-pcb': '11th MHTCET (PCB)',
+        '11th-jee': '11th JEE',
+        '11th-neet': '11th NEET',
+        '12th-mhtcet-pcm': '12th MHTCET (PCM)',
+        '12th-mhtcet-pcb': '12th MHTCET (PCB)',
+        '12th-jee': '12th JEE',
+        '12th-neet': '12th NEET'
+      };
 
       let presentCount = 0, absentCount = 0, lateCount = 0;
-      let html = '';
+      let tableHtml = '';
 
-      allStudents.forEach(student => {
-        const record = todayRecords[student.studentId];
+      students.forEach(student => {
+        const record = attendanceMap[student.studentId];
         let status = 'Not Marked', statusClass = '', time = '-';
         if (record) {
           status = record.status.charAt(0).toUpperCase() + record.status.slice(1);
           statusClass = `status-${record.status}`;
-          time = new Date(record.timestamp?.toDate ? record.timestamp.toDate() : record.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          time = record.timestamp ? new Date(record.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
           if (record.status === 'present') presentCount++;
           else if (record.status === 'absent') absentCount++;
           else if (record.status === 'late') lateCount++;
         }
-        html += `
+        tableHtml += `
           <tr>
             <td>${student.studentName}</td>
             <td>${classTemplates[student.studentClass] || student.studentClass}</td>
             <td><span class="attendance-status ${statusClass}">${status}</span></td>
             <td>${time}</td>
-          </tr>
-        `;
+          </tr>`;
       });
 
-      document.getElementById('attendanceTableBody').innerHTML = html;
-      const total = allStudents.length;
-      const rate = total > 0 ? Math.round((presentCount + lateCount) / total * 100) : 0;
+      document.getElementById('attendanceTableBody').innerHTML = tableHtml;
       document.getElementById('presentCount').textContent = presentCount;
       document.getElementById('absentCount').textContent = absentCount;
       document.getElementById('lateCount').textContent = lateCount;
-      document.getElementById('attendanceRate').textContent = rate + '%';
+      const total = students.length;
+      const rate = total > 0 ? Math.round((presentCount + lateCount) / total * 100) : 0;
+      document.getElementById('attendanceRate').textContent = `${rate}%`;
     }
 
-    function markAttendance() {
+    // ============================
+    // Attendance Marking (Firestore)
+    // ============================
+    async function markAttendance() {
+      const studentsSnapshot = await db.collection("students").get();
+      const allStudents = [];
+      studentsSnapshot.forEach(doc => allStudents.push({ id: doc.id, ...doc.data() }));
+
+      const classTemplates = {
+        '11th-mhtcet-pcm': '11th MHTCET (PCM)',
+        '11th-mhtcet-pcb': '11th MHTCET (PCB)',
+        '11th-jee': '11th JEE',
+        '11th-neet': '11th NEET',
+        '12th-mhtcet-pcm': '12th MHTCET (PCM)',
+        '12th-mhtcet-pcb': '12th MHTCET (PCB)',
+        '12th-jee': '12th JEE',
+        '12th-neet': '12th NEET'
+      };
+
       document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
-      tempAttendance = {};
-      let html = '';
+
+      let listHtml = '';
       allStudents.forEach(student => {
-        html += `
+        listHtml += `
           <div class="student-item">
             <div class="student-info">
               <h4>${student.studentName}</h4>
@@ -1575,86 +1439,115 @@
               <div class="status-option absent" onclick="selectAttendanceStatus(this, '${student.studentId}', 'absent')">Absent</div>
               <div class="status-option late" onclick="selectAttendanceStatus(this, '${student.studentId}', 'late')">Late</div>
             </div>
-          </div>
-        `;
+          </div>`;
       });
-      document.getElementById('attendanceStudentList').innerHTML = html;
+      document.getElementById('attendanceStudentList').innerHTML = listHtml;
       document.getElementById('attendanceModal').classList.add('active');
       document.body.style.overflow = 'hidden';
+
+      // Pre-select existing attendance for today
+      const today = document.getElementById('attendanceDate').value;
+      const existingAttendance = await db.collection("attendance")
+        .where("date", "==", today)
+        .get();
+      existingAttendance.forEach(doc => {
+        const data = doc.data();
+        const options = document.querySelectorAll(`[onclick*="${data.studentId}"]`);
+        options.forEach(opt => {
+          if (opt.classList.contains(data.status)) {
+            opt.classList.add('selected');
+          }
+        });
+      });
     }
 
     function selectAttendanceStatus(element, studentId, status) {
-      const parent = element.parentElement;
-      parent.querySelectorAll('.status-option').forEach(el => el.classList.remove('selected'));
+      const siblings = element.parentElement.querySelectorAll('.status-option');
+      siblings.forEach(s => s.classList.remove('selected'));
       element.classList.add('selected');
-      tempAttendance[studentId] = status;
+      if (!window.tempAttendance) window.tempAttendance = {};
+      window.tempAttendance[studentId] = status;
     }
 
     async function saveAttendance() {
       const date = document.getElementById('attendanceDate').value;
-      const classFilter = document.getElementById('attendanceClass').value;
-      if (Object.keys(tempAttendance).length === 0) {
+      if (!window.tempAttendance || Object.keys(window.tempAttendance).length === 0) {
         alert('Please mark attendance for at least one student.');
         return;
       }
+
       const batch = db.batch();
-      Object.keys(tempAttendance).forEach(studentId => {
-        const student = allStudents.find(s => s.studentId === studentId);
-        if (classFilter !== 'all' && student?.studentClass !== classFilter) return;
+      Object.keys(window.tempAttendance).forEach(studentId => {
         const docId = `${date}_${studentId}`;
-        batch.set(db.collection("attendance").doc(docId), {
-          studentId,
-          date,
-          status: tempAttendance[studentId],
+        const docRef = db.collection("attendance").doc(docId);
+        batch.set(docRef, {
+          studentId: studentId,
+          date: date,
+          status: window.tempAttendance[studentId],
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
       });
-      await batch.commit();
-      closeAttendanceModal();
-      loadAttendanceData();
-      showNotification('Attendance saved successfully!', 'success');
+
+      try {
+        await batch.commit();
+        closeAttendanceModal();
+        loadDashboardData(); // refresh data
+        showNotification('Attendance saved successfully!', 'success');
+      } catch (error) {
+        console.error("Error saving attendance:", error);
+        showNotification('Failed to save attendance. Please try again.', 'error');
+      }
     }
 
     function closeAttendanceModal() {
       document.getElementById('attendanceModal').classList.remove('active');
       document.body.style.overflow = 'auto';
-      tempAttendance = {};
+      window.tempAttendance = null;
     }
 
     function viewAttendanceRecords() {
       window.location.href = 'attendance.html';
     }
 
-    // ---------- Student Profile ----------
+    // ============================
+    // Student Profile (Firestore)
+    // ============================
     async function viewStudentProfile(studentId) {
-      const student = allStudents.find(s => s.studentId === studentId);
-      if (!student) {
-        // Fallback: fetch from Firestore
-        const docSnap = await db.collection("students").doc(studentId).get();
-        if (!docSnap.exists) { showNotification('Student not found', 'error'); return; }
-        displayProfileModal(docSnap.data());
-      } else {
-        displayProfileModal(student);
+      try {
+        const doc = await db.collection("students").doc(studentId).get();
+        if (!doc.exists) {
+          showNotification("Student not found.", "error");
+          return;
+        }
+        const student = doc.data();
+        const classTemplates = {
+          '11th-mhtcet-pcm': '11th MHTCET (PCM)',
+          '11th-mhtcet-pcb': '11th MHTCET (PCB)',
+          '11th-jee': '11th JEE',
+          '11th-neet': '11th NEET',
+          '12th-mhtcet-pcm': '12th MHTCET (PCM)',
+          '12th-mhtcet-pcb': '12th MHTCET (PCB)',
+          '12th-jee': '12th JEE',
+          '12th-neet': '12th NEET'
+        };
+        document.getElementById('studentProfileContent').innerHTML = `
+          <div class="student-profile">
+            <div class="profile-avatar">${student.studentName.split(' ').map(n => n[0]).join('')}</div>
+            <div class="profile-details">
+              <h4>${student.studentName}</h4>
+              <div class="detail-row"><div class="detail-label">Student ID:</div><div class="detail-value">${student.studentId}</div></div>
+              <div class="detail-row"><div class="detail-label">Class:</div><div class="detail-value">${classTemplates[student.studentClass] || student.studentClass}</div></div>
+              <div class="detail-row"><div class="detail-label">Student Mobile:</div><div class="detail-value">${student.studentMobile}</div></div>
+              <div class="detail-row"><div class="detail-label">Parent Mobile:</div><div class="detail-value">${student.parentMobile}</div></div>
+              <div class="detail-row"><div class="detail-label">Date Added:</div><div class="detail-value">${student.timestamp ? new Date(student.timestamp.toDate()).toLocaleDateString() : 'N/A'}</div></div>
+            </div>
+          </div>`;
+        document.getElementById('studentProfileModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } catch (error) {
+        console.error("Error viewing profile:", error);
+        showNotification("Failed to load student profile.", "error");
       }
-    }
-
-    function displayProfileModal(student) {
-      const initials = student.studentName.split(' ').map(n => n[0]).join('');
-      document.getElementById('studentProfileContent').innerHTML = `
-        <div class="student-profile">
-          <div class="profile-avatar">${initials}</div>
-          <div class="profile-details">
-            <h4>${student.studentName}</h4>
-            <div class="detail-row"><div class="detail-label">Student ID:</div><div class="detail-value">${student.studentId}</div></div>
-            <div class="detail-row"><div class="detail-label">Class:</div><div class="detail-value">${classTemplates[student.studentClass] || student.studentClass}</div></div>
-            <div class="detail-row"><div class="detail-label">Student Mobile:</div><div class="detail-value">${student.studentMobile}</div></div>
-            <div class="detail-row"><div class="detail-label">Parent Mobile:</div><div class="detail-value">${student.parentMobile}</div></div>
-            <div class="detail-row"><div class="detail-label">Date Added:</div><div class="detail-value">${new Date(student.timestamp?.toDate ? student.timestamp.toDate() : student.timestamp).toLocaleDateString()}</div></div>
-          </div>
-        </div>
-      `;
-      document.getElementById('studentProfileModal').classList.add('active');
-      document.body.style.overflow = 'hidden';
     }
 
     function closeStudentProfile() {
@@ -1662,30 +1555,159 @@
       document.body.style.overflow = 'auto';
     }
 
-    // ---------- Notifications ----------
+    // ============================
+    // Navigation
+    // ============================
+    function viewClassStudents(className) {
+      localStorage.setItem('selectedClass', className);
+      window.location.href = 'teacher-classes.html';
+    }
+
+    // ============================
+    // UI: Hamburger, overlay, ripple, notifications
+    // ============================
+    const hamburger = document.getElementById('hamburger');
+    const sideNav = document.getElementById('sideNav');
+    const overlay = document.getElementById('overlay');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      sideNav.classList.toggle('active');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+    });
+
+    overlay.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      sideNav.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close menu when clicking a nav link (except logout)
+    const navLinks = document.querySelectorAll('.side-nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (link.getAttribute('href') === '../role-selection.html' && link.onclick) {
+          return; // let logout function handle it
+        }
+        hamburger.classList.remove('active');
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        if (link.getAttribute('href') && !link.getAttribute('href').startsWith('#')) {
+          window.location.href = link.getAttribute('href');
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sideNav.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        sideNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Close modals when clicking outside
+    document.getElementById('studentProfileModal').addEventListener('click', function(e) {
+      if (e.target === this) closeStudentProfile();
+    });
+    document.getElementById('attendanceModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAttendanceModal();
+    });
+
+    // Notification system
     function showNotification(message, type = 'info') {
       const existing = document.querySelector('.notification');
       if (existing) existing.remove();
+      
       const notification = document.createElement('div');
       notification.className = `notification notification-${type}`;
-      notification.style.cssText = `
-        position: fixed; top: 20px; right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white; padding: 15px 20px; border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 9999;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards;
-        min-width: 300px; max-width: 400px;
-      `;
       notification.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span>${message}</span>
-          <button style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">×</button>
-        </div>
+        <div class="notification-content">
+          <span class="notification-message">${message}</span>
+          <button class="notification-close">×</button>
+        </div>`;
+      Object.assign(notification.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        background: type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6',
+        color: 'white',
+        padding: '15px 20px',
+        borderRadius: '8px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.2)',
+        zIndex: '9999',
+        animation: 'slideInRight 0.3s ease, fadeOut 0.3s ease 3s forwards',
+        minWidth: '300px',
+        maxWidth: '400px'
+      });
+      notification.querySelector('.notification-content').style.display = 'flex';
+      notification.querySelector('.notification-content').style.justifyContent = 'space-between';
+      notification.querySelector('.notification-content').style.alignItems = 'center';
+      notification.querySelector('.notification-close').style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       `;
+      notification.querySelector('.notification-close').addEventListener('click', () => notification.remove());
       document.body.appendChild(notification);
       setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
     }
+
+    // Add fadeOut keyframes
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      @keyframes fadeOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(100px); }
+      }
+    `;
+    document.head.appendChild(styleEl);
+
+    // Ripple effect on buttons
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          const x = e.clientX - e.target.getBoundingClientRect().left;
+          const y = e.clientY - e.target.getBoundingClientRect().top;
+          const ripple = document.createElement('span');
+          ripple.style.cssText = `
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            width: 100px;
+            height: 100px;
+            top: ${y - 50}px;
+            left: ${x - 50}px;
+          `;
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+      const rippleStyle = document.createElement('style');
+      rippleStyle.textContent = `
+        @keyframes ripple {
+          to { transform: scale(4); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(rippleStyle);
+    });
   </script>
 </body>
-
 </html>

@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soham - Entrance Exam Practice</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -217,25 +222,20 @@
       font-size: 1rem;
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
       header {
         padding: 15px 20px;
       }
-      
       .hero h2 {
         font-size: 2.2rem;
       }
-      
       .hero p {
         font-size: 1.1rem;
       }
-      
       .cards-container {
         flex-direction: column;
         align-items: center;
       }
-      
       .card {
         width: 100%;
         max-width: 400px;
@@ -260,7 +260,7 @@
       <li><a href="Exams/take-test.html">Take a Test</a></li>
       <li><a href="Exams/exam.html">Practice</a></li>
       <li><a href="Exams/scores.html">Scores</a></li>
-      <li><a href="student-announcement.html">Announcements</a></li> <!-- Added Announcements option -->
+      <li><a href="student-announcement.html">Announcements</a></li>
       <li><a href="student-resources.html">Resources</a></li>
       <li><a href="Boardprep/board-prep.html">Board Preparation</a></li>
       <li><a href="student-account.html">My Account</a></li>
@@ -272,8 +272,8 @@
   <div class="overlay" id="overlay"></div>
 
   <section class="hero">
-    <h2>Prepare Smarter for Your Entrance Exams</h2>
-    <p>Practice MCQs, track your progress, and boost your performance with our comprehensive exam preparation platform.</p>
+    <h2>Welcome, <span id="studentName">Student</span>!</h2>
+    <p>Prepare smarter for your entrance exams. Your class: <strong id="studentClass">Loading...</strong></p>
     <button onclick="window.location.href='Exams/exam.html'">Start Practicing Now</button>
   </section>
 
@@ -301,19 +301,67 @@
 
   <footer>
     <p>&copy; 2026 Soham - Entrance Exam Practice. All rights reserved.</p>
-     <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">Made with ❤️ by Team Soham</p>
   </footer>
 
   <script>
-    // Check if user is logged in
+    // ---------- Firebase Configuration (YOUR REAL CONFIG) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c",
+      measurementId: "G-CB1J6LQ7DJ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Check if user is logged in (localStorage based)
     if (localStorage.getItem("isLoggedIn") !== "true") {
-      window.location.href="student-login.html";
+      window.location.href = "student-login.html";
+    }
+
+    // Fetch student details from Firestore
+    async function loadStudentData() {
+      const studentInfo = JSON.parse(localStorage.getItem("currentStudent") || "{}");
+      const studentId = studentInfo.studentId;
+
+      if (!studentId) {
+        // Fallback to localStorage name if Firestore fails
+        document.getElementById("studentName").textContent = studentInfo.name || "Student";
+        document.getElementById("studentClass").textContent = studentInfo.class || "your class";
+        return;
+      }
+
+      try {
+        const docSnap = await db.collection("students").doc(studentId).get();
+        if (docSnap.exists) {
+          const student = docSnap.data();
+          document.getElementById("studentName").textContent = student.studentName || studentInfo.name || "Student";
+          document.getElementById("studentClass").textContent = student.studentClass || studentInfo.class || "your class";
+        } else {
+          // Use localStorage data
+          document.getElementById("studentName").textContent = studentInfo.name || "Student";
+          document.getElementById("studentClass").textContent = studentInfo.class || "your class";
+        }
+      } catch (error) {
+        console.error("Error fetching student data:", error);
+        document.getElementById("studentName").textContent = studentInfo.name || "Student";
+        document.getElementById("studentClass").textContent = studentInfo.class || "your class";
+      }
     }
 
     // Logout function
     function logout() {
       localStorage.removeItem("isLoggedIn");
-      window.location.href="../role-selection.html";
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("currentStudent");
+      localStorage.removeItem("username");
+      window.location.href = "../role-selection.html";
     }
 
     // Hamburger menu functionality
@@ -343,15 +391,8 @@
       });
     });
 
-    // Add smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
+    // Load student data on page load
+    document.addEventListener('DOMContentLoaded', loadStudentData);
   </script>
 </body>
 </html>

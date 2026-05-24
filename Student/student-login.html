@@ -329,7 +329,7 @@
 
       <button type="submit" class="login-btn" id="loginButton">Login</button>
 
-      <a href="forgot-credentials.html" class="forgot-link">Forgot Student ID, Password or Mother's Name?</a>
+      <a href="javascript:void(0)" onclick="alert('Please contact your school administration or class teacher to reset your password or retrieve your Student ID.')" class="forgot-link">Forgot Student ID, Password or Mother's Name?</a>
     </form>
 
     <a href="../role-selection.html" class="back-link">← Back to Role Selection</a>
@@ -343,15 +343,14 @@
   </footer>
 
   <script>
-    // ---------- Firebase Configuration ----------
-    // !! Replace with your own Firebase project config !!
+    // ---------- Firebase Configuration (SAME AS TEACHER PAGES) ----------
     const firebaseConfig = {
       apiKey: "AIzaSyBXWEuA7G55nawfNUoIqr9PqGP9YGQwGnc",
-      authDomain: "soham-institute.firebaseapp.com",
-      projectId: "soham-institute",
-      storageBucket: "soham-institute.firebasestorage.app",
-      messagingSenderId: "788578536180",
-      appId: "1:788578536180:web:9961df7746b3e22b00fc24"
+      authDomain: "soham-6d886.firebaseapp.com",
+      projectId: "soham-6d886",
+      storageBucket: "soham-6d886.firebasestorage.app",
+      messagingSenderId: "281780176229",
+      appId: "1:281780176229:web:cd1eea7bd171c14a338d8c"
     };
 
     // Initialize Firebase
@@ -440,7 +439,7 @@
 
         const studentData = docSnap.data();
 
-        // Check password (exact match, same as before)
+        // Check password (exact match)
         if (studentData.password !== password) {
           throw new Error("Invalid password");
         }
